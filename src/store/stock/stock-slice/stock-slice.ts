@@ -4,7 +4,7 @@ import { HttpInitialState, StockDoc } from "../../../interfaces/index";
 import { readData } from "../../../services/api";
 import { AppDispatch } from "../../index";
 
-const initialState: HttpInitialState = {
+const initialState: HttpInitialState<StockDoc> = {
   isLoading: false,
   error: null,
   data: [],

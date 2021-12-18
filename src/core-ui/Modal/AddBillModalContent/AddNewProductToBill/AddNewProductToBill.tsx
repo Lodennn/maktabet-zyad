@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { useAppSelector } from "../../../../hooks/use-app-selector";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToBill.module.scss";
 
@@ -11,6 +12,8 @@ const AddNewProductToBill: React.FC<{
   ) => void;
   firstProductInBill: number;
 }> = (props) => {
+  const { data: stockData } = useAppSelector((state) => state.stock);
+
   return (
     <Fragment>
       {/** PRODUCT *************************** */}
@@ -29,7 +32,7 @@ const AddNewProductToBill: React.FC<{
           >
             <option>قلم روتو</option>
           </select> */}
-          <SmartSearch />
+          <SmartSearch data={stockData} />
         </div>
         {/** PRODUCT PRICE */}
         <div className={classes["add-bill-product__info"]}>

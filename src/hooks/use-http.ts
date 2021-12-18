@@ -1,16 +1,21 @@
 import { useCallback, useReducer } from "react";
 import { HttpDataStatus } from "../constants";
-import { HttpInitialState } from "../interfaces";
 import { ActionType } from "../types";
 
-const initialState: HttpInitialState = {
+interface InitialState {
+  isLoading: boolean;
+  error: null | string;
+  data: any[];
+}
+
+const initialState: InitialState = {
   isLoading: false,
   error: null,
   data: [],
 };
 
 //prettier-ignore
-const reducerFn = (state: HttpInitialState = initialState, action: ActionType) => {
+const reducerFn = (state: InitialState = initialState, action: ActionType) => {
   if(action.type === HttpDataStatus.FETCHING) {
     return {...state, isLoading: true}
   }
@@ -33,7 +38,7 @@ const useHttp = (requestData: Function) => {
         dispatch({ type: HttpDataStatus.FETCHING});
         const data = await requestData(queryData);
         //prettier-ignore
-        dispatch({ type: HttpDataStatus.SUCCESS, payload: { data } });
+        dispatch({ type: HttpDataStatus.SUCCESS, payload: { data: data } });
       } catch (err: any) {
         //prettier-ignore
         dispatch({ type: HttpDataStatus.ERROR, payload: { error: err.msg } });

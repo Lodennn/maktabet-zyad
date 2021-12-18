@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
@@ -8,10 +8,6 @@ const AddBillModalContent: React.FC = () => {
   const [billType, setBillType] = useState<boolean>(true);
   const [counter, setCounter] = useState<number>(0);
   const [billProducts, setBillProducts] = useState<number[]>([counter]);
-
-  useEffect(() => {
-    console.log("billProducts: ", billProducts);
-  }, [billProducts]);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -92,9 +88,6 @@ const AddBillModalContent: React.FC = () => {
                 className="btn btn--default btn--add"
                 onClick={addNewBillProduct}
               >
-                {/* <span className={`fix-icon`}>
-                  <FaPlus />
-                </span> */}
                 أضف منتج
               </button>
               <button type="button" className="btn btn--primary btn--add">

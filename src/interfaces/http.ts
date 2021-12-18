@@ -1,9 +1,9 @@
 import { HttpDataStatus } from "../constants";
 
-export interface HttpInitialState {
+export interface HttpInitialState<T> {
   isLoading: boolean;
   error: string | null;
-  data: (string | number)[];
+  data: T[];
 }
 export interface FetchData {
   type: HttpDataStatus.FETCHING;

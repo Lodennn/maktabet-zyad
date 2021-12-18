@@ -3,8 +3,9 @@ import { COLLECTIONS } from "../../constants";
 import { HttpInitialState } from "../../interfaces/index";
 import { readData } from "../../services/api";
 import { AppDispatch } from "../index";
+import { MissingProductsDoc } from "../../interfaces/database";
 
-const initialState: HttpInitialState = {
+const initialState: HttpInitialState<MissingProductsDoc> = {
   isLoading: false,
   error: null,
   data: [],
