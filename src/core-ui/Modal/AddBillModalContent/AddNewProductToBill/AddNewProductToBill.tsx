@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
