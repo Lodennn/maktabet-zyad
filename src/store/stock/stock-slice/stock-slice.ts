@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../../constants";
-import { HttpInitialState, StockDoc } from "../../../interfaces/index";
+import { StockInitialState } from "../../../interfaces/redux-store";
 import { readData } from "../../../services/api";
 import { AppDispatch } from "../../index";
 
-const initialState: HttpInitialState<StockDoc> = {
+const initialState: StockInitialState = {
   isLoading: false,
   error: null,
   data: [],
+  filteredStockData: [],
 };
 
 const stockSlice = createSlice({
@@ -23,8 +24,16 @@ const stockSlice = createSlice({
     },
     addStockData(state, action) {
       state.data = action.payload.data;
+      state.filteredStockData = action.payload.data;
       state.isLoading = false;
       state.error = null;
+    },
+    filterStockData(state, action) {
+      let tempStockData = [...state.data];
+      tempStockData = tempStockData.filter((data) =>
+        data.productName.includes(action.payload.searchValue)
+      );
+      state.filteredStockData = tempStockData;
     },
   },
 });

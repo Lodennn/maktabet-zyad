@@ -30,18 +30,20 @@ const missingProductsSlice = createSlice({
   },
 });
 
-export const stockActions = missingProductsSlice.actions;
+export const missingProductsActions = missingProductsSlice.actions;
 
 export const addMissingProductsDataToStore =
   () => async (dispatch: AppDispatch) => {
-    dispatch(stockActions.fetchingMissingProductsData({}));
+    dispatch(missingProductsActions.fetchingMissingProductsData({}));
     try {
       const missingProductsData = await readData(COLLECTIONS.MISSING_PRODUCTS);
       dispatch(
-        stockActions.addMissingProductsData({ data: missingProductsData })
+        missingProductsActions.addMissingProductsData({
+          data: missingProductsData,
+        })
       );
     } catch (err) {
-      dispatch(stockActions.errorMissingProductsData({}));
+      dispatch(missingProductsActions.errorMissingProductsData({}));
     }
   };
 

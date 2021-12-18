@@ -1,10 +1,18 @@
 import React, { useState } from "react";
+import { useAppDispatch } from "../../hooks/use-app-dispatch";
+import { useAppSelector } from "../../hooks/use-app-selector";
 import { StockDoc } from "../../interfaces";
+import { stockActions } from "../../store/stock/stock-slice/stock-slice";
 import classes from "./SmartSearch.module.scss";
 
-const SmartSearch: React.FC<{ data: any[] }> = (props) => {
+const SmartSearch: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
+
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
+
+  const { filteredStockData } = useAppSelector((state) => state.stock);
+
+  const dispatch = useAppDispatch();
 
   const search = (event: React.FormEvent<HTMLInputElement>): void => {
     const target = event.target as HTMLInputElement;
@@ -13,6 +21,7 @@ const SmartSearch: React.FC<{ data: any[] }> = (props) => {
       setShowSmartSearch(false);
       return;
     }
+    dispatch(stockActions.filterStockData({ searchValue }));
     setShowSmartSearch(true);
   };
   const selectSearchResult = (
@@ -21,6 +30,7 @@ const SmartSearch: React.FC<{ data: any[] }> = (props) => {
   ): void => {
     setSearchValue(searchResult);
     setShowSmartSearch(false);
+    dispatch(stockActions.filterStockData({ searchValue: "" }));
   };
 
   return (
@@ -31,10 +41,11 @@ const SmartSearch: React.FC<{ data: any[] }> = (props) => {
         className={classes["smart-search__input"]}
         onChange={search}
         value={searchValue}
+        onFocus={() => setShowSmartSearch(true)}
       />
       {showSmartSearch && (
         <ul className={classes["smart-search__result"]}>
-          {props.data.map((product: StockDoc) => {
+          {filteredStockData.map((product: StockDoc) => {
             return (
               <li
                 key={product.id}

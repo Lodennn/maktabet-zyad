@@ -19,7 +19,9 @@ const AddNewProductToBill: React.FC<{
       {/** PRODUCT *************************** */}
       <div className={classes["add-bill-product"]}>
         {/** PRODUCT NAME */}
-        <div className={classes["add-bill-product__info"]}>
+        <div
+          className={`${classes["add-bill-product__info"]} ${classes["add-bill-product__info--product-name"]}`}
+        >
           <label
             htmlFor={`bill-product-name-${props.productIndex}`}
             className="form-label"
@@ -32,7 +34,7 @@ const AddNewProductToBill: React.FC<{
           >
             <option>قلم روتو</option>
           </select> */}
-          <SmartSearch data={stockData} />
+          <SmartSearch />
         </div>
         {/** PRODUCT PRICE */}
         <div className={classes["add-bill-product__info"]}>

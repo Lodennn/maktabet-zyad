@@ -13,6 +13,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    &--product-name {
+      width: 80%;
+    }
     &--input {
       display: block;
       display: block;
