@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
@@ -9,17 +9,28 @@ const AddBillModalContent: React.FC = () => {
   const [counter, setCounter] = useState<number>(0);
   const [billProducts, setBillProducts] = useState<number[]>([counter]);
 
+  useEffect(() => {
+    console.log("billProducts: ", billProducts);
+  }, [billProducts]);
+
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
   }
 
   function addNewBillProduct(event: React.MouseEvent<HTMLButtonElement>) {
     setCounter((prevState) => prevState + 1);
-    setBillProducts((prevState) => prevState.concat(counter));
+    setBillProducts((prevState) => prevState.concat(counter + 1));
   }
-
-  console.log("counter: ", counter);
-  console.log("billProducts: ", billProducts);
+  function removeNewBillProduct<T>(
+    productIndex: number,
+    event: React.MouseEvent<T>
+  ) {
+    setBillProducts((prevState) =>
+      prevState.filter((productId) => {
+        return productId !== productIndex;
+      })
+    );
+  }
 
   return (
     <div className={classes["add-bill-modal"]}>
@@ -54,31 +65,63 @@ const AddBillModalContent: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="form-control">
+          <div className="form-control mt-md">
             <h4 className="form-title">بيانات المنتج</h4>
 
             {/** PRODUCTS */}
             <div className={classes["add-bill-form__products"]}>
               {/** PRODUCT *************************** */}
-              <AddNewProductToBill />
+              {billProducts.map((productIndex, _, billProductsArray) => {
+                return (
+                  <AddNewProductToBill
+                    key={productIndex}
+                    productIndex={productIndex}
+                    removeProductFromBill={removeNewBillProduct}
+                    firstProductInBill={billProductsArray[0]}
+                  />
+                );
+              })}
             </div>
             {/** PRODUCT *************************** */}
           </div>
           {/** PRODUCTS */}
           <div className={classes["add-bill-form__actions"]}>
-            <button
-              type="button"
-              className="btn btn--primary btn--add"
-              onClick={addNewBillProduct}
-            >
-              <span className={`fix-icon`}>
-                <FaPlus />
-              </span>
-              أضف منتج
-            </button>
-            <p className={classes["add-bill-form__action--total"]}>
-              المجموع 210
-            </p>
+            <div className={classes["add-bill-form__actions--ctas"]}>
+              <button
+                type="button"
+                className="btn btn--default btn--add"
+                onClick={addNewBillProduct}
+              >
+                {/* <span className={`fix-icon`}>
+                  <FaPlus />
+                </span> */}
+                أضف منتج
+              </button>
+              <button type="button" className="btn btn--primary btn--add">
+                <span className={`fix-icon`}>
+                  <FaPlus />
+                </span>
+                أضف فاتوره
+              </button>
+            </div>
+            <ul className={classes["add-bill-form__actions--info"]}>
+              <li className={classes["add-bill-form__actions--info-item"]}>
+                <span className={classes["add-bill-form__actions--info-label"]}>
+                  عدد المنتجات
+                </span>
+                <span className={classes["add-bill-form__actions--info-value"]}>
+                  {billProducts.length}
+                </span>
+              </li>
+              <li className={classes["add-bill-form__actions--info-item"]}>
+                <span className={classes["add-bill-form__actions--info-label"]}>
+                  المجموع
+                </span>
+                <span className={classes["add-bill-form__actions--info-value"]}>
+                  210
+                </span>
+              </li>
+            </ul>
           </div>
         </form>
       </div>

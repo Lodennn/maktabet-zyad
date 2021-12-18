@@ -1,3 +1,5 @@
+@import "../../../styles/Variables.scss";
+
 .add-bill-modal {
   padding: 2rem;
   font-size: 2rem;
@@ -70,6 +72,8 @@
   &__products {
     height: 28rem;
     overflow-y: scroll;
+    background: $color-white;
+    padding: 0.5rem;
   }
   &__checkbox {
     opacity: 0;
@@ -81,5 +85,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    &--ctas {
+      display: flex;
+      gap: 3rem;
+    }
+    &--info {
+      display: flex;
+      gap: 3rem;
+      &-item {
+        font-size: 1.5rem;
+      }
+      &-label {
+        color: $color-gray-dark;
+        margin-left: 1rem;
+      }
+      &-value {
+        color: $color-gray-dark-2;
+        font-size: 2rem;
+        font-weight: bold;
+      }
+    }
   }
 }
