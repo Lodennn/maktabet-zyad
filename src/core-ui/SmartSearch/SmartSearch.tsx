@@ -5,7 +5,7 @@ import { StockDoc } from "../../interfaces";
 import { stockActions } from "../../store/stock/stock-slice/stock-slice";
 import classes from "./SmartSearch.module.scss";
 
-const SmartSearch: React.FC = () => {
+const SmartSearch: React.FC<{ getSearchValue: Function }> = (props) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
@@ -16,6 +16,7 @@ const SmartSearch: React.FC = () => {
 
   const search = (event: React.FormEvent<HTMLInputElement>): void => {
     const target = event.target as HTMLInputElement;
+
     setSearchValue(target.value);
     if (target.value === "") {
       setShowSmartSearch(false);
@@ -25,11 +26,14 @@ const SmartSearch: React.FC = () => {
     setShowSmartSearch(true);
   };
   const selectSearchResult = (
-    searchResult: string,
+    searchResult: StockDoc,
     event: React.MouseEvent<HTMLLIElement>
   ): void => {
-    setSearchValue(searchResult);
+    setSearchValue(searchResult.productName);
     setShowSmartSearch(false);
+
+    props.getSearchValue(searchResult);
+
     dispatch(stockActions.filterStockData({ searchValue: "" }));
   };
 
@@ -50,7 +54,7 @@ const SmartSearch: React.FC = () => {
               <li
                 key={product.id}
                 className={classes["smart-search__result-item"]}
-                onClick={selectSearchResult.bind(null, product.productName)}
+                onClick={selectSearchResult.bind(null, product)}
               >
                 {product.productName}
               </li>

@@ -6,13 +6,15 @@
   position: relative;
   margin-bottom: 2rem;
   padding: 2rem 1rem;
+  align-items: start;
   &:nth-child(even) {
     background: $color-gray-light-3;
   }
   &__info {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    display: grid;
+    height: 100%;
+    grid-template-rows: min-content 1fr;
+    row-gap: 1.5rem;
     &--product-name {
       width: 80%;
     }

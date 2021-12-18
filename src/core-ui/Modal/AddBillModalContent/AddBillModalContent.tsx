@@ -3,11 +3,14 @@ import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
 import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
+import { useAppSelector } from "../../../hooks/use-app-selector";
 
 const AddBillModalContent: React.FC = () => {
   const [billType, setBillType] = useState<boolean>(true);
   const [counter, setCounter] = useState<number>(0);
   const [billProducts, setBillProducts] = useState<number[]>([counter]);
+
+  const { total } = useAppSelector((state) => state.bills);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -17,10 +20,7 @@ const AddBillModalContent: React.FC = () => {
     setCounter((prevState) => prevState + 1);
     setBillProducts((prevState) => prevState.concat(counter + 1));
   }
-  function removeNewBillProduct<T>(
-    productIndex: number,
-    event: React.MouseEvent<T>
-  ) {
+  function removeNewBillProduct(productIndex: number) {
     setBillProducts((prevState) =>
       prevState.filter((productId) => {
         return productId !== productIndex;
@@ -72,7 +72,7 @@ const AddBillModalContent: React.FC = () => {
                   <AddNewProductToBill
                     key={productIndex}
                     productIndex={productIndex}
-                    removeProductFromBill={removeNewBillProduct}
+                    removeNewBillProduct={removeNewBillProduct}
                     firstProductInBill={billProductsArray[0]}
                   />
                 );
@@ -111,7 +111,7 @@ const AddBillModalContent: React.FC = () => {
                   المجموع
                 </span>
                 <span className={classes["add-bill-form__actions--info-value"]}>
-                  210
+                  {total}
                 </span>
               </li>
             </ul>

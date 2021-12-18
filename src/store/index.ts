@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import billReducer from "./bills/bill-slice";
 import missingProductsReducer from "./missing-products/missing-products-slice";
 import purchasesReducer from "./purchases/purchases-slice";
 import StockReducer from "./stock/stock-slice/stock-slice";
@@ -8,6 +9,7 @@ const store = configureStore({
     stock: StockReducer,
     missingProducts: missingProductsReducer,
     purchases: purchasesReducer,
+    bills: billReducer,
   },
 });
 

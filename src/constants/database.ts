@@ -2,6 +2,7 @@ export enum COLLECTIONS {
   STOCK = "stock",
   MISSING_PRODUCTS = "missingProducts",
   PURCHASES = "purchases",
+  BILLS = "bills",
 }
 
 export enum DBTables {

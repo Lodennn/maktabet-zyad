@@ -10,6 +10,7 @@ export interface StockDoc {
   profitOfPiece: number;
   totalProfit: number;
   profitPercent: number;
+  totalProductAmount?: number;
 }
 export interface PurchasesDoc {
   id: string;
@@ -33,5 +34,13 @@ export interface MissingProductsDoc {
   category: string;
   priceOfUnit: number;
   profitPercent: number;
+  createdAt: string;
+}
+
+export interface BillsDoc {
+  id: string;
+  products: StockDoc[];
+  type: string;
+  total: number;
   createdAt: string;
 }
