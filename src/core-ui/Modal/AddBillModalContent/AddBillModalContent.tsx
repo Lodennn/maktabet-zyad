@@ -6,10 +6,20 @@ import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
 
 const AddBillModalContent: React.FC = () => {
   const [billType, setBillType] = useState<boolean>(true);
+  const [counter, setCounter] = useState<number>(0);
+  const [billProducts, setBillProducts] = useState<number[]>([counter]);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
   }
+
+  function addNewBillProduct(event: React.MouseEvent<HTMLButtonElement>) {
+    setCounter((prevState) => prevState + 1);
+    setBillProducts((prevState) => prevState.concat(counter));
+  }
+
+  console.log("counter: ", counter);
+  console.log("billProducts: ", billProducts);
 
   return (
     <div className={classes["add-bill-modal"]}>
@@ -51,12 +61,16 @@ const AddBillModalContent: React.FC = () => {
             <div className={classes["add-bill-form__products"]}>
               {/** PRODUCT *************************** */}
               <AddNewProductToBill />
-              {/** PRODUCT *************************** */}
             </div>
-            {/** PRODUCTS */}
+            {/** PRODUCT *************************** */}
           </div>
+          {/** PRODUCTS */}
           <div className={classes["add-bill-form__actions"]}>
-            <button className="btn btn--primary btn--add">
+            <button
+              type="button"
+              className="btn btn--primary btn--add"
+              onClick={addNewBillProduct}
+            >
               <span className={`fix-icon`}>
                 <FaPlus />
               </span>

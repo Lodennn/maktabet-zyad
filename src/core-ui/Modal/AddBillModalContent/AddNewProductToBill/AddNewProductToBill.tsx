@@ -19,14 +19,15 @@ const AddNewProductToBill: React.FC = () => {
           </select>
         </div>
         {/** PRODUCT PRICE */}
-        <div className={classes["add-bill-product"]}>
+        <div className={classes["add-bill-product__info"]}>
           <label htmlFor="bill-product-price" className="form-label">
             سعر المنتج
           </label>
           <span className={classes["add-bill-product__info--input"]}>9</span>
         </div>
+
         {/** PRODUCT AMOUNT */}
-        <div className={classes["add-bill-product"]}>
+        <div className={classes["add-bill-product__info"]}>
           <label htmlFor="bill-product-amount" className="form-label">
             الكميه
           </label>
@@ -38,7 +39,7 @@ const AddNewProductToBill: React.FC = () => {
           />
         </div>
         {/** PRODUCT TOTAL PRICE */}
-        <div className={classes["add-bill-product"]}>
+        <div className={classes["add-bill-product__info"]}>
           <label htmlFor="bill-product-total" className="form-label">
             المجموع
           </label>
