@@ -5,8 +5,7 @@ import {
   BillsDoc,
 } from "../interfaces";
 
-export type DatabaseCollectionsType =
-  | StockDoc
-  | MissingProductsDoc
-  | PurchasesDoc
-  | BillsDoc;
+export type DatabaseCollectionsType = BillsDoc &
+  MissingProductsDoc &
+  PurchasesDoc &
+  StockDoc;

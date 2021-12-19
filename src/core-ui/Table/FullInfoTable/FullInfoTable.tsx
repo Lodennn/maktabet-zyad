@@ -52,13 +52,15 @@ const FullInfoTable: React.FC<{
                   />
                 ))}
               {props.tableId === DBTables.BILLS_TABLE &&
-                props.data.map((dataItem) => (
-                  <BillsTableData
-                    key={dataItem.id}
-                    dataItem={dataItem}
-                    admin={props.admin}
-                  />
-                ))}
+                props.data.map((product) => {
+                  return (
+                    <BillsTableData
+                      key={product.id}
+                      product={product}
+                      admin={props.admin}
+                    />
+                  );
+                })}
               {props.tableId === DBTables.PURCHASES_TABLE &&
                 props.data.map((dataItem) => (
                   <PurchasesTableData

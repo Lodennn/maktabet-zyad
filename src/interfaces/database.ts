@@ -18,7 +18,7 @@ export interface StockDoc {
 }
 export interface PurchasesDoc {
   id: string;
-  merchantName: string;
+  merchantName?: string;
   productName: string;
   category: string;
   numberOfPieces: number;
@@ -29,7 +29,7 @@ export interface PurchasesDoc {
   profitOfPiece: number;
   totalProfit: number;
   profitPercent: number;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface MissingProductsDoc {
@@ -38,7 +38,7 @@ export interface MissingProductsDoc {
   category: string;
   priceOfUnit: number;
   profitPercent: number;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface BillsDoc {
@@ -46,7 +46,7 @@ export interface BillsDoc {
   products: StockDoc[];
   type: BillType;
   total: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface SendRequestData {

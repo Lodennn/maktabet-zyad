@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
@@ -21,8 +21,6 @@ const AddBillModalContent: React.FC = () => {
 
   const { sendHttpRequest } = useHttp(sendData);
 
-  console.log("billSelectedProducts: ", billSelectedProducts, billType);
-
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
   }
@@ -43,11 +41,10 @@ const AddBillModalContent: React.FC = () => {
     event.preventDefault();
     const billData: BillsDoc = {
       total,
-      createdAt: new Date(),
+      createdAt: new Date().toString(),
       products: [...billSelectedProducts],
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     };
-    console.log("SUBMITTED", billData);
 
     sendHttpRequest({
       collectionName: COLLECTIONS.BILLS,

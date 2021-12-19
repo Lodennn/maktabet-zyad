@@ -1,9 +1,12 @@
 import { DBTables } from "../../../constants";
 import { billsTableHeadData } from "../../../helpers";
+import { BillsDoc } from "../../../interfaces";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
 import classes from "./BillModalContent.module.scss";
 
-const BillModalContent: React.FC<{ data: any; fullData: any[] }> = (props) => {
+const BillModalContent: React.FC<{ data: BillsDoc; fullData: BillsDoc[] }> = (
+  props
+) => {
   return (
     <div className={classes["bill-modal"]}>
       <div className={classes["bill-modal__header"]}>
@@ -18,7 +21,7 @@ const BillModalContent: React.FC<{ data: any; fullData: any[] }> = (props) => {
           <FullInfoTable
             tableId={DBTables.BILLS_TABLE}
             headData={billsTableHeadData}
-            data={props.fullData}
+            data={props.data.products}
             className="mt-md"
           />
         </div>
@@ -28,7 +31,9 @@ const BillModalContent: React.FC<{ data: any; fullData: any[] }> = (props) => {
       <div className={classes["bill-modal__footer"]}>
         <h4 className={classes["bill-modal__total"]}>
           <span className={classes["bill-modal__total--label"]}>المجموع</span>
-          <span className={classes["bill-modal__total--value"]}>128 L.E</span>
+          <span className={classes["bill-modal__total--value"]}>
+            {props.data.total} L.E
+          </span>
         </h4>
       </div>
     </div>

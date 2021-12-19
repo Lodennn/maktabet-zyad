@@ -20,9 +20,12 @@ import { FaPlus } from "react-icons/fa";
 import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
+import { addBillsData } from "../../store/bills/bill-slice";
 
 const HomePage = () => {
   const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
+  //prettier-ignore
+  const { data: billsData, isLoading: billsIsLoading } = useAppSelector((state) => state.bills);
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
     useAppSelector((state) => state.missingProducts);
 
@@ -37,6 +40,7 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(addBillsData());
     dispatch(addStockDataToStore());
     dispatch(addMissingProductsDataToStore());
   }, [dispatch]);
@@ -91,7 +95,7 @@ const HomePage = () => {
             <Fragment>
               <StoreSearchForm />
 
-              <InfoTable className="mt-md" admin={true} />
+              <InfoTable className="mt-md" admin={true} data={billsData} />
             </Fragment>
           )}
           {/** FAWATER TAB */}

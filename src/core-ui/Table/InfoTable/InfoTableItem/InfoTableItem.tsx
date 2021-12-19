@@ -1,9 +1,10 @@
 import React, { Fragment, MouseEvent } from "react";
+import { BillsDoc } from "../../../../interfaces";
 import classes from "./InfoTableItem.module.scss";
 
 const InfoTableItem: React.FC<{
   admin?: boolean;
-  data: any;
+  data: BillsDoc;
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
   hideModal: (event: React.MouseEvent) => void;
 }> = (props) => {
@@ -18,7 +19,7 @@ const InfoTableItem: React.FC<{
                   <span
                     className={classes["info-table-item__products-item--count"]}
                   >
-                    {product.count}
+                    {product.totalProductAmount}
                   </span>
                   <span
                     className={
@@ -32,10 +33,10 @@ const InfoTableItem: React.FC<{
             );
           })}
           <div className={classes["info-table-item__bill-price"]}>
-            {props.data.price} L.E
+            {props.data.total} L.E
           </div>
           <p className={classes["info-table-item__bill-date"]}>
-            {props.data.createdAt}
+            {new Date(props.data.createdAt).getFullYear()}
           </p>
         </ul>
       </div>

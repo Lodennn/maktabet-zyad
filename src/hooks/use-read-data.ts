@@ -1,15 +1,9 @@
 import { useState } from "react";
-
-interface readDataInterface {
-  id: number;
-  products: any[];
-  price: number;
-  createdAt: string;
-}
+import { DatabaseCollectionsType } from "../types/database";
 
 const useReadData = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [readData, setReadData] = useState<readDataInterface>();
+  const [readData, setReadData] = useState<DatabaseCollectionsType>();
 
   const triggerModalAction = (data?: any, event?: React.MouseEvent): void => {
     setReadData(data);

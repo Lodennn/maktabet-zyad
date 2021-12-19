@@ -22,6 +22,9 @@ const StockPage = () => {
     useAppSelector((state) => state.missingProducts);
   const { data: purchasesData, isLoading: purchasesDataLoading } =
     useAppSelector((state) => state.purchases);
+  const { data: billsData, isLoading: billsDataLoading } = useAppSelector(
+    (state) => state.bills
+  );
 
   const dispatch = useAppDispatch();
 
@@ -49,8 +52,8 @@ const StockPage = () => {
         </div>
         {/** FAWATER TABLE */}
         <div className="grid-2x-container mb-xg mt-xg">
-          <InfoTable title="الفواتير" />
-          <InfoTable title="المرتجع" />
+          <InfoTable title="الفواتير" data={billsData} />
+          <InfoTable title="المرتجع" data={billsData} />
         </div>
         {/** MOSHTRYAT TABLE */}
         <FullInfoTable

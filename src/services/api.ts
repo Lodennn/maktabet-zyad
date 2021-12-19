@@ -26,10 +26,8 @@ export const readData = async (collectionName: COLLECTIONS) => {
 
 //{collectionName: COLLECTIONS, data: DatabaseCollectionsType}
 export const sendData = async (requestData: SendRequestData) => {
-  console.log("SEND DATA", requestData);
   const docRef = await addDoc(
     collection(db, requestData.collectionName),
     requestData.data
   );
-  console.log("data sent: ", docRef.id);
 };
