@@ -107,6 +107,7 @@ const AddNewProductToBill: React.FC<{
               id={`bill-product-amount-${props.productIndex}`}
               className={classes["add-bill-product__info--input"]}
               min={1}
+              name="bill-product-amount"
               value={searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(
                 null,

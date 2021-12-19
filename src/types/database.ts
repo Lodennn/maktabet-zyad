@@ -1,6 +1,12 @@
-import { StockDoc, MissingProductsDoc, PurchasesDoc } from "../interfaces";
+import {
+  StockDoc,
+  MissingProductsDoc,
+  PurchasesDoc,
+  BillsDoc,
+} from "../interfaces";
 
 export type DatabaseCollectionsType =
   | StockDoc
   | MissingProductsDoc
-  | PurchasesDoc;
+  | PurchasesDoc
+  | BillsDoc;

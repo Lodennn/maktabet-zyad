@@ -3,11 +3,13 @@ import {
   collection,
   query,
   where,
+  addDoc,
   getDocs,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { DatabaseCollectionsType } from "../types";
+import { SendRequestData } from "../interfaces";
 
 export const readData = async (collectionName: COLLECTIONS) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
@@ -20,4 +22,14 @@ export const readData = async (collectionName: COLLECTIONS) => {
     data.push(documentDataWithId);
   });
   return data;
+};
+
+//{collectionName: COLLECTIONS, data: DatabaseCollectionsType}
+export const sendData = async (requestData: SendRequestData) => {
+  console.log("SEND DATA", requestData);
+  const docRef = await addDoc(
+    collection(db, requestData.collectionName),
+    requestData.data
+  );
+  console.log("data sent: ", docRef.id);
 };

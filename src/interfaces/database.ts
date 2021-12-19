@@ -1,3 +1,7 @@
+import { COLLECTIONS } from "../constants";
+import { BillType } from "../types/bills";
+import { DatabaseCollectionsType } from "../types";
+
 export interface StockDoc {
   id: string;
   productName: string;
@@ -38,9 +42,14 @@ export interface MissingProductsDoc {
 }
 
 export interface BillsDoc {
-  id: string;
+  id?: string;
   products: StockDoc[];
-  type: string;
+  type: BillType;
   total: number;
-  createdAt: string;
+  createdAt: Date;
+}
+
+export interface SendRequestData {
+  collectionName: COLLECTIONS;
+  data: DatabaseCollectionsType;
 }

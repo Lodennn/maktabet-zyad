@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
 import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
 import { useAppSelector } from "../../../hooks/use-app-selector";
+import { BillsDoc, SendRequestData } from "../../../interfaces";
+import { BillType } from "../../../types/bills";
+import useHttp from "../../../hooks/use-http";
+import { sendData } from "../../../services/api";
+import { COLLECTIONS } from "../../../constants";
 
 const AddBillModalContent: React.FC = () => {
   const [billType, setBillType] = useState<boolean>(true);
   const [counter, setCounter] = useState<number>(0);
   const [billProducts, setBillProducts] = useState<number[]>([counter]);
 
-  const { total } = useAppSelector((state) => state.bills);
+  const { total, billSelectedProducts } = useAppSelector(
+    (state) => state.bills
+  );
+
+  const { sendHttpRequest } = useHttp(sendData);
+
+  console.log("billSelectedProducts: ", billSelectedProducts, billType);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -28,6 +39,22 @@ const AddBillModalContent: React.FC = () => {
     );
   }
 
+  const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const billData: BillsDoc = {
+      total,
+      createdAt: new Date(),
+      products: [...billSelectedProducts],
+      type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
+    };
+    console.log("SUBMITTED", billData);
+
+    sendHttpRequest({
+      collectionName: COLLECTIONS.BILLS,
+      data: billData,
+    } as SendRequestData);
+  };
+
   return (
     <div className={classes["add-bill-modal"]}>
       <div className={classes["add-bill-modal__header"]}>
@@ -37,7 +64,11 @@ const AddBillModalContent: React.FC = () => {
         <div className="separator separator--soft"></div>
       </div>
       <div className={classes["add-bill-modal__body"]}>
-        <form className={classes["add-bill-form"]}>
+        {/** ADD BILL FORM */}
+        <form
+          className={classes["add-bill-form"]}
+          onSubmit={submitBillFormHandler}
+        >
           <div className="form-control">
             <h4 className="form-title">نوع الفاتوره</h4>
             <div className={classes["add-bill-form__type"]}>
@@ -54,6 +85,7 @@ const AddBillModalContent: React.FC = () => {
                 <input
                   type="checkbox"
                   id="bill-type"
+                  name="bill-product-type"
                   onChange={changeBillType}
                   className={classes["add-bill-form__checkbox"]}
                 />
@@ -90,7 +122,7 @@ const AddBillModalContent: React.FC = () => {
               >
                 أضف منتج
               </button>
-              <button type="button" className="btn btn--primary btn--add">
+              <button type="submit" className="btn btn--primary btn--add">
                 <span className={`fix-icon`}>
                   <FaPlus />
                 </span>

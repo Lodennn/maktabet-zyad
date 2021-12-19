@@ -1,6 +1,7 @@
 import { useCallback, useReducer } from "react";
 import { HttpDataStatus } from "../constants";
 import { ActionType } from "../types";
+import { SendRequestData } from "../interfaces";
 
 interface InitialState {
   isLoading: boolean;
@@ -32,7 +33,7 @@ const useHttp = (requestData: Function) => {
   const [httpData, dispatch] = useReducer(reducerFn, initialState);
 
   const sendHttpRequest = useCallback(
-    async (queryData) => {
+    async (queryData: SendRequestData) => {
       try {
         //prettier-ignore
         dispatch({ type: HttpDataStatus.FETCHING});
