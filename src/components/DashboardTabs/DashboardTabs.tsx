@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
 import { DBTables } from "../../constants";
+import { useAppSelector } from "../../hooks/use-app-selector";
 import classes from "./DashboardTabs.module.scss";
 const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
   const tabsTracerRef = useRef<HTMLDivElement>(null);
 
   const tabsActiveItemRef = useRef<HTMLLIElement>(null);
+
+  const { data: billsData } = useAppSelector((state) => state.bills);
 
   const moveTheTracer = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.target as HTMLLIElement;
@@ -58,7 +61,7 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
         data-content={DBTables.BILLS_TABLE}
       >
         <span>الفواتير</span>
-        <span className={classes["tabs__item--count"]}>5</span>
+        <span className={classes["tabs__item--count"]}>{billsData.length}</span>
       </li>
       <li
         className={classes["tabs__item"]}

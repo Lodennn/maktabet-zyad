@@ -21,6 +21,7 @@ import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import { addBillsData } from "../../store/bills/bill-slice";
+import Button from "../../core-ui/Button/Button";
 
 const HomePage = () => {
   const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
@@ -40,10 +41,13 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(addBillsData());
     dispatch(addStockDataToStore());
     dispatch(addMissingProductsDataToStore());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(addBillsData());
+  }, [billsData, dispatch]);
 
   const { showModal, triggerModalAction, hideModal } = useReadData();
 
@@ -51,7 +55,7 @@ const HomePage = () => {
     <div className={classes["home-page"]}>
       {showModal && (
         <Modal onHide={hideModal}>
-          <AddBillModalContent />
+          <AddBillModalContent hideAddBillModal={hideModal} />
         </Modal>
       )}
       <Navigation title="المتجر" />
@@ -62,15 +66,12 @@ const HomePage = () => {
               <h2 className={classes["home-page__full-date"]}>
                 اليوم, الأحد 27/10/2022
               </h2>
-              <button
-                className="btn btn--primary btn--add mt-sm"
+              <Button
+                className={"btn btn--primary btn--add mt-sm"}
+                icon={<FaPlus />}
+                text={"أضف فاتوره"}
                 onClick={triggerModalAction}
-              >
-                <span className={`fix-icon`}>
-                  <FaPlus />
-                </span>
-                أضف فاتوره
-              </button>
+              />
             </div>
             <div className={classes["home-page__income"]}>25 L.E</div>
           </div>

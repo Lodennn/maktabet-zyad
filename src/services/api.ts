@@ -8,7 +8,7 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
-import { DatabaseCollectionsType } from "../types";
+import { DatabaseCollectionsType } from "../interfaces";
 import { SendRequestData } from "../interfaces";
 
 export const readData = async (collectionName: COLLECTIONS) => {

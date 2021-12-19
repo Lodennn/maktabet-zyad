@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
@@ -10,16 +10,20 @@ import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
 import { COLLECTIONS } from "../../../constants";
 
-const AddBillModalContent: React.FC = () => {
+const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
+  props
+) => {
   const [billType, setBillType] = useState<boolean>(true);
+
   const [counter, setCounter] = useState<number>(0);
+
   const [billProducts, setBillProducts] = useState<number[]>([counter]);
 
   const { total, billSelectedProducts } = useAppSelector(
     (state) => state.bills
   );
 
-  const { sendHttpRequest } = useHttp(sendData);
+  const { sendHttpRequest: insertBill } = useHttp(sendData);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -39,6 +43,7 @@ const AddBillModalContent: React.FC = () => {
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // BILL DATA
     const billData: BillsDoc = {
       total,
       createdAt: new Date().toString(),
@@ -46,10 +51,13 @@ const AddBillModalContent: React.FC = () => {
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     };
 
-    sendHttpRequest({
+    // INSERT BILL TO DATABASE
+    insertBill({
       collectionName: COLLECTIONS.BILLS,
       data: billData,
-    } as SendRequestData);
+    } as SendRequestData).then((_) => {
+      props.hideAddBillModal();
+    });
   };
 
   return (
