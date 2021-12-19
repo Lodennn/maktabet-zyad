@@ -9,15 +9,33 @@ import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
 import { COLLECTIONS } from "../../../constants";
+import useProduct from "../../../hooks/use-product";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
   const [billType, setBillType] = useState<boolean>(true);
 
-  const [counter, setCounter] = useState<number>(0);
+  // const [counter, setCounter] = useState<number>(0);
 
-  const [billProducts, setBillProducts] = useState<number[]>([counter]);
+  // const [billProducts, setBillProducts] = useState<number[]>([counter]);
+
+  // function addNewBillProduct(event: React.MouseEvent<HTMLButtonElement>) {
+  //   setCounter((prevState) => prevState + 1);
+  //   setBillProducts((prevState) => prevState.concat(counter + 1));
+  // }
+  // function removeNewBillProduct(productIndex: number) {
+  //   setBillProducts((prevState) =>
+  //     prevState.filter((productId) => {
+  //       return productId !== productIndex;
+  //     })
+  //   );
+  // }
+  const {
+    productFormArray: billProducts,
+    addProductFormData: addNewBillProduct,
+    removeProductFormData: removeNewBillProduct,
+  } = useProduct();
 
   const { total, billSelectedProducts } = useAppSelector(
     (state) => state.bills
@@ -27,18 +45,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
-  }
-
-  function addNewBillProduct(event: React.MouseEvent<HTMLButtonElement>) {
-    setCounter((prevState) => prevState + 1);
-    setBillProducts((prevState) => prevState.concat(counter + 1));
-  }
-  function removeNewBillProduct(productIndex: number) {
-    setBillProducts((prevState) =>
-      prevState.filter((productId) => {
-        return productId !== productIndex;
-      })
-    );
   }
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
