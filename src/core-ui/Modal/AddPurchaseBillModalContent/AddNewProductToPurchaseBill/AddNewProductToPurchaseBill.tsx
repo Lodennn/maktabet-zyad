@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
-import { billsActions } from "../../../../store/bills/bill-slice";
+import { purchasesActions } from "../../../../store/purchases/purchases-slice";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToPurchaseBill.module.scss";
 
@@ -26,7 +26,7 @@ const AddNewProductToPurchaseBill: React.FC<{
       totalProductAmount: searchedProductAmount,
     };
     dispatch(
-      billsActions.addProductToBill({
+      purchasesActions.addProductToBill({
         selectedProduct: searchedProductWithAmount,
       })
     );
@@ -47,8 +47,28 @@ const AddNewProductToPurchaseBill: React.FC<{
     };
 
     dispatch(
-      billsActions.addProductToBill({
+      purchasesActions.addProductToBill({
         selectedProduct: searchedProductWithAmount,
+      })
+    );
+  };
+
+  const onChangePiecePriceHandler = (
+    searchedProduct: StockDoc,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
+    const target = event.target as HTMLInputElement;
+    const targetValue = +target.value;
+
+    const searchedProductData = {
+      ...searchedProduct,
+      priceOfPiece: targetValue,
+      totalProductAmount: searchedProductAmount,
+    };
+
+    dispatch(
+      purchasesActions.updateBillProducts({
+        selectedProduct: searchedProductData,
       })
     );
   };
@@ -61,7 +81,7 @@ const AddNewProductToPurchaseBill: React.FC<{
       totalProductAmount: searchedProductAmount,
     };
     dispatch(
-      billsActions.removeProductFromBill({
+      purchasesActions.removeProductFromBill({
         selectedProduct: searchedProductWithAmount,
       })
     );
@@ -86,36 +106,62 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT CATEGORY */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">نوع المنتج</label>
-          <select>
-            <option>كراس</option>
-            <option>قلم</option>
-            <option>برايه</option>
-          </select>
+          {searchedProduct.id && (
+            <select>
+              <option>كراس</option>
+              <option>قلم</option>
+              <option>برايه</option>
+            </select>
+          )}
         </div>
         {/** PRODUCT PIECES AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد القطع</label>
-          <input type="number" />
+          {searchedProduct.id && (
+            <input
+              type="number"
+              value={searchedProductAmount}
+              onChange={onChangeProductAmountHandler.bind(
+                null,
+                searchedProduct
+              )}
+            />
+          )}
         </div>
         {/** PRODUCT PIECE PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن القطعه(جمله)</label>
-          <input type="number" />
+          {searchedProduct.id && (
+            <input
+              type="number"
+              placeholder={searchedProduct.priceOfPiece + ""}
+              id={`bill-product-amount-${props.productIndex}`}
+              min={1}
+              onChange={onChangePiecePriceHandler.bind(null, searchedProduct)}
+            />
+          )}
         </div>
         {/** PRODUCT UNITS AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد الوحده في القطعه</label>
-          <input type="number" />
+          {searchedProduct.id && (
+            <input
+              type="number"
+              id={`bill-product-amount-${props.productIndex}`}
+              min={1}
+            />
+          )}
         </div>
         {/** PRODUCT UNIT PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن الوحده</label>
-          <input type="number" />
-        </div>
-        {/** PRODUCT UNIT PRICE(SELL) */}
-        <div className={classes["add-bill-product__info"]}>
-          <label className="form-label">ثمن الشراء</label>
-          <input type="number" />
+          {searchedProduct.id && (
+            <input
+              type="number"
+              id={`bill-product-amount-${props.productIndex}`}
+              min={1}
+            />
+          )}
         </div>
 
         {/** PRODUCT REMOVE */}

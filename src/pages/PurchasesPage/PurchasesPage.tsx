@@ -17,7 +17,9 @@ import AddPurchaseBillModalContent from "../../core-ui/Modal/AddPurchaseBillModa
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 
 const PurchasesPage: React.FC = () => {
-  const { data, isLoading } = useAppSelector((state) => state.purchases);
+  const { data: purchasesData, isLoading } = useAppSelector(
+    (state) => state.purchases
+  );
 
   const { showModal, hideModal, triggerModalAction } = useReadData();
   const { data: billsData } = useAppSelector((state) => state.bills);
@@ -50,7 +52,7 @@ const PurchasesPage: React.FC = () => {
                 tableId={DBTables.PURCHASES_TABLE}
                 title="فواتير الشراء"
                 admin={true}
-                data={DUMMY_DATA}
+                data={purchasesData}
               />
             </Wrapper>
           </Wrapper>
