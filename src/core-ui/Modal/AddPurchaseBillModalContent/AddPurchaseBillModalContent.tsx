@@ -23,13 +23,6 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     (state) => state.purchases
   );
 
-  console.log(
-    "total: ",
-    total,
-    " billSelectedProducts: ",
-    billSelectedProducts
-  );
-
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {

@@ -22,7 +22,6 @@ const PurchasesPage: React.FC = () => {
   );
 
   const { showModal, hideModal, triggerModalAction } = useReadData();
-  const { data: billsData } = useAppSelector((state) => state.bills);
 
   const dispatch = useAppDispatch();
 

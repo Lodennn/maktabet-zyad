@@ -13,8 +13,11 @@ const AddNewProductToPurchaseBill: React.FC<{
 }> = (props) => {
   //prettier-ignore
   const [searchedProduct, setSearchedProduct] = useState<StockDoc>({} as StockDoc);
-
   const [searchedProductAmount, setSearchedProductAmount] = useState<number>(1);
+  const [searchedProductPiecePrice, setSearchedProductPiecePrice] =
+    useState<number>(1);
+  const [searchedProductNumberOfUnits, setSearchedNumberOfUnits] =
+    useState<number>(1);
 
   const dispatch = useAppDispatch();
 
@@ -53,12 +56,39 @@ const AddNewProductToPurchaseBill: React.FC<{
     );
   };
 
+  const onChangeNumberOfUnitsHandler = (
+    searchedProduct: StockDoc,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
+    const target = event.target as HTMLInputElement;
+    const targetValue = +target.value;
+
+    setSearchedNumberOfUnits(targetValue);
+
+    console.log("onChangeNumberUnits: ", searchedProductPiecePrice);
+
+    const searchedProductData = {
+      ...searchedProduct,
+      numberOfUnits: +target.value,
+      totalProductAmount: searchedProductAmount,
+      priceOfPiece: searchedProductPiecePrice,
+    };
+
+    dispatch(
+      purchasesActions.updateBillProducts({
+        selectedProduct: searchedProductData,
+      })
+    );
+  };
+
   const onChangePiecePriceHandler = (
     searchedProduct: StockDoc,
     event: React.FormEvent<HTMLInputElement>
   ): void => {
     const target = event.target as HTMLInputElement;
     const targetValue = +target.value;
+
+    setSearchedProductPiecePrice(+target.value);
 
     const searchedProductData = {
       ...searchedProduct,
@@ -148,6 +178,10 @@ const AddNewProductToPurchaseBill: React.FC<{
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
+              onChange={onChangeNumberOfUnitsHandler.bind(
+                null,
+                searchedProduct
+              )}
               min={1}
             />
           )}

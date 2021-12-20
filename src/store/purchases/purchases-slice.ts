@@ -42,8 +42,15 @@ const purchasesSlice = createSlice({
 
       if (searchedProductIndex >= 0) {
         updatedBillProducts = [...state.billSelectedProducts];
+
+        state.billSelectedProducts[searchedProductIndex].totalProductAmount =
+          action.payload.selectedProduct.totalProductAmount;
+
         state.billSelectedProducts[searchedProductIndex].priceOfPiece =
           action.payload.selectedProduct.priceOfPiece;
+
+        state.billSelectedProducts[searchedProductIndex].numberOfUnits =
+          action.payload.selectedProduct.numberOfUnits;
       } else {
         state.billSelectedProducts = state.billSelectedProducts.concat(
           action.payload.selectedProduct
@@ -56,6 +63,7 @@ const purchasesSlice = createSlice({
       }, 0);
     },
     addProductToBill(state, action) {
+      console.log("addProductToBill: ", action.payload.selectedProduct);
       const searchedProductIndex = state.billSelectedProducts.findIndex(
         (searchedProduct) =>
           searchedProduct.id === action.payload.selectedProduct.id
