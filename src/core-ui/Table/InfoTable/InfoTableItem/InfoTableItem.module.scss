@@ -27,7 +27,7 @@
     background-color: $color-secondary;
     color: $color-white;
     border-radius: 5rem;
-    padding: 0.2rem 1rem;
+    padding: 0.5rem 1.2rem;
     &--count {
       background-color: $color-white;
       display: inline-block;
@@ -41,17 +41,18 @@
       font-weight: 900;
     }
     &--category {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
   }
 
   &__bill-price {
-    background-color: $color-tertiary;
+    background-color: $color-blue-primary;
     color: $color-white;
     border-radius: 5rem;
     padding: 0.2rem 1rem;
     margin-left: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
   &__bill-date {
   }

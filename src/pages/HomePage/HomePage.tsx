@@ -11,7 +11,7 @@ import {
 
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { useAppSelector } from "../../hooks/use-app-selector";
-import { addStockDataToStore } from "../../store/stock/stock-slice/stock-slice";
+import { addStockDataToStore } from "../../store/stock/stock-slice";
 import StoreSearchForm from "../../components/StoreSearchForm/StoreSearchForm";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 import { addMissingProductsDataToStore } from "../../store/missing-products/missing-products-slice";
@@ -41,13 +41,10 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(addBillsData());
     dispatch(addStockDataToStore());
     dispatch(addMissingProductsDataToStore());
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(addBillsData());
-  }, [billsData, dispatch]);
 
   const { showModal, triggerModalAction, hideModal } = useReadData();
 
@@ -96,7 +93,12 @@ const HomePage = () => {
             <Fragment>
               <StoreSearchForm />
 
-              <InfoTable className="mt-md" admin={true} data={billsData} />
+              <InfoTable
+                tableId={DBTables.BILLS_TABLE}
+                className="mt-md"
+                admin={true}
+                data={billsData}
+              />
             </Fragment>
           )}
           {/** FAWATER TAB */}

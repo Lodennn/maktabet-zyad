@@ -7,7 +7,7 @@ import { DBTables } from "../../constants";
 import { stockTableHeadData } from "../../helpers";
 import { useAppSelector } from "../../hooks/use-app-selector";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
-import { addStockDataToStore } from "../../store/stock/stock-slice/stock-slice";
+import { addStockDataToStore } from "../../store/stock/stock-slice";
 import classes from "../StockPage/StockPage.module.scss";
 
 const StorePage: React.FC = () => {

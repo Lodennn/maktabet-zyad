@@ -32,7 +32,6 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     //   total,
     //   createdAt: new Date().toString(),
     //   products: [...billSelectedProducts],
-    //   type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     // };
 
     // // INSERT BILL TO DATABASE

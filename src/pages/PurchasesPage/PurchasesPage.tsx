@@ -45,14 +45,6 @@ const PurchasesPage: React.FC = () => {
               text={"أضف فاتورة شراء"}
               onClick={triggerModalAction}
             />
-            {/* <FullInfoTable
-              tableId={DBTables.PURCHASES_TABLE}
-              title={DBTables.PURCHASES_TABLE}
-              headData={purchasesTableHeadData}
-              data={data}
-              isLoading={isLoading}
-              admin={true}
-            /> */}
             <Wrapper>
               <InfoTable
                 tableId={DBTables.PURCHASES_TABLE}

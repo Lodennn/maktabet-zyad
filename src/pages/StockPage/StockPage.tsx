@@ -12,7 +12,7 @@ import { useAppSelector } from "../../hooks/use-app-selector";
 import { DBTables } from "../../constants";
 //prettier-ignore
 import { missingProductsTableHeadData, purchasesTableHeadData } from "../../helpers";
-import { addStockDataToStore } from "../../store/stock/stock-slice/stock-slice";
+import { addStockDataToStore } from "../../store/stock/stock-slice";
 import { addMissingProductsDataToStore } from "../../store/missing-products/missing-products-slice";
 import classes from "./StockPage.module.scss";
 import { addPurchasesDataToStore } from "../../store/purchases/purchases-slice";
@@ -25,6 +25,8 @@ const StockPage = () => {
   const { data: billsData, isLoading: billsDataLoading } = useAppSelector(
     (state) => state.bills
   );
+
+  console.log("billsData: ", billsData);
 
   const dispatch = useAppDispatch();
 

@@ -15,7 +15,7 @@ const InfoTable: React.FC<{
   admin?: boolean;
 }> = (props) => {
   const { showModal, triggerModalAction, hideModal, readData } = useReadData();
-  console.log("readData: InfoTable: ", readData);
+
   return (
     <Fragment>
       {showModal && (
@@ -38,18 +38,22 @@ const InfoTable: React.FC<{
           )}
           <FilterByDate />
         </div>
-        {props.data.map((data) => {
-          return (
-            <InfoTableItem
-              tableId={props.tableId}
-              key={data.id}
-              admin={props.admin}
-              data={data}
-              hideModal={hideModal}
-              triggerModalAction={triggerModalAction}
-            />
-          );
-        })}
+        {props.data.length > 0 ? (
+          props.data.map((data) => {
+            return (
+              <InfoTableItem
+                tableId={props.tableId}
+                key={data.id}
+                admin={props.admin}
+                data={data}
+                hideModal={hideModal}
+                triggerModalAction={triggerModalAction}
+              />
+            );
+          })
+        ) : (
+          <h2 className="not-founded">لا يوجد فواتير</h2>
+        )}
       </div>
     </Fragment>
   );

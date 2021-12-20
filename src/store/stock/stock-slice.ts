@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { COLLECTIONS } from "../../../constants";
-import { StockInitialState } from "../../../interfaces/redux-store";
-import { readData } from "../../../services/api";
-import { AppDispatch } from "../../index";
+import { COLLECTIONS } from "../../constants";
+import { StockInitialState } from "../../interfaces/redux-store";
+import { readData } from "../../services/api";
+import { AppDispatch } from "../index";
 
 const initialState: StockInitialState = {
   isLoading: false,

@@ -100,22 +100,22 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT PIECE PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن القطعه(جمله)</label>
-          <input type="text" />
+          <input type="number" />
         </div>
         {/** PRODUCT UNITS AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد الوحده في القطعه</label>
-          <input type="text" />
+          <input type="number" />
         </div>
         {/** PRODUCT UNIT PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن الوحده</label>
-          <input type="text" />
+          <input type="number" />
         </div>
         {/** PRODUCT UNIT PRICE(SELL) */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن الشراء</label>
-          <input type="text" />
+          <input type="number" />
         </div>
 
         {/** PRODUCT REMOVE */}

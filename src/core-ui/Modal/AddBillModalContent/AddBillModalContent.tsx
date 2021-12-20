@@ -10,12 +10,14 @@ import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
 import { COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
+import { useAppDispatch } from "../../../hooks/use-app-dispatch";
+import { addBillsData } from "../../../store/bills/bill-slice";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
   const [billType, setBillType] = useState<boolean>(true);
-
+  const dispatch = useAppDispatch();
   // const [counter, setCounter] = useState<number>(0);
 
   // const [billProducts, setBillProducts] = useState<number[]>([counter]);
@@ -61,9 +63,13 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     insertBill({
       collectionName: COLLECTIONS.BILLS,
       data: billData,
-    } as SendRequestData).then((_) => {
-      props.hideAddBillModal();
-    });
+    } as SendRequestData)
+      .then((_) => {
+        dispatch(addBillsData());
+      })
+      .then((_) => {
+        props.hideAddBillModal();
+      });
   };
 
   return (
