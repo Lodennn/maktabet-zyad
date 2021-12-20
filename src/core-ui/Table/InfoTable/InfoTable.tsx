@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { DBTables } from "../../../constants";
 import useReadData from "../../../hooks/use-read-data";
 import FilterByDate from "../../FilterByDate/FilterByDate";
 import BillModalContent from "../../Modal/BillModalContent/BillModalContent";
@@ -7,19 +8,24 @@ import classes from "./InfoTable.module.scss";
 import InfoTableItem from "./InfoTableItem/InfoTableItem";
 
 const InfoTable: React.FC<{
+  tableId?: DBTables;
   title?: string;
   data: any[];
   className?: string;
   admin?: boolean;
 }> = (props) => {
   const { showModal, triggerModalAction, hideModal, readData } = useReadData();
-
+  console.log("readData: InfoTable: ", readData);
   return (
     <Fragment>
       {showModal && (
         <Modal onHide={hideModal}>
           {readData && (
-            <BillModalContent data={readData} fullData={props.data} />
+            <BillModalContent
+              billId={props.tableId}
+              data={readData}
+              fullData={props.data}
+            />
           )}
         </Modal>
       )}
@@ -35,6 +41,7 @@ const InfoTable: React.FC<{
         {props.data.map((data) => {
           return (
             <InfoTableItem
+              tableId={props.tableId}
               key={data.id}
               admin={props.admin}
               data={data}

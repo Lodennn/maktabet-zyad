@@ -1,29 +1,51 @@
 import { DBTables } from "../../../constants";
-import { billsTableHeadData } from "../../../helpers";
-import { BillsDoc } from "../../../interfaces";
+import { billsTableHeadData, stockTableHeadData } from "../../../helpers";
+import { BillsDoc, PurchasesDoc } from "../../../interfaces";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
 import classes from "./BillModalContent.module.scss";
 
-const BillModalContent: React.FC<{ data: BillsDoc; fullData: BillsDoc[] }> = (
-  props
-) => {
+const BillModalContent: React.FC<{
+  billId?: DBTables;
+  data: BillsDoc & PurchasesDoc;
+  fullData: BillsDoc[];
+}> = (props) => {
   return (
     <div className={classes["bill-modal"]}>
       <div className={classes["bill-modal__header"]}>
-        <h2 className={classes["bill-modal__header--date"]}>
-          فحص فاتورة بتاريخ - {props.data.createdAt}
-        </h2>
+        {props.billId === DBTables.BILLS_TABLE && (
+          <h2 className={classes["bill-modal__header--date"]}>
+            فحص فاتورة بتاريخ - {props.data.createdAt}
+          </h2>
+        )}
+        {props.billId === DBTables.PURCHASES_TABLE && (
+          <h2 className={classes["bill-modal__header--date"]}>
+            فحص فاتورة شراء بتاريخ - {props.data.createdAt}
+          </h2>
+        )}
         <div className="separator separator--soft"></div>
       </div>
       <div className={classes["bill-modal__body"]}>
         <h3 className={classes["bill-modal__body--title"]}>محتوي الفاتوره</h3>
+        {props.billId === DBTables.PURCHASES_TABLE && (
+          <h5>{props.data.merchantName}</h5>
+        )}
         <div className="responsive-y-table">
-          <FullInfoTable
-            tableId={DBTables.BILLS_TABLE}
-            headData={billsTableHeadData}
-            data={props.data.products}
-            className="mt-md"
-          />
+          {props.billId === DBTables.PURCHASES_TABLE && (
+            <FullInfoTable
+              tableId={props.billId}
+              headData={stockTableHeadData}
+              data={props.data.products}
+              className="mt-md"
+            />
+          )}
+          {props.billId === DBTables.BILLS_TABLE && (
+            <FullInfoTable
+              tableId={props.billId}
+              headData={billsTableHeadData}
+              data={props.data.products}
+              className="mt-md"
+            />
+          )}
         </div>
       </div>
 

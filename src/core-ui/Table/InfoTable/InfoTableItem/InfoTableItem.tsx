@@ -1,10 +1,12 @@
 import React, { Fragment, MouseEvent } from "react";
-import { BillsDoc } from "../../../../interfaces";
+import { DBTables } from "../../../../constants";
+import { BillsDoc, PurchasesDoc } from "../../../../interfaces";
 import classes from "./InfoTableItem.module.scss";
 
 const InfoTableItem: React.FC<{
+  tableId?: string;
   admin?: boolean;
-  data: BillsDoc;
+  data: BillsDoc & PurchasesDoc;
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
   hideModal: (event: React.MouseEvent) => void;
 }> = (props) => {
@@ -12,6 +14,11 @@ const InfoTableItem: React.FC<{
     <div className={classes["info-table-item"]}>
       <div className={classes["info-table-item__bill-info"]}>
         <ul className={classes["info-table-item__products-list"]}>
+          {props.tableId === DBTables.PURCHASES_TABLE && (
+            <h3 className={classes["info-table-item__merchant-name"]}>
+              {props.data.merchantName}
+            </h3>
+          )}
           {props.data.products.map((product: any) => {
             return (
               <Fragment key={product.id}>

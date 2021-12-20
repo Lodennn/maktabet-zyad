@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import BillsPage from "./pages/BillsPage/BillsPage";
 import HomePage from "./pages/HomePage/HomePage";

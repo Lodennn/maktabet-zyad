@@ -8,7 +8,7 @@ import PurchasesTableData from "./PurchasingTableData/PurchasesTableData";
 import StockTableData from "./StockTableData/StockTableData";
 
 const FullInfoTable: React.FC<{
-  tableId: DBTables;
+  tableId?: DBTables;
   title?: string;
   data: any[];
   headData: string[];
@@ -62,10 +62,10 @@ const FullInfoTable: React.FC<{
                   );
                 })}
               {props.tableId === DBTables.PURCHASES_TABLE &&
-                props.data.map((dataItem) => (
+                props.data.map((product) => (
                   <PurchasesTableData
-                    key={dataItem.id}
-                    dataItem={dataItem}
+                    key={product.id}
+                    product={product}
                     admin={props.admin}
                   />
                 ))}

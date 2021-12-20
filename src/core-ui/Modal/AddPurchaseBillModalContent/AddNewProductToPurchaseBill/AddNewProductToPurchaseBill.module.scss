@@ -2,8 +2,9 @@
 
 .add-bill-product {
   display: grid;
-  grid-template-columns: repeat(4, 1fr) min-content;
+  grid-template-columns: repeat(7, 1fr) min-content;
   position: relative;
+  gap: 1rem;
   margin-bottom: 2rem;
   padding: 2rem 1rem;
   align-items: start;
@@ -16,7 +17,7 @@
     grid-template-rows: min-content 1fr;
     row-gap: 1.5rem;
     &--product-name {
-      width: 80%;
+      // width: 80%;
     }
     &--input {
       display: block;

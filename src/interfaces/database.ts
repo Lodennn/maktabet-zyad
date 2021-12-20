@@ -15,19 +15,21 @@ export interface StockDoc {
   profitPercent: number;
   totalProductAmount?: number;
 }
+
+export interface BillsDoc {
+  id?: string;
+  products: StockDoc[];
+  type: BillType;
+  total: number;
+  createdAt: string;
+}
+
 export interface PurchasesDoc {
   id?: string;
   merchantName?: string;
-  productName: string;
-  category: string;
-  numberOfPieces: number;
-  priceOfPiece: number;
-  numberOfUnits: number;
-  priceOfUnit: number;
-  purchasingCosts: number;
-  profitOfPiece: number;
-  totalProfit: number;
-  profitPercent: number;
+  products: StockDoc[];
+  type: BillType;
+  total: number;
   createdAt: string;
 }
 
@@ -37,14 +39,6 @@ export interface MissingProductsDoc {
   category: string;
   priceOfUnit: number;
   profitPercent: number;
-  createdAt: string;
-}
-
-export interface BillsDoc {
-  id?: string;
-  products: StockDoc[];
-  type: BillType;
-  total: number;
   createdAt: string;
 }
 

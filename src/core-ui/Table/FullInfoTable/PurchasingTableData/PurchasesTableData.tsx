@@ -1,24 +1,24 @@
 import React from "react";
-import { PurchasesDoc } from "../../../../interfaces";
+import { PurchasesDoc, StockDoc } from "../../../../interfaces";
 
 const PurchasesTableData: React.FC<{
-  dataItem: PurchasesDoc;
+  product: StockDoc & PurchasesDoc;
   admin?: boolean;
 }> = (props) => {
+  console.log("PurchasesTable: ", props.product);
   return (
-    <tr key={props.dataItem.id}>
-      <td>{props.dataItem.merchantName}</td>
-      <td>{props.dataItem.productName}</td>
-      <td>{props.dataItem.category}</td>
-      <td>{props.dataItem.numberOfPieces}</td>
-      <td>{props.dataItem.priceOfPiece}</td>
-      <td>{props.dataItem.profitOfPiece}</td>
-      <td>{props.dataItem.numberOfUnits}</td>
-      <td>{props.dataItem.priceOfUnit}</td>
-      <td>{props.dataItem.purchasingCosts}</td>
-      <td>{props.dataItem.profitPercent}%</td>
-      <td>{props.dataItem.totalProfit}</td>
-      <td>{props.dataItem.createdAt}</td>
+    <tr key={props.product.id}>
+      <td>{props.product.productName}</td>
+      <td>{props.product.category}</td>
+      <td>{props.product.numberOfPieces}</td>
+      <td>{props.product.priceOfPiece}</td>
+      <td>{props.product.profitOfPiece}</td>
+      <td>{props.product.numberOfUnits}</td>
+      <td>{props.product.priceOfUnit}</td>
+      <td>{props.product.purchasingCosts}</td>
+      <td>{props.product.profitPercent}%</td>
+      <td>{props.product.totalProfit}</td>
+
       {props.admin && (
         <td className="table__actions">
           <button className="btn btn--warning ml-xs">تعديل</button>
