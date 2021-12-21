@@ -1,19 +1,21 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import { useAppSelector } from "../../../hooks/use-app-selector";
-import { PurchasesDoc } from "../../../interfaces";
+import { PurchasesDoc, SendRequestData } from "../../../interfaces";
+import { COLLECTIONS } from "../../../constants";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
-import classes from "./AddPurchaseBillModalContent.module.scss";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
-
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
-
+import classes from "./AddPurchaseBillModalContent.module.scss";
+import { useAppDispatch } from "../../../hooks/use-app-dispatch";
+import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
+  const dispatch = useAppDispatch();
+
   const { billProductsData, dispatchBillActions, billType } =
     useBillProductsController(BillType.PURCHASES_BILL);
 
@@ -23,32 +25,29 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  const { total, billSelectedProducts } = useAppSelector(
-    (state) => state.purchases
-  );
-
-  console.log("billProductsData: ", billProductsData);
-
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // BILL DATA
     const billData: PurchasesDoc = {
-      total,
+      total: billProductsData.billTotal,
       createdAt: new Date().toString(),
-      products: [...billSelectedProducts],
+      products: [...billProductsData.billSelectedProducts],
       type: BillType.PURCHASES_BILL,
     };
 
-    // // INSERT BILL TO DATABASE
-    // insertBill({
-    //   collectionName: COLLECTIONS.PURCHASES,
-    //   data: billData,
-    // } as SendRequestData).then((_) => {
-    //   props.hideAddBillModal();
-    // });
-    // console.log("submitted");
+    // INSERT BILL TO DATABASE
+    insertBill({
+      collectionName: COLLECTIONS.PURCHASES,
+      data: billData,
+    } as SendRequestData)
+      .then((_) => {
+        dispatch(addPurchasesDataToStore());
+      })
+      .then((_) => {
+        props.hideAddBillModal();
+      });
   };
 
   return (

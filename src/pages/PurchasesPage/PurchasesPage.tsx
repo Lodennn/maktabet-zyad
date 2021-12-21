@@ -15,6 +15,7 @@ import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddPurchaseBillModalContent from "../../core-ui/Modal/AddPurchaseBillModalContent/AddPurchaseBillModalContent";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
+import LoadingSpinner from "../../core-ui/LoadingSpinner/LoadingSpinner";
 
 const PurchasesPage: React.FC = () => {
   const { data: purchasesData, isLoading } = useAppSelector(
@@ -47,12 +48,16 @@ const PurchasesPage: React.FC = () => {
               onClick={triggerModalAction}
             />
             <Wrapper>
-              <InfoTable
-                tableId={DBTables.PURCHASES_TABLE}
-                title="فواتير الشراء"
-                admin={true}
-                data={purchasesData}
-              />
+              {!isLoading ? (
+                <InfoTable
+                  tableId={DBTables.PURCHASES_TABLE}
+                  title="فواتير الشراء"
+                  admin={true}
+                  data={purchasesData}
+                />
+              ) : (
+                <LoadingSpinner />
+              )}
             </Wrapper>
           </Wrapper>
         </div>

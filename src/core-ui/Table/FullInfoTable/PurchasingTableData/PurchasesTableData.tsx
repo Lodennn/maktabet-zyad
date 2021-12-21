@@ -5,7 +5,6 @@ const PurchasesTableData: React.FC<{
   product: StockDoc & PurchasesDoc;
   admin?: boolean;
 }> = (props) => {
-  console.log("PurchasesTable: ", props.product);
   return (
     <tr key={props.product.id}>
       <td>{props.product.productName}</td>

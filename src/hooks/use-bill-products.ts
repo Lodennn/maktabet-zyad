@@ -72,7 +72,6 @@ const useBillProducts = (
   const getSearchValue = (searchedProduct: StockDoc) => {
     const updatedSearchedProductData = {
       ...searchedProduct,
-      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       totalProductAmount: 1,
     };
     if (
@@ -80,6 +79,7 @@ const useBillProducts = (
       billType === BillType.RETURNED_BILL
     ) {
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+      updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
       updatedSearchedProductData.priceOfPiece =
         billProductsConfig.searchedProductPiecePrice;
@@ -103,7 +103,6 @@ const useBillProducts = (
     const updatedSearchedProductData = {
       ...searchedProduct,
       totalProductAmount: targetValue,
-      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
@@ -114,6 +113,7 @@ const useBillProducts = (
       billType === BillType.RETURNED_BILL
     ) {
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+      updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
       updatedSearchedProductData.priceOfPiece =
         billProductsConfig.searchedProductPiecePrice;
@@ -147,13 +147,13 @@ const useBillProducts = (
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
-      priceOfPiece: targetValue,
     };
     if (
       billType === BillType.NORMAL_BILL ||
       billType === BillType.RETURNED_BILL
     ) {
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+      updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
       updatedSearchedProductData.priceOfPiece = targetValue;
     }
@@ -180,7 +180,6 @@ const useBillProducts = (
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
-      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       priceOfUnit: billProductsConfig.searchedProductUnitPrice,
       numberOfUnits: targetValue,
     };
@@ -189,6 +188,7 @@ const useBillProducts = (
       billType === BillType.RETURNED_BILL
     ) {
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+      updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
       updatedSearchedProductData.priceOfPiece =
         billProductsConfig.searchedProductPiecePrice;
@@ -216,7 +216,6 @@ const useBillProducts = (
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
-      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: targetValue,
     };
@@ -225,6 +224,7 @@ const useBillProducts = (
       billType === BillType.RETURNED_BILL
     ) {
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+      updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
       updatedSearchedProductData.priceOfPiece =
         billProductsConfig.searchedProductPiecePrice;
@@ -246,8 +246,6 @@ const useBillProducts = (
     //prettier-ignore
     dispatchBillActions({ type: "REMOVE_PRODUCT", payload: {data: updatedSearchedProductData} });
   };
-
-  console.log("FROM HOOK: ", billProductsConfig.searchedProduct);
 
   return {
     billProductsConfig,

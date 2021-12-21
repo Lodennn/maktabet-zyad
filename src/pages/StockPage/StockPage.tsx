@@ -26,8 +26,6 @@ const StockPage = () => {
     (state) => state.bills
   );
 
-  console.log("billsData: ", billsData);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {

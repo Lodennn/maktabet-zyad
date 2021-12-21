@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { useAppDispatch } from "./hooks/use-app-dispatch";
 import BillsPage from "./pages/BillsPage/BillsPage";
 import HomePage from "./pages/HomePage/HomePage";
 import MissingProductsPage from "./pages/MissingProductsPage/MissingProductsPage";
@@ -7,8 +8,19 @@ import PurchasesPage from "./pages/PurchasesPage/PurchasesPage";
 import ReturnedBillsPage from "./pages/ReturnedBills/ReturnedBills";
 import StockPage from "./pages/StockPage/StockPage";
 import StorePage from "./pages/StorePage/StorePage";
+import { addBillsData } from "./store/bills/bill-slice";
+import { addMissingProductsDataToStore } from "./store/missing-products/missing-products-slice";
+import { addStockDataToStore } from "./store/stock/stock-slice";
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(addBillsData());
+    dispatch(addStockDataToStore());
+    dispatch(addMissingProductsDataToStore());
+  }, [dispatch]);
+
   return (
     <Routes>
       <Route path="/stock" element={<StockPage />} />

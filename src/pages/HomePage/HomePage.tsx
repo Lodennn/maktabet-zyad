@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import Navigation from "../../components/Layouts/Navigation/Navigation";
 import DashboardTabs from "../../components/DashboardTabs/DashboardTabs";
 import classes from "./HomePage.module.scss";
@@ -9,18 +9,14 @@ import {
   missingProductsTableHeadData,
 } from "../../helpers";
 
-import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { useAppSelector } from "../../hooks/use-app-selector";
-import { addStockDataToStore } from "../../store/stock/stock-slice";
 import StoreSearchForm from "../../components/StoreSearchForm/StoreSearchForm";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
-import { addMissingProductsDataToStore } from "../../store/missing-products/missing-products-slice";
 import Wrapper from "../../core-ui/Wrapper/Wrapper";
 import { FaPlus } from "react-icons/fa";
 import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
-import { addBillsData } from "../../store/bills/bill-slice";
 import Button from "../../core-ui/Button/Button";
 
 const HomePage = () => {
@@ -37,14 +33,6 @@ const HomePage = () => {
   const getDisplayContentValue = (content: DBTables) => {
     setDisplayContent(content);
   };
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(addBillsData());
-    dispatch(addStockDataToStore());
-    dispatch(addMissingProductsDataToStore());
-  }, [dispatch]);
 
   const { showModal, triggerModalAction, hideModal } = useReadData();
 

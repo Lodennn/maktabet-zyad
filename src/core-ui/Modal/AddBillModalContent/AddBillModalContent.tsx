@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
 import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
-import { useAppSelector } from "../../../hooks/use-app-selector";
 import { BillsDoc, SendRequestData } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
@@ -34,14 +33,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  useEffect(() => {
-    console.log("billProductsData: ", billProductsData, controllerBillType);
-  }, [billProductsData, controllerBillType]);
-
-  const { total, billSelectedProducts } = useAppSelector(
-    (state) => state.bills
-  );
-
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
@@ -50,11 +41,11 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // BILL DATA
+
     const billData: BillsDoc = {
-      total,
+      total: billProductsData.billTotal,
       createdAt: new Date().toString(),
-      products: [...billSelectedProducts],
+      products: [...billProductsData.billSelectedProducts],
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     };
 
