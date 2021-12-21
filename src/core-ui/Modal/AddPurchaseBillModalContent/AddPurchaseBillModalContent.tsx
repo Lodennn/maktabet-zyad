@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/use-app-selector";
 import { BillsDoc, PurchasesDoc, SendRequestData } from "../../../interfaces";
@@ -25,6 +25,12 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
+  useEffect(() => {
+    console.log("billSelectedProducts: ", billSelectedProducts);
+  }, [billSelectedProducts]);
+
+  console.log("billSelectedProducts: ", billSelectedProducts);
+
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // BILL DATA
@@ -35,14 +41,14 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
       type: BillType.PURCHASES_BILL,
     };
 
-    // INSERT BILL TO DATABASE
-    insertBill({
-      collectionName: COLLECTIONS.PURCHASES,
-      data: billData,
-    } as SendRequestData).then((_) => {
-      props.hideAddBillModal();
-    });
-    console.log("submitted");
+    // // INSERT BILL TO DATABASE
+    // insertBill({
+    //   collectionName: COLLECTIONS.PURCHASES,
+    //   data: billData,
+    // } as SendRequestData).then((_) => {
+    //   props.hideAddBillModal();
+    // });
+    // console.log("submitted");
   };
 
   return (
