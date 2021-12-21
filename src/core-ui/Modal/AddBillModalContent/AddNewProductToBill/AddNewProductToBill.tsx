@@ -1,71 +1,25 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
-import { StockDoc } from "../../../../interfaces";
-import { billsActions } from "../../../../store/bills/bill-slice";
+import useBillProducts from "../../../../hooks/use-bill-products";
+import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToBill.module.scss";
 
 const AddNewProductToBill: React.FC<{
   productIndex: number;
-  removeNewBillProduct: (productIndex: number) => void;
+  removeNewBillProduct: Function;
   firstProductInBill: number;
+  dispatchBillActions: Function;
+  billType: BillType;
 }> = (props) => {
-  //prettier-ignore
-  const [searchedProduct, setSearchedProduct] = useState<StockDoc>({} as StockDoc);
+  const { dispatchBillActions, removeNewBillProduct, billType } = props;
 
-  const [searchedProductAmount, setSearchedProductAmount] = useState<number>(1);
-
-  const dispatch = useAppDispatch();
-
-  const getSearchValue = (searchedProduct: StockDoc) => {
-    setSearchedProduct(searchedProduct);
-
-    const searchedProductWithAmount = {
-      ...searchedProduct,
-      totalProductAmount: searchedProductAmount,
-    };
-    dispatch(
-      billsActions.addProductToBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
-  };
-
-  const onChangeProductAmountHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
-
-    setSearchedProductAmount(targetValue);
-
-    const searchedProductWithAmount = {
-      ...searchedProduct,
-      totalProductAmount: +target.value,
-    };
-
-    dispatch(
-      billsActions.addProductToBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
-  };
-
-  const removeProductFromBill = (searchedProduct: StockDoc) => {
-    props.removeNewBillProduct(props.productIndex);
-
-    const searchedProductWithAmount = {
-      ...searchedProduct,
-      totalProductAmount: searchedProductAmount,
-    };
-    dispatch(
-      billsActions.removeProductFromBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
-  };
+  const {
+    billProductsConfig,
+    getSearchValue,
+    onChangeProductAmountHandler,
+    removeProductFromBill,
+  } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
 
   return (
     <Fragment>
@@ -86,9 +40,9 @@ const AddNewProductToBill: React.FC<{
         {/** PRODUCT PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">سعر المنتج</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <span className={classes["add-bill-product__info--input"]}>
-              {searchedProduct.priceOfUnit}
+              {billProductsConfig.searchedProduct.priceOfUnit}
             </span>
           )}
         </div>
@@ -101,17 +55,17 @@ const AddNewProductToBill: React.FC<{
           >
             الكميه
           </label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
               className={classes["add-bill-product__info--input"]}
               min={1}
               name="bill-product-amount"
-              value={searchedProductAmount}
+              value={billProductsConfig.searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(
                 null,
-                searchedProduct
+                billProductsConfig.searchedProduct
               )}
             />
           )}
@@ -121,9 +75,10 @@ const AddNewProductToBill: React.FC<{
           <label htmlFor="bill-product-total" className="form-label">
             المجموع
           </label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <span className={classes["add-bill-product__info--input"]}>
-              {searchedProduct.priceOfUnit * searchedProductAmount}
+              {billProductsConfig.searchedProduct.priceOfUnit *
+                billProductsConfig.searchedProductAmount}
             </span>
           )}
         </div>
@@ -133,7 +88,10 @@ const AddNewProductToBill: React.FC<{
             <button
               type="button"
               className={classes["add-bill-product__info--remove"]}
-              onClick={removeProductFromBill.bind(null, searchedProduct)}
+              onClick={removeProductFromBill.bind(
+                null,
+                billProductsConfig.searchedProduct
+              )}
             >
               <RiCloseCircleFill />
             </button>

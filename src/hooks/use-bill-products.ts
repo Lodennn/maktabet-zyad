@@ -1,5 +1,6 @@
 import { useReducer, useState } from "react";
 import { StockDoc } from "../interfaces";
+import { BillType } from "../types/bills";
 
 export interface PurchaseBillConfigInitialState {
   searchedProduct: StockDoc;
@@ -61,7 +62,8 @@ const reducerFn = (
 
 const useBillProducts = (
   dispatchBillActions: Function,
-  removeNewBillProduct: Function
+  removeNewBillProduct: Function,
+  billType: BillType
 ) => {
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
@@ -70,10 +72,18 @@ const useBillProducts = (
   const getSearchValue = (searchedProduct: StockDoc) => {
     const updatedSearchedProductData = {
       ...searchedProduct,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       totalProductAmount: 1,
     };
-
+    if (
+      billType === BillType.NORMAL_BILL ||
+      billType === BillType.RETURNED_BILL
+    ) {
+      updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+    } else if (billType === BillType.PURCHASES_BILL) {
+      updatedSearchedProductData.priceOfPiece =
+        billProductsConfig.searchedProductPiecePrice;
+    }
     dispatchBillConfigActions({
       type: "SET_SEARCHED_PRODUCT",
       payload: { data: updatedSearchedProductData },
@@ -93,13 +103,21 @@ const useBillProducts = (
     const updatedSearchedProductData = {
       ...searchedProduct,
       totalProductAmount: targetValue,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
     };
-
+    if (
+      billType === BillType.NORMAL_BILL ||
+      billType === BillType.RETURNED_BILL
+    ) {
+      updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+    } else if (billType === BillType.PURCHASES_BILL) {
+      updatedSearchedProductData.priceOfPiece =
+        billProductsConfig.searchedProductPiecePrice;
+    }
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
       payload: { data: targetValue },
@@ -131,7 +149,14 @@ const useBillProducts = (
       priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
       priceOfPiece: targetValue,
     };
-
+    if (
+      billType === BillType.NORMAL_BILL ||
+      billType === BillType.RETURNED_BILL
+    ) {
+      updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+    } else if (billType === BillType.PURCHASES_BILL) {
+      updatedSearchedProductData.priceOfPiece = targetValue;
+    }
     dispatchBillActions({
       type: "ADD_PRODUCT",
       payload: { data: updatedSearchedProductData },
@@ -155,11 +180,19 @@ const useBillProducts = (
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       priceOfUnit: billProductsConfig.searchedProductUnitPrice,
       numberOfUnits: targetValue,
     };
-
+    if (
+      billType === BillType.NORMAL_BILL ||
+      billType === BillType.RETURNED_BILL
+    ) {
+      updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+    } else if (billType === BillType.PURCHASES_BILL) {
+      updatedSearchedProductData.priceOfPiece =
+        billProductsConfig.searchedProductPiecePrice;
+    }
     dispatchBillActions({
       type: "ADD_PRODUCT",
       payload: { data: updatedSearchedProductData },
@@ -183,11 +216,19 @@ const useBillProducts = (
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      // priceOfPiece: billProductsConfig.searchedProductPiecePrice,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: targetValue,
     };
-
+    if (
+      billType === BillType.NORMAL_BILL ||
+      billType === BillType.RETURNED_BILL
+    ) {
+      updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
+    } else if (billType === BillType.PURCHASES_BILL) {
+      updatedSearchedProductData.priceOfPiece =
+        billProductsConfig.searchedProductPiecePrice;
+    }
     dispatchBillActions({
       type: "ADD_PRODUCT",
       payload: { data: updatedSearchedProductData },
@@ -205,6 +246,8 @@ const useBillProducts = (
     //prettier-ignore
     dispatchBillActions({ type: "REMOVE_PRODUCT", payload: {data: updatedSearchedProductData} });
   };
+
+  console.log("FROM HOOK: ", billProductsConfig.searchedProduct);
 
   return {
     billProductsConfig,

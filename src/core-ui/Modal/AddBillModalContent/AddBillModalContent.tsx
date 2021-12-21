@@ -12,32 +12,31 @@ import { COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
+import useBillProductsController from "../../../hooks/use-bill-products-controller";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
   const [billType, setBillType] = useState<boolean>(true);
   const dispatch = useAppDispatch();
-  // const [counter, setCounter] = useState<number>(0);
 
-  // const [billProducts, setBillProducts] = useState<number[]>([counter]);
+  const {
+    billProductsData,
+    dispatchBillActions,
+    billType: controllerBillType,
+  } = useBillProductsController(
+    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL
+  );
 
-  // function addNewBillProduct(event: React.MouseEvent<HTMLButtonElement>) {
-  //   setCounter((prevState) => prevState + 1);
-  //   setBillProducts((prevState) => prevState.concat(counter + 1));
-  // }
-  // function removeNewBillProduct(productIndex: number) {
-  //   setBillProducts((prevState) =>
-  //     prevState.filter((productId) => {
-  //       return productId !== productIndex;
-  //     })
-  //   );
-  // }
   const {
     productFormArray: billProducts,
     addProductFormData: addNewBillProduct,
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
+
+  useEffect(() => {
+    console.log("billProductsData: ", billProductsData, controllerBillType);
+  }, [billProductsData, controllerBillType]);
 
   const { total, billSelectedProducts } = useAppSelector(
     (state) => state.bills
@@ -121,8 +120,13 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                   <AddNewProductToBill
                     key={productIndex}
                     productIndex={productIndex}
-                    removeNewBillProduct={removeNewBillProduct}
+                    removeNewBillProduct={removeNewBillProduct.bind(
+                      null,
+                      productIndex
+                    )}
                     firstProductInBill={billProductsArray[0]}
+                    dispatchBillActions={dispatchBillActions}
+                    billType={controllerBillType}
                   />
                 );
               })}
@@ -160,7 +164,7 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                   المجموع
                 </span>
                 <span className={classes["add-bill-form__actions--info-value"]}>
-                  {total}
+                  {billProductsData.billTotal}
                 </span>
               </li>
             </ul>

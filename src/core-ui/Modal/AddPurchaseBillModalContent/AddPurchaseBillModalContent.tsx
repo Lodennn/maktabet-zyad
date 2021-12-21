@@ -1,89 +1,21 @@
-import React, { useEffect, useReducer } from "react";
+import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/use-app-selector";
-import { BillsDoc, PurchasesDoc, SendRequestData } from "../../../interfaces";
+import { PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
-import { COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
-import { StockDoc } from "../../../interfaces";
 
-export interface PurchaseBillInitialState {
-  billSelectedProducts: StockDoc[];
-  billTotal: number;
-}
-
-type PurchaseBillActionType = {
-  type: string;
-  payload: { data: any };
-};
-
-const initialState: PurchaseBillInitialState = {
-  billSelectedProducts: [],
-  billTotal: 0,
-};
-
-const reducerFn = (
-  state: PurchaseBillInitialState = initialState,
-  action: PurchaseBillActionType
-) => {
-  if (action.type === "ADD_PRODUCT") {
-    const searchedProductIndex = [...state.billSelectedProducts].findIndex(
-      (searchedProduct) => searchedProduct.id === action.payload.data.id
-    );
-
-    let updatedBillProducts: StockDoc[] = [];
-
-    if (searchedProductIndex >= 0) {
-      updatedBillProducts = [...state.billSelectedProducts];
-
-      //prettier-ignore
-      updatedBillProducts[searchedProductIndex] = action.payload.data;
-    } else {
-      updatedBillProducts = state.billSelectedProducts.concat(
-        action.payload.data
-      );
-    }
-
-    const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-      return acc + cur.priceOfPiece * cur.totalProductAmount!;
-    }, 0);
-
-    return {
-      billSelectedProducts: updatedBillProducts,
-      billTotal: updatedBillTotal,
-    };
-    // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
-  }
-  if (action.type === "REMOVE_PRODUCT") {
-    let updatedBillProducts = [...state.billSelectedProducts];
-    updatedBillProducts = state.billSelectedProducts.filter(
-      (billProduct) => billProduct.id !== action.payload.data.id
-    );
-
-    const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-      return acc + cur.priceOfPiece * cur.totalProductAmount!;
-    }, 0);
-
-    return {
-      billSelectedProducts: updatedBillProducts,
-      billTotal: updatedBillTotal,
-    };
-  }
-
-  return state;
-};
+import useBillProductsController from "../../../hooks/use-bill-products-controller";
 
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
-  const [billProductsData, dispatchBillActions] = useReducer(
-    reducerFn,
-    initialState
-  );
+  const { billProductsData, dispatchBillActions, billType } =
+    useBillProductsController(BillType.PURCHASES_BILL);
 
   const {
     productFormArray: billProducts,
@@ -162,6 +94,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                     )}
                     firstProductInBill={billProductsArray[0]}
                     dispatchBillActions={dispatchBillActions}
+                    billType={billType}
                   />
                 );
               })}
