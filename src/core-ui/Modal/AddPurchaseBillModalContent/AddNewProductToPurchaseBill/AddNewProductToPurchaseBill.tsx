@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer, useState } from "react";
+import React, { Fragment, useEffect, useReducer } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
@@ -6,181 +6,227 @@ import { purchasesActions } from "../../../../store/purchases/purchases-slice";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToPurchaseBill.module.scss";
 import { PurchaseBillInitialState } from "../AddPurchaseBillModalContent";
+import useBillProducts from "../../../../hooks/use-bill-products";
 
-export interface PurchaseBillConfigInitialState {
-  searchedProduct: StockDoc;
-  searchedProductAmount: number;
-  searchedProductPiecePrice: number;
-  searchedProductNumberOfUnits: number;
-}
+// export interface PurchaseBillConfigInitialState {
+//   searchedProduct: StockDoc;
+//   searchedProductAmount: number;
+//   searchedProductPiecePrice: number;
+//   searchedProductNumberOfUnits: number;
+//   searchedProductUnitPrice: number;
+// }
 
-type PurchaseBillActionType = {
-  type: string;
-  payload: { data: any };
-};
+// type PurchaseBillActionType = {
+//   type: string;
+//   payload: { data: any };
+// };
 
-const initialState: PurchaseBillConfigInitialState = {
-  searchedProduct: {} as StockDoc,
-  searchedProductAmount: 1,
-  searchedProductPiecePrice: 1,
-  searchedProductNumberOfUnits: 1,
-};
+// const initialState: PurchaseBillConfigInitialState = {
+//   searchedProduct: {} as StockDoc,
+//   searchedProductAmount: 1,
+//   searchedProductPiecePrice: 0,
+//   searchedProductNumberOfUnits: 0,
+//   searchedProductUnitPrice: 0,
+// };
 
-const reducerFn = (
-  state: PurchaseBillConfigInitialState = initialState,
-  action: PurchaseBillActionType
-) => {
-  if (action.type === "SET_SEARCHED_PRODUCT") {
-    return {
-      ...state,
-      searchedProduct: action.payload.data,
-    };
-  }
-  if (action.type === "CHANGE_PRODUCT_AMOUNT") {
-    return {
-      ...state,
-      searchedProductAmount: action.payload.data,
-    };
-  }
-  if (action.type === "CHANGE_UNITS_NUMBER") {
-    return {
-      ...state,
-      searchedProductNumberOfUnits: action.payload.data,
-    };
-  }
-  if (action.type === "CHANGE_PIECE_PRICE") {
-    return {
-      ...state,
-      searchedProductPiecePrice: action.payload.data,
-    };
-  }
-  return state;
-};
+// const reducerFn = (
+//   state: PurchaseBillConfigInitialState = initialState,
+//   action: PurchaseBillActionType
+// ) => {
+//   if (action.type === "SET_SEARCHED_PRODUCT") {
+//     return {
+//       ...state,
+//       searchedProduct: action.payload.data,
+//     };
+//   }
+//   if (action.type === "CHANGE_PRODUCT_AMOUNT") {
+//     return {
+//       ...state,
+//       searchedProductAmount: action.payload.data,
+//     };
+//   }
+//   if (action.type === "CHANGE_UNITS_NUMBER") {
+//     return {
+//       ...state,
+//       searchedProductNumberOfUnits: action.payload.data,
+//     };
+//   }
+//   if (action.type === "CHANGE_PIECE_PRICE") {
+//     return {
+//       ...state,
+//       searchedProductPiecePrice: action.payload.data,
+//     };
+//   }
+//   if (action.type === "CHANGE_UNIT_PRICE") {
+//     return {
+//       ...state,
+//       searchedProductUnitPrice: action.payload.data,
+//     };
+//   }
+//   return state;
+// };
 
 const AddNewProductToPurchaseBill: React.FC<{
   productIndex: number;
-  removeNewBillProduct: (productIndex: number) => void;
+  removeNewBillProduct: Function;
   firstProductInBill: number;
-  billProductsData: PurchaseBillInitialState;
   dispatchBillActions: Function;
 }> = (props) => {
-  const { billProductsData, dispatchBillActions } = props;
+  const { dispatchBillActions } = props;
 
-  const [billProductsConfig, dispatchBillConfigActions] = useReducer(
-    reducerFn,
-    initialState
-  );
+  const {
+    billProductsConfig,
+    getSearchValue,
+    onChangeProductAmountHandler,
+    onChangePiecePriceHandler,
+    onChangeNumberOfUnitsHandler,
+    onChangePriceOfUnit,
+    removeProductFromBill,
+  } = useBillProducts(dispatchBillActions, props.removeNewBillProduct);
 
-  const dispatch = useAppDispatch();
+  // const [billProductsConfig, dispatchBillConfigActions] = useReducer(
+  //   reducerFn,
+  //   initialState
+  // );
 
-  const getSearchValue = (searchedProduct: StockDoc) => {
-    dispatchBillConfigActions({
-      type: "SET_SEARCHED_PRODUCT",
-      payload: { data: searchedProduct },
-    });
-    const NEWsearchedProductWithAmount = {
-      ...searchedProduct,
-      totalProductAmount: 1,
-    };
+  // const getSearchValue = (searchedProduct: StockDoc) => {
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+  //     totalProductAmount: 1,
+  //   };
 
-    //prettier-ignore
-    dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: NEWsearchedProductWithAmount} });
-  };
+  //   dispatchBillConfigActions({
+  //     type: "SET_SEARCHED_PRODUCT",
+  //     payload: { data: updatedSearchedProductData },
+  //   });
 
-  const onChangeProductAmountHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
+  //   //prettier-ignore
+  //   dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: updatedSearchedProductData} });
+  // };
 
-    const updatedSearchedProductData = {
-      ...searchedProduct,
-      totalProductAmount: targetValue,
-      numberOfPieces: searchedProduct.numberOfPieces + targetValue,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
-      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
-    };
+  // const onChangeProductAmountHandler = (
+  //   searchedProduct: StockDoc,
+  //   event: React.FormEvent<HTMLInputElement>
+  // ): void => {
+  //   const target = event.target as HTMLInputElement;
+  //   const targetValue = +target.value;
 
-    dispatchBillConfigActions({
-      type: "CHANGE_PRODUCT_AMOUNT",
-      payload: { data: targetValue },
-    });
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     totalProductAmount: targetValue,
+  //     priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+  //     //prettier-ignore
+  //     numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
+  //     numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+  //     priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+  //   };
 
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
+  //   dispatchBillConfigActions({
+  //     type: "CHANGE_PRODUCT_AMOUNT",
+  //     payload: { data: targetValue },
+  //   });
 
-  const onChangePiecePriceHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
+  //   dispatchBillActions({
+  //     type: "ADD_PRODUCT",
+  //     payload: { data: updatedSearchedProductData },
+  //   });
+  // };
 
-    dispatchBillConfigActions({
-      type: "CHANGE_PIECE_PRICE",
-      payload: { data: targetValue },
-    });
-    const updatedSearchedProductData = {
-      ...searchedProduct,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-      numberOfPieces:
-        searchedProduct.numberOfPieces +
-        billProductsConfig.searchedProductAmount,
-      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
-      priceOfPiece: targetValue,
-    };
+  // const onChangePiecePriceHandler = (
+  //   searchedProduct: StockDoc,
+  //   event: React.FormEvent<HTMLInputElement>
+  // ): void => {
+  //   const target = event.target as HTMLInputElement;
+  //   const targetValue = +target.value;
 
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
+  //   dispatchBillConfigActions({
+  //     type: "CHANGE_PIECE_PRICE",
+  //     payload: { data: targetValue },
+  //   });
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     totalProductAmount: billProductsConfig.searchedProductAmount,
+  //     //prettier-ignore
+  //     numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
+  //     numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+  //     priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+  //     priceOfPiece: targetValue,
+  //   };
 
-  const onChangeNumberOfUnitsHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
+  //   dispatchBillActions({
+  //     type: "ADD_PRODUCT",
+  //     payload: { data: updatedSearchedProductData },
+  //   });
+  // };
 
-    dispatchBillConfigActions({
-      type: "CHANGE_UNITS_NUMBER",
-      payload: { data: targetValue },
-    });
+  // const onChangeNumberOfUnitsHandler = (
+  //   searchedProduct: StockDoc,
+  //   event: React.FormEvent<HTMLInputElement>
+  // ): void => {
+  //   const target = event.target as HTMLInputElement;
+  //   const targetValue = +target.value;
 
-    const updatedSearchedProductData = {
-      ...searchedProduct,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-      numberOfPieces:
-        searchedProduct.numberOfPieces +
-        billProductsConfig.searchedProductAmount,
-      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
-      numberOfUnits: targetValue,
-    };
+  //   dispatchBillConfigActions({
+  //     type: "CHANGE_UNITS_NUMBER",
+  //     payload: { data: targetValue },
+  //   });
 
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     totalProductAmount: billProductsConfig.searchedProductAmount,
+  //     //prettier-ignore
+  //     numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
+  //     priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+  //     priceOfUnit: billProductsConfig.searchedProductUnitPrice,
+  //     numberOfUnits: targetValue,
+  //   };
 
-  const removeProductFromBill = (searchedProduct: StockDoc) => {
-    props.removeNewBillProduct(props.productIndex);
+  //   dispatchBillActions({
+  //     type: "ADD_PRODUCT",
+  //     payload: { data: updatedSearchedProductData },
+  //   });
+  // };
 
-    const searchedProductWithAmount = {
-      ...searchedProduct,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-    };
-    dispatch(
-      purchasesActions.removeProductFromBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
-  };
+  // const onChangePriceOfUnit = (
+  //   searchedProduct: StockDoc,
+  //   event: React.FormEvent<HTMLInputElement>
+  // ): void => {
+  //   const target = event.target as HTMLInputElement;
+  //   const targetValue = +target.value;
+
+  //   dispatchBillConfigActions({
+  //     type: "CHANGE_UNIT_PRICE",
+  //     payload: { data: targetValue },
+  //   });
+
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     totalProductAmount: billProductsConfig.searchedProductAmount,
+  //     //prettier-ignore
+  //     numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
+  //     priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+  //     numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+  //     priceOfUnit: targetValue,
+  //   };
+
+  //   dispatchBillActions({
+  //     type: "ADD_PRODUCT",
+  //     payload: { data: updatedSearchedProductData },
+  //   });
+  // };
+
+  // const removeProductFromBill = (searchedProduct: StockDoc) => {
+  //   props.removeNewBillProduct(props.productIndex);
+
+  //   const updatedSearchedProductData = {
+  //     ...searchedProduct,
+  //     totalProductAmount: billProductsConfig.searchedProductAmount,
+  //   };
+
+  //   //prettier-ignore
+  //   dispatchBillActions({ type: "REMOVE_PRODUCT", payload: {data: updatedSearchedProductData} });
+  // };
 
   return (
     <Fragment>
@@ -229,7 +275,6 @@ const AddNewProductToPurchaseBill: React.FC<{
           {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
-              placeholder={billProductsConfig.searchedProduct.priceOfPiece + ""}
               id={`bill-product-amount-${props.productIndex}`}
               min={1}
               onChange={onChangePiecePriceHandler.bind(
@@ -262,6 +307,10 @@ const AddNewProductToPurchaseBill: React.FC<{
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
               min={1}
+              onChange={onChangePriceOfUnit.bind(
+                null,
+                billProductsConfig.searchedProduct
+              )}
             />
           )}
         </div>

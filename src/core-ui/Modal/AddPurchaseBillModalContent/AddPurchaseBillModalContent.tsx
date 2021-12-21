@@ -31,7 +31,6 @@ const reducerFn = (
   action: PurchaseBillActionType
 ) => {
   if (action.type === "ADD_PRODUCT") {
-    console.log("action.payload.data: ", action.payload.data);
     const searchedProductIndex = [...state.billSelectedProducts].findIndex(
       (searchedProduct) => searchedProduct.id === action.payload.data.id
     );
@@ -59,6 +58,21 @@ const reducerFn = (
     };
     // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
   }
+  if (action.type === "REMOVE_PRODUCT") {
+    let updatedBillProducts = [...state.billSelectedProducts];
+    updatedBillProducts = state.billSelectedProducts.filter(
+      (billProduct) => billProduct.id !== action.payload.data.id
+    );
+
+    const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+      return acc + cur.priceOfPiece * cur.totalProductAmount!;
+    }, 0);
+
+    return {
+      billSelectedProducts: updatedBillProducts,
+      billTotal: updatedBillTotal,
+    };
+  }
 
   return state;
 };
@@ -82,7 +96,6 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   );
 
   console.log("billProductsData: ", billProductsData);
-  // console.log("billProductsData[REDUX]: ", billSelectedProducts);
 
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
@@ -143,9 +156,11 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                   <AddNewProductToPurchaseBill
                     key={productIndex}
                     productIndex={productIndex}
-                    removeNewBillProduct={removeNewBillProduct}
+                    removeNewBillProduct={removeNewBillProduct.bind(
+                      null,
+                      productIndex
+                    )}
                     firstProductInBill={billProductsArray[0]}
-                    billProductsData={billProductsData}
                     dispatchBillActions={dispatchBillActions}
                   />
                 );
