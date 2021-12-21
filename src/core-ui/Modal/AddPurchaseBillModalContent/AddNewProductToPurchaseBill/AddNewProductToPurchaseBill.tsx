@@ -1,38 +1,90 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useReducer, useState } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
 import { purchasesActions } from "../../../../store/purchases/purchases-slice";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToPurchaseBill.module.scss";
+import { PurchaseBillInitialState } from "../AddPurchaseBillModalContent";
+
+export interface PurchaseBillConfigInitialState {
+  searchedProduct: StockDoc;
+  searchedProductAmount: number;
+  searchedProductPiecePrice: number;
+  searchedProductNumberOfUnits: number;
+}
+
+type PurchaseBillActionType = {
+  type: string;
+  payload: { data: any };
+};
+
+const initialState: PurchaseBillConfigInitialState = {
+  searchedProduct: {} as StockDoc,
+  searchedProductAmount: 1,
+  searchedProductPiecePrice: 1,
+  searchedProductNumberOfUnits: 1,
+};
+
+const reducerFn = (
+  state: PurchaseBillConfigInitialState = initialState,
+  action: PurchaseBillActionType
+) => {
+  if (action.type === "SET_SEARCHED_PRODUCT") {
+    return {
+      ...state,
+      searchedProduct: action.payload.data,
+    };
+  }
+  if (action.type === "CHANGE_PRODUCT_AMOUNT") {
+    return {
+      ...state,
+      searchedProductAmount: action.payload.data,
+    };
+  }
+  if (action.type === "CHANGE_UNITS_NUMBER") {
+    return {
+      ...state,
+      searchedProductNumberOfUnits: action.payload.data,
+    };
+  }
+  if (action.type === "CHANGE_PIECE_PRICE") {
+    return {
+      ...state,
+      searchedProductPiecePrice: action.payload.data,
+    };
+  }
+  return state;
+};
 
 const AddNewProductToPurchaseBill: React.FC<{
   productIndex: number;
   removeNewBillProduct: (productIndex: number) => void;
   firstProductInBill: number;
+  billProductsData: PurchaseBillInitialState;
+  dispatchBillActions: Function;
 }> = (props) => {
-  //prettier-ignore
-  const [searchedProduct, setSearchedProduct] = useState<StockDoc>({} as StockDoc);
-  const [searchedProductAmount, setSearchedProductAmount] = useState<number>(1);
-  const [searchedProductPiecePrice, setSearchedProductPiecePrice] =
-    useState<number>(1);
-  const [searchedProductNumberOfUnits, setSearchedNumberOfUnits] =
-    useState<number>(1);
+  const { billProductsData, dispatchBillActions } = props;
+
+  const [billProductsConfig, dispatchBillConfigActions] = useReducer(
+    reducerFn,
+    initialState
+  );
 
   const dispatch = useAppDispatch();
 
   const getSearchValue = (searchedProduct: StockDoc) => {
-    setSearchedProduct(searchedProduct);
-
-    const searchedProductWithAmount = {
+    dispatchBillConfigActions({
+      type: "SET_SEARCHED_PRODUCT",
+      payload: { data: searchedProduct },
+    });
+    const NEWsearchedProductWithAmount = {
       ...searchedProduct,
-      totalProductAmount: searchedProductAmount,
+      totalProductAmount: 1,
     };
-    dispatch(
-      purchasesActions.addProductToBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
+
+    //prettier-ignore
+    dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: NEWsearchedProductWithAmount} });
   };
 
   const onChangeProductAmountHandler = (
@@ -42,43 +94,23 @@ const AddNewProductToPurchaseBill: React.FC<{
     const target = event.target as HTMLInputElement;
     const targetValue = +target.value;
 
-    setSearchedProductAmount(targetValue);
-
-    const searchedProductWithAmount = {
+    const updatedSearchedProductData = {
       ...searchedProduct,
-      totalProductAmount: +target.value,
+      totalProductAmount: targetValue,
+      numberOfPieces: searchedProduct.numberOfPieces + targetValue,
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
     };
 
-    dispatch(
-      purchasesActions.addProductToBill({
-        selectedProduct: searchedProductWithAmount,
-      })
-    );
-  };
+    dispatchBillConfigActions({
+      type: "CHANGE_PRODUCT_AMOUNT",
+      payload: { data: targetValue },
+    });
 
-  const onChangeNumberOfUnitsHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
-
-    setSearchedNumberOfUnits(targetValue);
-
-    console.log("onChangeNumberUnits: ", searchedProductPiecePrice);
-
-    const searchedProductData = {
-      ...searchedProduct,
-      numberOfUnits: +target.value,
-      totalProductAmount: searchedProductAmount,
-      priceOfPiece: searchedProductPiecePrice,
-    };
-
-    dispatch(
-      purchasesActions.updateBillProducts({
-        selectedProduct: searchedProductData,
-      })
-    );
+    dispatchBillActions({
+      type: "ADD_PRODUCT",
+      payload: { data: updatedSearchedProductData },
+    });
   };
 
   const onChangePiecePriceHandler = (
@@ -88,19 +120,52 @@ const AddNewProductToPurchaseBill: React.FC<{
     const target = event.target as HTMLInputElement;
     const targetValue = +target.value;
 
-    setSearchedProductPiecePrice(+target.value);
-
-    const searchedProductData = {
+    dispatchBillConfigActions({
+      type: "CHANGE_PIECE_PRICE",
+      payload: { data: targetValue },
+    });
+    const updatedSearchedProductData = {
       ...searchedProduct,
+      totalProductAmount: billProductsConfig.searchedProductAmount,
+      numberOfPieces:
+        searchedProduct.numberOfPieces +
+        billProductsConfig.searchedProductAmount,
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfPiece: targetValue,
-      totalProductAmount: searchedProductAmount,
     };
 
-    dispatch(
-      purchasesActions.updateBillProducts({
-        selectedProduct: searchedProductData,
-      })
-    );
+    dispatchBillActions({
+      type: "ADD_PRODUCT",
+      payload: { data: updatedSearchedProductData },
+    });
+  };
+
+  const onChangeNumberOfUnitsHandler = (
+    searchedProduct: StockDoc,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
+    const target = event.target as HTMLInputElement;
+    const targetValue = +target.value;
+
+    dispatchBillConfigActions({
+      type: "CHANGE_UNITS_NUMBER",
+      payload: { data: targetValue },
+    });
+
+    const updatedSearchedProductData = {
+      ...searchedProduct,
+      totalProductAmount: billProductsConfig.searchedProductAmount,
+      numberOfPieces:
+        searchedProduct.numberOfPieces +
+        billProductsConfig.searchedProductAmount,
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      numberOfUnits: targetValue,
+    };
+
+    dispatchBillActions({
+      type: "ADD_PRODUCT",
+      payload: { data: updatedSearchedProductData },
+    });
   };
 
   const removeProductFromBill = (searchedProduct: StockDoc) => {
@@ -108,7 +173,7 @@ const AddNewProductToPurchaseBill: React.FC<{
 
     const searchedProductWithAmount = {
       ...searchedProduct,
-      totalProductAmount: searchedProductAmount,
+      totalProductAmount: billProductsConfig.searchedProductAmount,
     };
     dispatch(
       purchasesActions.removeProductFromBill({
@@ -136,7 +201,7 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT CATEGORY */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">نوع المنتج</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <select>
               <option>كراس</option>
               <option>قلم</option>
@@ -147,13 +212,13 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT PIECES AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد القطع</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
-              value={searchedProductAmount}
+              value={billProductsConfig.searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(
                 null,
-                searchedProduct
+                billProductsConfig.searchedProduct
               )}
             />
           )}
@@ -161,26 +226,29 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT PIECE PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن القطعه(جمله)</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
-              placeholder={searchedProduct.priceOfPiece + ""}
+              placeholder={billProductsConfig.searchedProduct.priceOfPiece + ""}
               id={`bill-product-amount-${props.productIndex}`}
               min={1}
-              onChange={onChangePiecePriceHandler.bind(null, searchedProduct)}
+              onChange={onChangePiecePriceHandler.bind(
+                null,
+                billProductsConfig.searchedProduct
+              )}
             />
           )}
         </div>
         {/** PRODUCT UNITS AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد الوحده في القطعه</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
               onChange={onChangeNumberOfUnitsHandler.bind(
                 null,
-                searchedProduct
+                billProductsConfig.searchedProduct
               )}
               min={1}
             />
@@ -189,7 +257,7 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT UNIT PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن الوحده</label>
-          {searchedProduct.id && (
+          {billProductsConfig.searchedProduct.id && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
@@ -204,7 +272,10 @@ const AddNewProductToPurchaseBill: React.FC<{
             <button
               type="button"
               className={classes["add-bill-product__info--remove"]}
-              onClick={removeProductFromBill.bind(null, searchedProduct)}
+              onClick={removeProductFromBill.bind(
+                null,
+                billProductsConfig.searchedProduct
+              )}
             >
               <RiCloseCircleFill />
             </button>

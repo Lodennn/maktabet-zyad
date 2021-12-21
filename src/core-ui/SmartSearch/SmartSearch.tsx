@@ -5,7 +5,10 @@ import { StockDoc } from "../../interfaces";
 import { stockActions } from "../../store/stock/stock-slice";
 import classes from "./SmartSearch.module.scss";
 
-const SmartSearch: React.FC<{ getSearchValue: Function }> = (props) => {
+const SmartSearch: React.FC<{
+  getSearchValue: Function;
+  dispatchBillActions?: Function;
+}> = (props) => {
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);

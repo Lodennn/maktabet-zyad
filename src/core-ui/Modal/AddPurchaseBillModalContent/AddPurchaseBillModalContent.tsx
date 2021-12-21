@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/use-app-selector";
 import { BillsDoc, PurchasesDoc, SendRequestData } from "../../../interfaces";
@@ -9,10 +9,68 @@ import { COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
+import { StockDoc } from "../../../interfaces";
+
+export interface PurchaseBillInitialState {
+  billSelectedProducts: StockDoc[];
+  billTotal: number;
+}
+
+type PurchaseBillActionType = {
+  type: string;
+  payload: { data: any };
+};
+
+const initialState: PurchaseBillInitialState = {
+  billSelectedProducts: [],
+  billTotal: 0,
+};
+
+const reducerFn = (
+  state: PurchaseBillInitialState = initialState,
+  action: PurchaseBillActionType
+) => {
+  if (action.type === "ADD_PRODUCT") {
+    console.log("action.payload.data: ", action.payload.data);
+    const searchedProductIndex = [...state.billSelectedProducts].findIndex(
+      (searchedProduct) => searchedProduct.id === action.payload.data.id
+    );
+
+    let updatedBillProducts: StockDoc[] = [];
+
+    if (searchedProductIndex >= 0) {
+      updatedBillProducts = [...state.billSelectedProducts];
+
+      //prettier-ignore
+      updatedBillProducts[searchedProductIndex] = action.payload.data;
+    } else {
+      updatedBillProducts = state.billSelectedProducts.concat(
+        action.payload.data
+      );
+    }
+
+    const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+      return acc + cur.priceOfPiece * cur.totalProductAmount!;
+    }, 0);
+
+    return {
+      billSelectedProducts: updatedBillProducts,
+      billTotal: updatedBillTotal,
+    };
+    // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
+  }
+
+  return state;
+};
 
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
+  const [billProductsData, dispatchBillActions] = useReducer(
+    reducerFn,
+    initialState
+  );
+
   const {
     productFormArray: billProducts,
     addProductFormData: addNewBillProduct,
@@ -23,13 +81,10 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     (state) => state.purchases
   );
 
+  console.log("billProductsData: ", billProductsData);
+  // console.log("billProductsData[REDUX]: ", billSelectedProducts);
+
   const { sendHttpRequest: insertBill } = useHttp(sendData);
-
-  useEffect(() => {
-    console.log("billSelectedProducts: ", billSelectedProducts);
-  }, [billSelectedProducts]);
-
-  console.log("billSelectedProducts: ", billSelectedProducts);
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -90,6 +145,8 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                     productIndex={productIndex}
                     removeNewBillProduct={removeNewBillProduct}
                     firstProductInBill={billProductsArray[0]}
+                    billProductsData={billProductsData}
+                    dispatchBillActions={dispatchBillActions}
                   />
                 );
               })}
@@ -127,7 +184,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                   المجموع
                 </span>
                 <span className={classes["add-bill-form__actions--info-value"]}>
-                  {total}
+                  {billProductsData.billTotal}
                 </span>
               </li>
             </ul>
