@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
@@ -32,6 +32,10 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     addProductFormData: addNewBillProduct,
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
+
+  useEffect(() => {
+    console.log("billProductsData: ", billProductsData);
+  }, [billProductsData]);
 
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 

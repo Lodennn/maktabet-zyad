@@ -70,8 +70,13 @@ const useBillProducts = (
     initialState
   );
   const getSearchValue = (searchedProduct: StockDoc) => {
-    const updatedSearchedProductData = {
-      ...searchedProduct,
+    const updatedSearchedProductData: any = {
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      numberOfUnits: searchedProduct.numberOfUnits,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      priceOfUnit: searchedProduct.priceOfUnit,
+      productName: searchedProduct.productName,
       totalProductAmount: 1,
     };
     if (
@@ -81,8 +86,8 @@ const useBillProducts = (
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
       updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
-      updatedSearchedProductData.priceOfPiece =
-        billProductsConfig.searchedProductPiecePrice;
+      //prettier-ignore
+      updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
     }
     dispatchBillConfigActions({
       type: "SET_SEARCHED_PRODUCT",
@@ -101,10 +106,11 @@ const useBillProducts = (
     const targetValue = +target.value;
 
     const updatedSearchedProductData = {
-      ...searchedProduct,
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      productName: searchedProduct.productName,
       totalProductAmount: targetValue,
-      //prettier-ignore
-      numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
     };
@@ -115,8 +121,8 @@ const useBillProducts = (
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
       updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
-      updatedSearchedProductData.priceOfPiece =
-        billProductsConfig.searchedProductPiecePrice;
+      //prettier-ignore
+      updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
     }
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
@@ -141,10 +147,12 @@ const useBillProducts = (
       payload: { data: targetValue },
     });
     const updatedSearchedProductData = {
-      ...searchedProduct,
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      productName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
-      numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
     };
@@ -176,10 +184,11 @@ const useBillProducts = (
     });
 
     const updatedSearchedProductData = {
-      ...searchedProduct,
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      productName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
-      //prettier-ignore
-      numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       priceOfUnit: billProductsConfig.searchedProductUnitPrice,
       numberOfUnits: targetValue,
     };
@@ -190,8 +199,8 @@ const useBillProducts = (
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
       updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
-      updatedSearchedProductData.priceOfPiece =
-        billProductsConfig.searchedProductPiecePrice;
+      //prettier-ignore
+      updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
     }
     dispatchBillActions({
       type: "ADD_PRODUCT",
@@ -212,10 +221,11 @@ const useBillProducts = (
     });
 
     const updatedSearchedProductData = {
-      ...searchedProduct,
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      productName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
-      //prettier-ignore
-      numberOfPieces: searchedProduct.numberOfPieces + billProductsConfig.searchedProductAmount,
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       priceOfUnit: targetValue,
     };
@@ -226,8 +236,8 @@ const useBillProducts = (
       updatedSearchedProductData.priceOfPiece = searchedProduct.priceOfPiece;
       updatedSearchedProductData.numberOfUnits = searchedProduct.numberOfUnits;
     } else if (billType === BillType.PURCHASES_BILL) {
-      updatedSearchedProductData.priceOfPiece =
-        billProductsConfig.searchedProductPiecePrice;
+      //prettier-ignore
+      updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
     }
     dispatchBillActions({
       type: "ADD_PRODUCT",
@@ -239,7 +249,12 @@ const useBillProducts = (
     removeNewBillProduct();
 
     const updatedSearchedProductData = {
-      ...searchedProduct,
+      id: searchedProduct.id,
+      category: searchedProduct.category,
+      numberOfUnits: searchedProduct.numberOfUnits,
+      priceOfPiece: searchedProduct.priceOfPiece,
+      priceOfUnit: searchedProduct.priceOfUnit,
+      productName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
     };
 

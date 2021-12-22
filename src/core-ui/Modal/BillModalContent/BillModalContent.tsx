@@ -1,5 +1,5 @@
 import { DBTables } from "../../../constants";
-import { billsTableHeadData, stockTableHeadData } from "../../../helpers";
+import { billsTableHeadData, purchasesTableHeadData } from "../../../helpers";
 import { BillsDoc, PurchasesDoc } from "../../../interfaces";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
 import classes from "./BillModalContent.module.scss";
@@ -33,7 +33,7 @@ const BillModalContent: React.FC<{
           {props.billId === DBTables.PURCHASES_TABLE && (
             <FullInfoTable
               tableId={props.billId}
-              headData={stockTableHeadData}
+              headData={purchasesTableHeadData}
               data={props.data.products}
               className="mt-md"
             />

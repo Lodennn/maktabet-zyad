@@ -32,13 +32,8 @@ export const purchasesTableHeadData: PurchasesTableHeadData = [
   TableFields.PRODUCT_CATEGORY,
   TableFields.PRODUCT_AMOUNT,
   TableFields.PRICE_PIECE,
-  TableFields.PROFIT_OF_PIECE,
   TableFields.NUMBER_OF_UNITS_IN_PIECE,
   TableFields.PRICE_OF_UNIT,
-  TableFields.PURCHASING_COSTS,
-  TableFields.PERCENTAGE_OF_PROFIT,
-  TableFields.TOTAL_PROFIT,
-  TableFields.DATE,
 ];
 
 export const missingProductsTableHeadData: MissingProductsTableHeadData = [

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import { PurchasesDoc, SendRequestData } from "../../../interfaces";
 import { COLLECTIONS } from "../../../constants";
@@ -16,6 +16,8 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 ) => {
   const dispatch = useAppDispatch();
 
+  const purchaseBillMerchantNameRef = useRef<HTMLInputElement>(null);
+
   const { billProductsData, dispatchBillActions, billType } =
     useBillProductsController(BillType.PURCHASES_BILL);
 
@@ -27,10 +29,15 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   const { sendHttpRequest: insertBill } = useHttp(sendData);
 
+  useEffect(() => {
+    console.log("billProductsData: ", billProductsData);
+  }, [billProductsData]);
+
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // BILL DATA
     const billData: PurchasesDoc = {
+      merchantName: purchaseBillMerchantNameRef.current!.value,
       total: billProductsData.billTotal,
       createdAt: new Date().toString(),
       products: [...billProductsData.billSelectedProducts],
@@ -73,6 +80,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                 name="bill-merchant-name"
                 className={classes["add-bill-form__input"]}
                 placeholder="أسم التاجر"
+                ref={purchaseBillMerchantNameRef}
               />
             </div>
           </div>

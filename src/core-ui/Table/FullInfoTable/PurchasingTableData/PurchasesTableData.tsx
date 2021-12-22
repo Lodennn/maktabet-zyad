@@ -7,16 +7,13 @@ const PurchasesTableData: React.FC<{
 }> = (props) => {
   return (
     <tr key={props.product.id}>
+      <td>{props.product.merchantName}</td>
       <td>{props.product.productName}</td>
       <td>{props.product.category}</td>
-      <td>{props.product.numberOfPieces}</td>
+      <td>{props.product.totalProductAmount}</td>
       <td>{props.product.priceOfPiece}</td>
-      <td>{props.product.profitOfPiece}</td>
       <td>{props.product.numberOfUnits}</td>
       <td>{props.product.priceOfUnit}</td>
-      <td>{props.product.purchasingCosts}</td>
-      <td>{props.product.profitPercent}%</td>
-      <td>{props.product.totalProfit}</td>
 
       {props.admin && (
         <td className="table__actions">
