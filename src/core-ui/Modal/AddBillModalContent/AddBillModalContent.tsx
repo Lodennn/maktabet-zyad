@@ -27,13 +27,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   const { data: stockData } = useAppSelector((state) => state.stock);
 
   const {
-    // data: stockData,
-    isLoading: stockDataLoading,
-    error: stockDataError,
-    sendHttpRequest: sendUpdatedStockDataRequest,
-  } = useHttp(sendData);
-
-  const {
     billProductsData,
     dispatchBillActions,
     billType: controllerBillType,
@@ -48,14 +41,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   } = useProduct();
 
   const { sendHttpRequest: insertBill } = useHttp(sendData);
-
-  // useEffect(() => {
-  //   console.log("billProductsData: ", billProductsData);
-  // }, [billProductsData]);
-
-  useEffect(() => {
-    // console.log("stockData: ", stockData);
-  }, [stockData]);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);

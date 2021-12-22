@@ -38,6 +38,7 @@ const stockSlice = createSlice({
       state.filteredStockData = tempStockData;
     },
     updateStockProductsFromBill(state, action) {
+      console.log("updateStockProductsFromBill()");
       action.payload.updatedStockProducts.forEach((billProduct: StockDoc) => {
         //prettier-ignore
         const stockProductIndex = state.data.findIndex((stockProduct: StockDoc) => stockProduct.id === billProduct.id);

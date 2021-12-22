@@ -1,6 +1,7 @@
 import React, { Fragment, MouseEvent } from "react";
 import { DBTables } from "../../../../constants";
 import { BillsDoc, PurchasesDoc } from "../../../../interfaces";
+import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
 
 const InfoTableItem: React.FC<{
@@ -10,6 +11,12 @@ const InfoTableItem: React.FC<{
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
   hideModal: (event: React.MouseEvent) => void;
 }> = (props) => {
+  const billTypeClasses =
+    props.data.type === BillType.NORMAL_BILL
+      ? `${classes[`info-table-item__bill-type--normal`]}`
+      : props.data.type === BillType.RETURNED_BILL
+      ? `${classes[`info-table-item__bill-type--returned`]}`
+      : null;
   return (
     <div className={classes["info-table-item"]}>
       <div className={classes["info-table-item__bill-info"]}>
@@ -17,6 +24,13 @@ const InfoTableItem: React.FC<{
           {props.tableId === DBTables.PURCHASES_TABLE && (
             <h3 className={classes["info-table-item__merchant-name"]}>
               {props.data.merchantName}
+            </h3>
+          )}
+          {props.tableId === DBTables.BILLS_TABLE && (
+            <h3
+              className={`${classes["info-table-item__bill-type"]} ${billTypeClasses}`}
+            >
+              {props.data.type}
             </h3>
           )}
           {props.data.products.map((product: any) => {

@@ -52,8 +52,16 @@ const StockPage = () => {
         </div>
         {/** FAWATER TABLE */}
         <div className="grid-2x-container mb-xg mt-xg">
-          <InfoTable title="الفواتير" data={billsData} />
-          <InfoTable title="المرتجع" data={billsData} />
+          <InfoTable
+            tableId={DBTables.BILLS_TABLE}
+            title="الفواتير"
+            data={billsData}
+          />
+          <InfoTable
+            tableId={DBTables.BILLS_TABLE}
+            title="المرتجع"
+            data={billsData}
+          />
         </div>
         {/** MOSHTRYAT TABLE */}
         <FullInfoTable

@@ -5,6 +5,7 @@ import LoadingSpinner from "../../core-ui/LoadingSpinner/LoadingSpinner";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 import Wrapper from "../../core-ui/Wrapper/Wrapper";
 import { useAppSelector } from "../../hooks/use-app-selector";
+import { DBTables } from "../../constants";
 import classes from "../StockPage/StockPage.module.scss";
 
 const BillsPage: React.FC = () => {
@@ -18,7 +19,12 @@ const BillsPage: React.FC = () => {
         <div className={classes["page__content"]}>
           <Wrapper>
             {!isLoading ? (
-              <InfoTable title="الفواتير" admin={true} data={billsData} />
+              <InfoTable
+                tableId={DBTables.BILLS_TABLE}
+                title="الفواتير"
+                admin={true}
+                data={billsData}
+              />
             ) : (
               <LoadingSpinner />
             )}

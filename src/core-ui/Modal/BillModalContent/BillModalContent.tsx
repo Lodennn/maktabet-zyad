@@ -29,6 +29,7 @@ const BillModalContent: React.FC<{
         {props.billId === DBTables.PURCHASES_TABLE && (
           <h5>{props.data.merchantName}</h5>
         )}
+        {props.billId === DBTables.BILLS_TABLE && <h5>{props.data.type}</h5>}
         <div className="responsive-y-table">
           {props.billId === DBTables.PURCHASES_TABLE && (
             <FullInfoTable
