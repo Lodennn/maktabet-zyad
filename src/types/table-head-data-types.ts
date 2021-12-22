@@ -21,7 +21,6 @@ export type BillsTableHeadData = [
 ];
 
 export type PurchasesTableHeadData = [
-  TableFields.MERCHANT_NAME,
   TableFields.PRODUCT_NAME,
   TableFields.PRODUCT_CATEGORY,
   TableFields.PRODUCT_AMOUNT,

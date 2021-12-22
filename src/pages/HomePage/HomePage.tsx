@@ -23,6 +23,7 @@ const HomePage = () => {
   const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
   //prettier-ignore
   const { data: billsData, isLoading: billsIsLoading } = useAppSelector((state) => state.bills);
+
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
     useAppSelector((state) => state.missingProducts);
 

@@ -21,10 +21,10 @@ const AddNewProductToBill: React.FC<{
     removeProductFromBill,
   } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
 
-  console.log(
-    "billProductsConfig.searchedProduct: ",
-    billProductsConfig.searchedProduct
-  );
+  // console.log(
+  //   "billProductsConfig.searchedProduct: ",
+  //   billProductsConfig.searchedProduct
+  // );
 
   return (
     <Fragment>
@@ -66,6 +66,7 @@ const AddNewProductToBill: React.FC<{
               id={`bill-product-amount-${props.productIndex}`}
               className={classes["add-bill-product__info--input"]}
               min={1}
+              max={billProductsConfig.searchedProduct.totalNumberOfUnits}
               name="bill-product-amount"
               value={billProductsConfig.searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(

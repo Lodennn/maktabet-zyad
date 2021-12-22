@@ -12,12 +12,26 @@ import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
+import {
+  stockActions,
+  transformDataFromNormalBillToStock,
+} from "../../../store/stock/stock-slice";
+import { useAppSelector } from "../../../hooks/use-app-selector";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
   const [billType, setBillType] = useState<boolean>(true);
   const dispatch = useAppDispatch();
+
+  const { data: stockData } = useAppSelector((state) => state.stock);
+
+  const {
+    // data: stockData,
+    isLoading: stockDataLoading,
+    error: stockDataError,
+    sendHttpRequest: sendUpdatedStockDataRequest,
+  } = useHttp(sendData);
 
   const {
     billProductsData,
@@ -33,11 +47,15 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  useEffect(() => {
-    console.log("billProductsData: ", billProductsData);
-  }, [billProductsData]);
-
   const { sendHttpRequest: insertBill } = useHttp(sendData);
+
+  // useEffect(() => {
+  //   console.log("billProductsData: ", billProductsData);
+  // }, [billProductsData]);
+
+  useEffect(() => {
+    // console.log("stockData: ", stockData);
+  }, [stockData]);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -52,6 +70,12 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
       products: [...billProductsData.billSelectedProducts],
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     };
+
+    // UPDATE STOCK IN DATABASE
+    dispatch(transformDataFromNormalBillToStock(billData)).then((data) => {
+      //prettier-ignore
+      dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: data}));
+    });
 
     // INSERT BILL TO DATABASE
     insertBill({

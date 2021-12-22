@@ -27,7 +27,6 @@ export const billsTableHeadData: BillsTableHeadData = [
 ];
 
 export const purchasesTableHeadData: PurchasesTableHeadData = [
-  TableFields.MERCHANT_NAME,
   TableFields.PRODUCT_NAME,
   TableFields.PRODUCT_CATEGORY,
   TableFields.PRODUCT_AMOUNT,

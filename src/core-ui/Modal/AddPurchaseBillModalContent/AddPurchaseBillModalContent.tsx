@@ -27,11 +27,11 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  const { sendHttpRequest: insertBill } = useHttp(sendData);
-
   useEffect(() => {
     console.log("billProductsData: ", billProductsData);
   }, [billProductsData]);
+
+  const { sendHttpRequest: insertBill } = useHttp(sendData);
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

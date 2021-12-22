@@ -24,6 +24,8 @@ const AddNewProductToPurchaseBill: React.FC<{
     removeProductFromBill,
   } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
 
+  console.log("billProductsConfig", billProductsConfig.searchedProduct);
+
   return (
     <Fragment>
       {/** PRODUCT *************************** */}

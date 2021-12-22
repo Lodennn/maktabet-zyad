@@ -7,7 +7,6 @@ const PurchasesTableData: React.FC<{
 }> = (props) => {
   return (
     <tr key={props.product.id}>
-      <td>{props.product.merchantName}</td>
       <td>{props.product.productName}</td>
       <td>{props.product.category}</td>
       <td>{props.product.totalProductAmount}</td>

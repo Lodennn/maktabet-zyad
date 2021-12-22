@@ -14,6 +14,9 @@ export interface StockDoc {
   totalProfit: number;
   profitPercent: number;
   totalProductAmount?: number;
+  totalNumberOfUnits: number;
+  remainingAmountOfPieces: number;
+  remainingAmountOfUnits: number;
 }
 
 export interface BillsDoc {
@@ -51,4 +54,10 @@ export interface DatabaseCollectionsType
 export interface SendRequestData {
   collectionName: COLLECTIONS;
   data: DatabaseCollectionsType;
+}
+
+export interface UpdateRequestData {
+  collectionName: COLLECTIONS;
+  docId: any;
+  newData: any;
 }
