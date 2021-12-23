@@ -64,5 +64,5 @@ export interface UpdateRequestData {
 
 export interface DeleteRequestData {
   collectionName: COLLECTIONS;
-  docId: any;
+  docId: string;
 }

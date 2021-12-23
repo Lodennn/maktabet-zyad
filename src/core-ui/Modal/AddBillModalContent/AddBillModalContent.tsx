@@ -7,7 +7,7 @@ import { BillsDoc, SendRequestData } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
-import { COLLECTIONS } from "../../../constants";
+import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
@@ -57,7 +57,12 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     };
 
     // UPDATE STOCK IN DATABASE
-    dispatch(transformDataFromNormalBillToStock(billData)).then((data) => {
+    dispatch(
+      transformDataFromNormalBillToStock({
+        billData,
+        action: BillRequestAction.ADD_BILL,
+      })
+    ).then((data) => {
       //prettier-ignore
       dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: data}));
     });

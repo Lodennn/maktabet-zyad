@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { COLLECTIONS } from "../../constants";
+import { BillRequestAction, COLLECTIONS } from "../../constants";
 import { StockDoc } from "../../interfaces";
 import { StockInitialState } from "../../interfaces/redux-store";
 import { readData, updateData } from "../../services/api";
@@ -63,27 +63,32 @@ export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
 };
 
 export const transformDataFromNormalBillToStock =
-  (billData: any) => async (dispatch: AppDispatch, getState: any) => {
+  (data: any) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
 
-    const updatedStockData = billData.products.map((billProduct: any) => {
+    const updatedStockData = data.billData.products.map((billProduct: any) => {
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) => stockProduct.id === billProduct.id
       );
 
       let updatedProduct: StockDoc = {} as StockDoc;
       //prettier-ignore
-      if (billData.type !== BillType.PURCHASES_BILL && stockProductInBillIndex >= 0) {
+      if (data.billData.type !== BillType.PURCHASES_BILL && stockProductInBillIndex >= 0) {
 
         updatedProduct = {...stockData[stockProductInBillIndex]};
-
-        if(billData.type === BillType.NORMAL_BILL) {
-          //prettier-ignore
+        
+        if(data.billData.type === BillType.NORMAL_BILL && data.action === BillRequestAction.ADD_BILL) {
           updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-        } else if(billData.type === BillType.RETURNED_BILL){
-          //prettier-ignore
+
+        } else if (data.billData.type === BillType.NORMAL_BILL && data.action === BillRequestAction.DELETE_BILL) {
           updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-        }
+
+        } else if (data.billData.type === BillType.RETURNED_BILL && data.action === BillRequestAction.ADD_BILL) {
+          updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+
+        }  else if (data.billData.type === BillType.RETURNED_BILL && data.action === BillRequestAction.DELETE_BILL) {
+          updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+        } 
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
         //prettier-ignore

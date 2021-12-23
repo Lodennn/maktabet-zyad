@@ -1,6 +1,22 @@
 import React, { Fragment, MouseEvent } from "react";
-import { DBTables } from "../../../../constants";
-import { BillsDoc, PurchasesDoc } from "../../../../interfaces";
+import {
+  BillRequestAction,
+  COLLECTIONS,
+  DBTables,
+} from "../../../../constants";
+import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
+import useHttp from "../../../../hooks/use-http";
+import {
+  BillsDoc,
+  DeleteRequestData,
+  PurchasesDoc,
+} from "../../../../interfaces";
+import { deleteData } from "../../../../services/api";
+import { addBillsData } from "../../../../store/bills/bill-slice";
+import {
+  stockActions,
+  transformDataFromNormalBillToStock,
+} from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
 
@@ -11,6 +27,31 @@ const InfoTableItem: React.FC<{
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
   hideModal: (event: React.MouseEvent) => void;
 }> = (props) => {
+  const dispatch = useAppDispatch();
+
+  const { sendHttpRequest: deleteBill } = useHttp(deleteData);
+
+  const onDeleteBasicBill = (
+    bill: BillsDoc,
+    event: React.MouseEvent<HTMLLIElement>
+  ) => {
+    console.log("Delete bill", bill);
+    // UPDATE STOCK IN DATABASE
+    //prettier-ignore
+    dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL})).then((data) => {
+      //prettier-ignore
+      dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: data}));
+    });
+
+    // DELETE BILL TO DATABASE
+    deleteBill({
+      collectionName: COLLECTIONS.BILLS,
+      docId: bill.id,
+    } as DeleteRequestData).then((_) => {
+      dispatch(addBillsData());
+    });
+  };
+
   const billTypeClasses =
     props.data.type === BillType.NORMAL_BILL
       ? `${classes[`info-table-item__bill-type--normal`]}`
@@ -80,7 +121,7 @@ const InfoTableItem: React.FC<{
               </li>
               <li
                 className={classes["info-table-item__controls-control"]}
-                onClick={() => console.log("delete: ", props.data)}
+                onClick={onDeleteBasicBill.bind(null, props.data)}
               >
                 مسح
               </li>
