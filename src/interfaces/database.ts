@@ -61,3 +61,8 @@ export interface UpdateRequestData {
   docId: any;
   newData: any;
 }
+
+export interface DeleteRequestData {
+  collectionName: COLLECTIONS;
+  docId: any;
+}

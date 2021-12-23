@@ -1,3 +1,5 @@
+@import "../../../styles/Variables.scss";
+
 .bill-modal {
   padding: 2rem;
   font-size: 2rem;
@@ -15,6 +17,13 @@
     position: relative;
     &--title {
       margin-bottom: 2rem;
+    }
+    &--type-normal .value {
+      color: $color-success !important;
+    }
+
+    &--type-returned .value {
+      color: $color-danger !important;
     }
     &--products-list {
       display: grid;

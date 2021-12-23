@@ -72,10 +72,16 @@ const InfoTableItem: React.FC<{
 
           {props.admin && (
             <Fragment>
-              <li className={classes["info-table-item__controls-control"]}>
+              <li
+                className={classes["info-table-item__controls-control"]}
+                onClick={() => console.log("update: ", props.data)}
+              >
                 تعديل
               </li>
-              <li className={classes["info-table-item__controls-control"]}>
+              <li
+                className={classes["info-table-item__controls-control"]}
+                onClick={() => console.log("delete: ", props.data)}
+              >
                 مسح
               </li>
             </Fragment>

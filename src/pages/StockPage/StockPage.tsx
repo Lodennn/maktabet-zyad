@@ -65,20 +65,18 @@ const StockPage = () => {
         </div>
         {/** MOSHTRYAT TABLE */}
         <FullInfoTable
-          tableId={DBTables.PURCHASES_TABLE}
-          title="أخر المشتريات"
-          headData={purchasesTableHeadData}
-          data={purchasesData}
-          isLoading={purchasesDataLoading}
+          tableId={DBTables.MISSING_PRODUCTS_TABLE}
+          title={DBTables.MISSING_PRODUCTS_TABLE}
+          headData={missingProductsTableHeadData}
+          data={missingProductsData}
+          isLoading={missingProductsDataLoading}
         />
         <div className="grid-3fr-container mt-xg mb-xg">
           {/** MANKOSAT TABLE */}
-          <FullInfoTable
-            tableId={DBTables.MISSING_PRODUCTS_TABLE}
-            title={DBTables.MISSING_PRODUCTS_TABLE}
-            headData={missingProductsTableHeadData}
-            data={missingProductsData}
-            isLoading={missingProductsDataLoading}
+          <InfoTable
+            tableId={DBTables.PURCHASES_TABLE}
+            title="أخر المشتريات"
+            data={purchasesData}
           />
           <IncomeTable />
         </div>

@@ -1,6 +1,7 @@
 import { DBTables } from "../../../constants";
 import { billsTableHeadData, purchasesTableHeadData } from "../../../helpers";
 import { BillsDoc, PurchasesDoc } from "../../../interfaces";
+import { BillType } from "../../../types/bills";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
 import classes from "./BillModalContent.module.scss";
 
@@ -9,6 +10,12 @@ const BillModalContent: React.FC<{
   data: BillsDoc & PurchasesDoc;
   fullData: BillsDoc[];
 }> = (props) => {
+  const billTypeClasses =
+    props.data.type === BillType.NORMAL_BILL
+      ? `${classes[`bill-modal__body--type-normal`]}`
+      : props.data.type === BillType.RETURNED_BILL
+      ? `${classes[`bill-modal__body--type-returned`]}`
+      : null;
   return (
     <div className={classes["bill-modal"]}>
       <div className={classes["bill-modal__header"]}>
@@ -29,7 +36,12 @@ const BillModalContent: React.FC<{
         {props.billId === DBTables.PURCHASES_TABLE && (
           <h5>{props.data.merchantName}</h5>
         )}
-        {props.billId === DBTables.BILLS_TABLE && <h5>{props.data.type}</h5>}
+        {props.billId === DBTables.BILLS_TABLE && (
+          <h5 className={`${billTypeClasses}`}>
+            <span className="label">نوع الفاتوره: </span>
+            <span className="value">{props.data.type}</span>
+          </h5>
+        )}
         <div className="responsive-y-table">
           {props.billId === DBTables.PURCHASES_TABLE && (
             <FullInfoTable

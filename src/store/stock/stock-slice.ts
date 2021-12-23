@@ -76,15 +76,20 @@ export const transformDataFromNormalBillToStock =
       if (billData.type !== BillType.PURCHASES_BILL && stockProductInBillIndex >= 0) {
 
         updatedProduct = {...stockData[stockProductInBillIndex]};
-        //prettier-ignore
-        updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+
+        if(billData.type === BillType.NORMAL_BILL) {
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+        } else if(billData.type === BillType.RETURNED_BILL){
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+        }
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
         //prettier-ignore
         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
-      }
 
-      console.log("updatedProduct: ", updatedProduct);
+      }
 
       updateData({
         collectionName: COLLECTIONS.STOCK,

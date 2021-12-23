@@ -156,20 +156,12 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
             </div>
             <ul className={classes["add-bill-form__actions--info"]}>
               <li className={classes["add-bill-form__actions--info-item"]}>
-                <span className={classes["add-bill-form__actions--info-label"]}>
-                  عدد المنتجات
-                </span>
-                <span className={classes["add-bill-form__actions--info-value"]}>
-                  {billProducts.length}
-                </span>
+                <span className="label">عدد المنتجات</span>
+                <span className="value">{billProducts.length}</span>
               </li>
               <li className={classes["add-bill-form__actions--info-item"]}>
-                <span className={classes["add-bill-form__actions--info-label"]}>
-                  المجموع
-                </span>
-                <span className={classes["add-bill-form__actions--info-value"]}>
-                  {billProductsData.billTotal}
-                </span>
+                <span className="label">المجموع</span>
+                <span className="value">{billProductsData.billTotal}</span>
               </li>
             </ul>
           </div>

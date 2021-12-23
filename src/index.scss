@@ -227,3 +227,14 @@ ul {
   margin: 2rem 0;
   text-align: center;
 }
+
+.label {
+  color: $color-gray-dark;
+  margin-left: 1rem;
+  font-size: 1.4rem;
+}
+.value {
+  color: $color-gray-dark-2;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
