@@ -38,10 +38,7 @@ const InfoTableItem: React.FC<{
     console.log("Delete bill", bill);
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL})).then((data) => {
-      //prettier-ignore
-      dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: data}));
-    });
+    dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
     // DELETE BILL TO DATABASE
     deleteBill({

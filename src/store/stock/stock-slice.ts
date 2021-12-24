@@ -106,8 +106,7 @@ export const transformDataFromNormalBillToStock =
     });
 
     //prettier-ignore
-
-    return updatedStockData;
+    dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: updatedStockData}));
   };
 
 export default stockSlice.reducer;
