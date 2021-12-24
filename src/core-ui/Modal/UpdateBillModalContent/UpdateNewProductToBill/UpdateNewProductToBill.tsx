@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { CRUDRequest } from "../../../../constants";
 import useBillProducts from "../../../../hooks/use-bill-products";
-import useUpdateBill from "../../../../hooks/use-update-bill";
 import { BillsDoc } from "../../../../interfaces";
 import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
@@ -9,40 +9,39 @@ import classes from "./UpdateNewProductToBill.module.scss";
 
 const UpdateNewProductToBill: React.FC<{
   dispatchBillActions: Function;
-  billData: any;
+  billData: BillsDoc;
   billType: BillType;
+  CRUDRequest?: CRUDRequest;
   removeNewBillProduct: Function;
   billFallbackData: any;
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct, billType } = props;
 
-  // const {
-  //   billProductsConfig,
-  //   getSearchValue,
-  //   onChangeProductAmountHandler,
-  //   removeProductFromBill,
-  // } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
-
-  const {
-    billProductsConfig,
-    getSearchValue,
-    onChangeProductAmountHandler,
-    removeProductFromBill,
-  } = useUpdateBill(dispatchBillActions, removeNewBillProduct, billType, {
-    billSelectedProducts: props.billData.products,
-    billTotal: props.billData.total,
-  });
+  const { billProductsConfig, getSearchValue, onChangeProductAmountHandler } =
+    useBillProducts(
+      dispatchBillActions,
+      removeNewBillProduct,
+      billType,
+      props.billData,
+      props.CRUDRequest
+    );
 
   return (
     <Fragment>
+      {/* {props.billFallbackData.billSelectedProducts.map((product: any) => { */}
       {props.billFallbackData.billSelectedProducts.map((product: any) => {
+        //prettier-ignore
+        const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
+        //prettier-ignore
+        const updatedProductAmount = product.updatedProductAmount ? product.updatedProductAmount : 1;
+
         return (
           <Fragment key={product.id}>
             {/** PRODUCT *************************** */}
-            <div className={classes["add-bill-product"]}>
+            <div className={classes["update-bill-product"]}>
               {/** PRODUCT NAME */}
               <div
-                className={`${classes["add-bill-product__info"]} ${classes["add-bill-product__info--product-name"]}`}
+                className={`${classes["update-bill-product__info"]} ${classes["update-bill-product__info--product-name"]}`}
               >
                 <label
                   htmlFor={`bill-product-name-${product.id}`}
@@ -50,51 +49,62 @@ const UpdateNewProductToBill: React.FC<{
                 >
                   اسم المنتج
                 </label>
-                <div>{product.productName}</div>
+                <div
+                  className={classes["update-bill-product__info--static-value"]}
+                >
+                  {product.productName}
+                </div>
                 {/* <SmartSearch getSearchValue={getSearchValue} /> */}
               </div>
               {/** PRODUCT PRICE */}
-              <div className={classes["add-bill-product__info"]}>
+              <div className={classes["update-bill-product__info"]}>
                 <label className="form-label">سعر المنتج</label>
-                {product.id && (
-                  <span className={classes["add-bill-product__info--input"]}>
-                    {product.priceOfUnit}
-                  </span>
-                )}
+                <span
+                  className={classes["update-bill-product__info--static-value"]}
+                >
+                  {product.priceOfUnit}
+                </span>
               </div>
-              {/** PRODUCT AMOUNT */}
-              <div className={classes["add-bill-product__info"]}>
+              {/** PRODUCT OLD AMOUNT */}
+              <div className={classes["update-bill-product__info"]}>
+                <label className="form-label">الكميه القديمه</label>
+                <span
+                  className={classes["update-bill-product__info--static-value"]}
+                >
+                  {oldProduct.totalProductAmount}
+                </span>
+              </div>
+              {/** PRODUCT NEW AMOUNT */}
+              <div className={classes["update-bill-product__info"]}>
                 <label
                   htmlFor={`bill-product-amount-${product.id}`}
                   className="form-label"
                 >
-                  الكميه
-                  {/* <h5 className="label">
-                    القيمه القديمه{" "}
-                    <span className="value">{product.totalProductAmount}</span>
-                  </h5> */}
+                  الكميه الجديده
                 </label>
-                {product.id && (
-                  <input
-                    type="number"
-                    id={`bill-product-amount-${product.id}`}
-                    className={classes["add-bill-product__info--input"]}
-                    min={1}
-                    max={product.totalNumberOfUnits}
-                    name="bill-product-amount"
-                    placeholder={product.totalProductAmount}
-                    value={product.totalProductAmount}
-                    onChange={onChangeProductAmountHandler.bind(null, product)}
-                  />
-                )}
+                <input
+                  type="number"
+                  id={`bill-product-amount-${product.id}`}
+                  className={classes["update-bill-product__info--input"]}
+                  min={1}
+                  max={product.totalNumberOfUnits}
+                  step="0.01"
+                  name="bill-product-amount"
+                  value={updatedProductAmount}
+                  onChange={onChangeProductAmountHandler.bind(null, oldProduct)}
+                />
               </div>
               {/** PRODUCT TOTAL PRICE */}
-              <div className={classes["add-bill-product__info"]}>
+              <div className={classes["update-bill-product__info"]}>
                 <label htmlFor="bill-product-total" className="form-label">
                   المجموع
                 </label>
                 {product.id && (
-                  <span className={classes["add-bill-product__info--input"]}>
+                  <span
+                    className={
+                      classes["update-bill-product__info--static-value"]
+                    }
+                  >
                     {product.priceOfUnit * product.totalProductAmount}
                   </span>
                 )}

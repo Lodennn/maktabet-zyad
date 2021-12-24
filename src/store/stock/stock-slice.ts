@@ -38,7 +38,6 @@ const stockSlice = createSlice({
       state.filteredStockData = tempStockData;
     },
     updateStockProductsFromBill(state, action) {
-      console.log("updateStockProductsFromBill()");
       action.payload.updatedStockProducts.forEach((billProduct: StockDoc) => {
         //prettier-ignore
         const stockProductIndex = state.data.findIndex((stockProduct: StockDoc) => stockProduct.id === billProduct.id);
@@ -77,17 +76,28 @@ export const transformDataFromNormalBillToStock =
 
         updatedProduct = {...stockData[stockProductInBillIndex]};
         
-        if(data.billData.type === BillType.NORMAL_BILL && data.action === BillRequestAction.ADD_BILL) {
-          updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+        if(data.billData.type === BillType.NORMAL_BILL) {
+          if(data.action === BillRequestAction.ADD_BILL) {
+            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+          }
+          if(data.action === BillRequestAction.UPDATE_BILL) {
+            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+          }
+          if(data.action === BillRequestAction.DELETE_BILL) {
+            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+          }
 
-        } else if (data.billData.type === BillType.NORMAL_BILL && data.action === BillRequestAction.DELETE_BILL) {
-          updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+        } else if (data.billData.type === BillType.RETURNED_BILL) {
+          if(data.action === BillRequestAction.ADD_BILL) {
+            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+          }
+          if(data.action === BillRequestAction.UPDATE_BILL) {
+            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+          }
+          if(data.action === BillRequestAction.DELETE_BILL) {
+            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+          }
 
-        } else if (data.billData.type === BillType.RETURNED_BILL && data.action === BillRequestAction.ADD_BILL) {
-          updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-
-        }  else if (data.billData.type === BillType.RETURNED_BILL && data.action === BillRequestAction.DELETE_BILL) {
-          updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
         } 
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);

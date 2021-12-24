@@ -39,24 +39,23 @@ const InfoTableItem: React.FC<{
   //   event: React.MouseEvent<HTMLLIElement>
   // ) => {
   //   console.log("Update bill", bill);
-  // UPDATE STOCK IN DATABASE
-  //prettier-ignore
-  // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.UPDATE_BILL}));
+  //   // UPDATE STOCK IN DATABASE
+  //   // prettier-ignore
+  //   dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.UPDATE_BILL}));
 
-  // UPDATE BILL TO DATABASE
-  // updateBill({
-  //   collectionName: COLLECTIONS.BILLS,
-  //   docId: bill.id,
-  // } as UpdateRequestData).then((_) => {
-  //   dispatch(addBillsData());
-  // });
+  //   // UPDATE BILL TO DATABASE
+  //   updateBill({
+  //     collectionName: COLLECTIONS.BILLS,
+  //     docId: bill.id,
+  //   } as UpdateRequestData).then((_) => {
+  //     dispatch(addBillsData());
+  //   });
   // };
 
   const onDeleteBasicBill = (
     bill: BillsDoc,
     event: React.MouseEvent<HTMLLIElement>
   ) => {
-    console.log("Delete bill", bill);
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));

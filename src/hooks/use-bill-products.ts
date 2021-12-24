@@ -1,5 +1,6 @@
-import { useReducer, useState } from "react";
-import { StockDoc } from "../interfaces";
+import { useEffect, useReducer, useState } from "react";
+import { CRUDRequest } from "../constants";
+import { BillsDoc, StockDoc } from "../interfaces";
 import { BillType } from "../types/bills";
 
 export interface PurchaseBillConfigInitialState {
@@ -8,6 +9,8 @@ export interface PurchaseBillConfigInitialState {
   searchedProductPiecePrice: number;
   searchedProductNumberOfUnits: number;
   searchedProductUnitPrice: number;
+  searchedProductOldAmount: number;
+  searchedUpdatedProductAmount: number;
 }
 
 type PurchaseBillActionType = {
@@ -21,12 +24,21 @@ const initialState: PurchaseBillConfigInitialState = {
   searchedProductPiecePrice: 0,
   searchedProductNumberOfUnits: 0,
   searchedProductUnitPrice: 0,
+  searchedProductOldAmount: 0,
+  searchedUpdatedProductAmount: 0,
 };
 
 const reducerFn = (
   state: PurchaseBillConfigInitialState = initialState,
   action: PurchaseBillActionType
 ) => {
+  if (action.type === "CHANGE_UPDATED_PRODUCT_AMOUNT") {
+    return {
+      ...state,
+      searchedProductOldAmount: action.payload.data,
+      searchedUpdatedProductAmount: action.payload.data,
+    };
+  }
   if (action.type === "SET_SEARCHED_PRODUCT") {
     return {
       ...state,
@@ -63,8 +75,23 @@ const reducerFn = (
 const useBillProducts = (
   dispatchBillActions: Function,
   removeNewBillProduct: Function,
-  billType: BillType
+  billType: BillType,
+  billData?: BillsDoc,
+  crudID?: CRUDRequest
 ) => {
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // UPDATE BILL CASE =========================================
+  // UPDATE BILL CASE =========================================
+  useEffect(() => {
+    //prettier-ignore
+    if(billData && billData.id) {
+      dispatchBillActions({type: "UPDATE_PRODUCT", payload: { data: billData }});
+    }
+  }, []);
+  // UPDATE BILL CASE =========================================
+  // UPDATE BILL CASE =========================================
+  //////////////////////////////////////////////////////////////////////////////////////////////
+
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
     initialState
@@ -106,23 +133,36 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: targetValue,
+      oldProductAmount: 0,
+      updatedProductAmount: 0,
     };
 
     if (billType === BillType.PURCHASES_BILL) {
-      //prettier-ignore
-      updatedSearchedProductData.numberOfUnits = billProductsConfig.searchedProductNumberOfUnits;
-      //prettier-ignore
-      updatedSearchedProductData.priceOfUnit = billProductsConfig.searchedProduct.priceOfUnit;
-      //prettier-ignore
-      updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
+      if (crudID === CRUDRequest.CREATE) {
+        //prettier-ignore
+        updatedSearchedProductData.numberOfUnits = billProductsConfig.searchedProductNumberOfUnits;
+        //prettier-ignore
+        updatedSearchedProductData.priceOfUnit = billProductsConfig.searchedProduct.priceOfUnit;
+        //prettier-ignore
+        updatedSearchedProductData.priceOfPiece = billProductsConfig.searchedProductPiecePrice;
+      }
     } else {
       updatedSearchedProductData.priceOfUnit = searchedProduct.priceOfUnit;
-
       if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
         return;
+      if (crudID === CRUDRequest.UPDATE) {
+        updatedSearchedProductData.oldProductAmount =
+          searchedProduct.totalProductAmount;
+        updatedSearchedProductData.updatedProductAmount = targetValue;
+      }
     }
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
+      payload: { data: targetValue },
+    });
+
+    dispatchBillConfigActions({
+      type: "CHANGE_UPDATED_PRODUCT_AMOUNT",
       payload: { data: targetValue },
     });
 

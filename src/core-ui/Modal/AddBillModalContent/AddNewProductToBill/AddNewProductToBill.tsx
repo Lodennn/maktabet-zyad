@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { CRUDRequest } from "../../../../constants";
 import useBillProducts from "../../../../hooks/use-bill-products";
 import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
@@ -19,12 +20,13 @@ const AddNewProductToBill: React.FC<{
     getSearchValue,
     onChangeProductAmountHandler,
     removeProductFromBill,
-  } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
-
-  // console.log(
-  //   "billProductsConfig.searchedProduct: ",
-  //   billProductsConfig.searchedProduct
-  // );
+  } = useBillProducts(
+    dispatchBillActions,
+    removeNewBillProduct,
+    billType,
+    undefined,
+    CRUDRequest.CREATE
+  );
 
   return (
     <Fragment>

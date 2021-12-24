@@ -4,6 +4,7 @@ import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToPurchaseBill.module.scss";
 import useBillProducts from "../../../../hooks/use-bill-products";
 import { BillType } from "../../../../types/bills";
+import { CRUDRequest } from "../../../../constants";
 
 const AddNewProductToPurchaseBill: React.FC<{
   productIndex: number;
@@ -22,9 +23,13 @@ const AddNewProductToPurchaseBill: React.FC<{
     onChangeNumberOfUnitsHandler,
     onChangePriceOfUnit,
     removeProductFromBill,
-  } = useBillProducts(dispatchBillActions, removeNewBillProduct, billType);
-
-  console.log("billProductsConfig", billProductsConfig.searchedProduct);
+  } = useBillProducts(
+    dispatchBillActions,
+    removeNewBillProduct,
+    billType,
+    undefined,
+    CRUDRequest.CREATE
+  );
 
   return (
     <Fragment>

@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { CRUDRequest } from "../constants";
 import { StockDoc } from "../interfaces";
 import { BillType } from "../types/bills";
 
@@ -12,7 +13,10 @@ type PurchaseBillActionType = {
   payload: { data: any };
 };
 
-const useBillProductsController = (billType: BillType) => {
+const useBillProductsController = (
+  billType: BillType,
+  crudID?: CRUDRequest
+) => {
   const initialState: PurchaseBillInitialState = {
     billSelectedProducts: [],
     billTotal: 0,
@@ -23,11 +27,10 @@ const useBillProductsController = (billType: BillType) => {
     action: PurchaseBillActionType
   ) => {
     if (action.type === "UPDATE_PRODUCT") {
-      console.log("[ACTION]: ", action.payload.data.products);
       return {
         ...state,
-        billSelectedProducts: action.payload.data.billSelectedProducts,
-        billTotal: action.payload.data.billTotal,
+        billSelectedProducts: action.payload.data.products,
+        billTotal: action.payload.data.total,
       };
     }
     if (action.type === "ADD_PRODUCT") {
@@ -36,12 +39,27 @@ const useBillProductsController = (billType: BillType) => {
       );
 
       let updatedBillProducts: StockDoc[] = [];
+      let searchedProduct: any;
 
       if (searchedProductIndex >= 0) {
         updatedBillProducts = [...state.billSelectedProducts];
+        //prettier-ignore
+        if (billType !== BillType.PURCHASES_BILL && crudID && crudID === CRUDRequest.UPDATE) {
+          searchedProduct = {
+            ...action.payload.data,
+
+            totalProductAmount: Math.abs(
+              action.payload.data.oldProductAmount -
+              action.payload.data.totalProductAmount
+              ),
+            };
+            
+          } else {
+            searchedProduct = {...action.payload.data};
+        }
 
         //prettier-ignore
-        updatedBillProducts[searchedProductIndex] = action.payload.data;
+        updatedBillProducts[searchedProductIndex] = searchedProduct
       } else {
         updatedBillProducts = state.billSelectedProducts.concat(
           action.payload.data
@@ -94,7 +112,7 @@ const useBillProductsController = (billType: BillType) => {
     reducerFn,
     initialState
   );
-  return { billProductsData, dispatchBillActions, billType };
+  return { billProductsData, dispatchBillActions, billType, crudID };
 };
 
 export default useBillProductsController;

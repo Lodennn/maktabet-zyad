@@ -3,11 +3,19 @@ import Switch from "../../Switch/Switch";
 import { FaEdit } from "react-icons/fa";
 import classes from "./UpdateBillModalContent.module.scss";
 import UpdateNewProductToBill from "./UpdateNewProductToBill/UpdateNewProductToBill";
-import { BillsDoc, SendRequestData } from "../../../interfaces";
+import {
+  BillsDoc,
+  SendRequestData,
+  UpdateRequestData,
+} from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
-import { sendData } from "../../../services/api";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
+import { sendData, updateData } from "../../../services/api";
+import {
+  BillRequestAction,
+  COLLECTIONS,
+  CRUDRequest,
+} from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
@@ -20,7 +28,7 @@ import { useAppSelector } from "../../../hooks/use-app-selector";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
-  hideUpdateModal: (event: React.MouseEvent) => void;
+  hideUpdateModal: Function;
 }> = (props) => {
   const billDataType = props.data.type === BillType.NORMAL_BILL;
   const [billType, setBillType] = useState<boolean>(billDataType);
@@ -33,17 +41,18 @@ const UpdateBillModalContent: React.FC<{
     billProductsData,
     dispatchBillActions,
     billType: controllerBillType,
+    crudID: CRUDUpdateRequest,
   } = useBillProductsController(
-    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL
+    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
+    CRUDRequest.UPDATE
   );
 
   const {
     productFormArray: billProducts,
-    addProductFormData: addNewBillProduct,
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  const { sendHttpRequest: insertBill } = useHttp(sendData);
+  const { sendHttpRequest: updateBill } = useHttp(updateData);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -59,22 +68,23 @@ const UpdateBillModalContent: React.FC<{
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
     };
 
-    console.log('billData Submitted: ', billData)
+    console.log('FINAL DATA: ', billData)
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL,}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    // INSERT BILL TO DATABASE
-    // insertBill({
+    // UPDATE BILL IN DATABASE
+    // updateBill({
     //   collectionName: COLLECTIONS.BILLS,
-    //   data: billData,
-    // } as SendRequestData)
+    //   docId: billData.id,
+    //   newData: billData,
+    // } as UpdateRequestData)
     //   .then((_) => {
     //     dispatch(addBillsData());
     //   })
     //   .then((_) => {
-    //     props.hideAddBillModal();
+    //     props.hideUpdateModal();
     //   });
   };
 
@@ -130,6 +140,7 @@ const UpdateBillModalContent: React.FC<{
                     billData={props.data}
                     billFallbackData={billProductsData}
                     billType={controllerBillType}
+                    CRUDRequest={CRUDUpdateRequest}
                     removeNewBillProduct={removeNewBillProduct}
                   />
                 );

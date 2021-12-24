@@ -8,8 +8,10 @@ import classes from "./SmartSearch.module.scss";
 const SmartSearch: React.FC<{
   getSearchValue: Function;
   dispatchBillActions?: Function;
+  updateValue?: string;
 }> = (props) => {
-  const [searchValue, setSearchValue] = useState<string>("");
+  //prettier-ignore
+  const [searchValue, setSearchValue] = useState<string>(!!props.updateValue ? props.updateValue : '');
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
 
