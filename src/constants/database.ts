@@ -26,3 +26,10 @@ export enum TableFields {
   TOTAL_PROFIT = "الربح الكلي",
   DATE = "التاريخ",
 }
+
+export enum CRUDRequest {
+  CREATE = "create",
+  READ = "read",
+  UPDATE = "update",
+  DELETE = "delete",
+}

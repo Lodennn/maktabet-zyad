@@ -22,6 +22,14 @@ const useBillProductsController = (billType: BillType) => {
     state: PurchaseBillInitialState = initialState,
     action: PurchaseBillActionType
   ) => {
+    if (action.type === "UPDATE_PRODUCT") {
+      console.log("[ACTION]: ", action.payload.data.products);
+      return {
+        ...state,
+        billSelectedProducts: action.payload.data.billSelectedProducts,
+        billTotal: action.payload.data.billTotal,
+      };
+    }
     if (action.type === "ADD_PRODUCT") {
       const searchedProductIndex = [...state.billSelectedProducts].findIndex(
         (searchedProduct) => searchedProduct.id === action.payload.data.id

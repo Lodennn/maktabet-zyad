@@ -4,6 +4,7 @@ import useReadData from "../../../hooks/use-read-data";
 import FilterByDate from "../../FilterByDate/FilterByDate";
 import BillModalContent from "../../Modal/BillModalContent/BillModalContent";
 import Modal from "../../Modal/Modal";
+import UpdateBillModalContent from "../../Modal/UpdateBillModalContent/UpdateBillModalContent";
 import classes from "./InfoTable.module.scss";
 import InfoTableItem from "./InfoTableItem/InfoTableItem";
 
@@ -15,6 +16,12 @@ const InfoTable: React.FC<{
   admin?: boolean;
 }> = (props) => {
   const { showModal, triggerModalAction, hideModal, readData } = useReadData();
+  const {
+    showModal: showUpdateModal,
+    triggerModalAction: triggerUpdateModalAction,
+    hideModal: hideUpdateModal,
+    readData: updateData,
+  } = useReadData();
 
   return (
     <Fragment>
@@ -25,6 +32,16 @@ const InfoTable: React.FC<{
               billId={props.tableId}
               data={readData}
               fullData={props.data}
+            />
+          )}
+        </Modal>
+      )}
+      {showUpdateModal && (
+        <Modal onHide={hideUpdateModal}>
+          {updateData && (
+            <UpdateBillModalContent
+              data={updateData}
+              hideUpdateModal={hideUpdateModal}
             />
           )}
         </Modal>
@@ -48,6 +65,7 @@ const InfoTable: React.FC<{
                 data={data}
                 hideModal={hideModal}
                 triggerModalAction={triggerModalAction}
+                triggerUpdateModalAction={triggerUpdateModalAction}
               />
             );
           })

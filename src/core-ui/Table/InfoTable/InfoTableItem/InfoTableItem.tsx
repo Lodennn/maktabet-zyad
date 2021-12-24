@@ -9,9 +9,10 @@ import useHttp from "../../../../hooks/use-http";
 import {
   BillsDoc,
   DeleteRequestData,
+  UpdateRequestData,
   PurchasesDoc,
 } from "../../../../interfaces";
-import { deleteData } from "../../../../services/api";
+import { deleteData, updateData } from "../../../../services/api";
 import { addBillsData } from "../../../../store/bills/bill-slice";
 import {
   stockActions,
@@ -25,11 +26,31 @@ const InfoTableItem: React.FC<{
   admin?: boolean;
   data: BillsDoc & PurchasesDoc;
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
+  triggerUpdateModalAction: (data: any, event: React.MouseEvent) => void;
   hideModal: (event: React.MouseEvent) => void;
 }> = (props) => {
   const dispatch = useAppDispatch();
 
   const { sendHttpRequest: deleteBill } = useHttp(deleteData);
+
+  // const { sendHttpRequest: updateBill } = useHttp(updateData);
+  // const onUpdateBasicBill = (
+  //   bill: BillsDoc,
+  //   event: React.MouseEvent<HTMLLIElement>
+  // ) => {
+  //   console.log("Update bill", bill);
+  // UPDATE STOCK IN DATABASE
+  //prettier-ignore
+  // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.UPDATE_BILL}));
+
+  // UPDATE BILL TO DATABASE
+  // updateBill({
+  //   collectionName: COLLECTIONS.BILLS,
+  //   docId: bill.id,
+  // } as UpdateRequestData).then((_) => {
+  //   dispatch(addBillsData());
+  // });
+  // };
 
   const onDeleteBasicBill = (
     bill: BillsDoc,
@@ -112,7 +133,7 @@ const InfoTableItem: React.FC<{
             <Fragment>
               <li
                 className={classes["info-table-item__controls-control"]}
-                onClick={() => console.log("update: ", props.data)}
+                onClick={props.triggerUpdateModalAction.bind(null, props.data)}
               >
                 تعديل
               </li>
