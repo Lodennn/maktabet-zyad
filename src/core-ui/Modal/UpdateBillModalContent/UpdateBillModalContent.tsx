@@ -75,9 +75,6 @@ const UpdateBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
-    console.log("billData: ", billData);
-    console.log("props.data: ", props.data);
-
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));

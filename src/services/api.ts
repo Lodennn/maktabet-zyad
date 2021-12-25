@@ -40,7 +40,6 @@ export const sendData = async (requestData: SendRequestData) => {
 export const updateData = async (requestData: UpdateRequestData) => {
   try {
     const { collectionName, docId, newData } = requestData;
-    console.log("UPDATE: ", newData, docId);
     const docRef = doc(db, collectionName, docId);
     await updateDoc(docRef, newData);
   } catch (err) {

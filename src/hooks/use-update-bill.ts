@@ -57,7 +57,6 @@ const useUpdateBill = (
   useEffect(() => {
     //prettier-ignore
     if(billData && billData.id) {
-      console.log('INSTANT UPDATE BILL')
       dispatchBillActions({type: "UPDATE_PRODUCT", payload: { data: billData }});
     }
   }, []);
@@ -88,7 +87,6 @@ const useUpdateBill = (
 
     //prettier-ignore
     if (billType === BillType.NORMAL_BILL || billType === BillType.RETURNED_BILL) {
-        console.log('UPDATE THIS BILL', searchedProduct.totalProductAmount)
     
       updatedSearchedProductData.priceOfUnit = searchedProduct.priceOfUnit;
       if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
@@ -100,12 +98,6 @@ const useUpdateBill = (
         //prettier-ignore
         updatedSearchedProductData.totalProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount - targetValue);
     }
-
-    console.log("updatedSearchedProductData: ", updatedSearchedProductData);
-    // dispatchBillConfigActions({
-    //   type: "CHANGE_PRODUCT_AMOUNT",
-    //   payload: { data: targetValue },
-    // });
 
     dispatchBillConfigActions({
       type: "CHANGE_UPDATED_PRODUCT_AMOUNT",

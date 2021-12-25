@@ -55,8 +55,6 @@ const useBillProductsController = (
         );
       }
 
-      console.log("BILL CONTROLLER - ", updatedBillProducts);
-
       let updatedBillTotal;
 
       if (billType === BillType.PURCHASES_BILL) {

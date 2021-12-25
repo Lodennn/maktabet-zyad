@@ -38,7 +38,7 @@ const InfoTableItem: React.FC<{
   //   bill: BillsDoc,
   //   event: React.MouseEvent<HTMLLIElement>
   // ) => {
-  //   console.log("Update bill", bill);
+
   //   // UPDATE STOCK IN DATABASE
   //   // prettier-ignore
   //   dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.UPDATE_BILL}));
@@ -91,26 +91,83 @@ const InfoTableItem: React.FC<{
               {props.data.type}
             </h3>
           )}
-          {props.data.products.map((product: any) => {
-            return (
-              <Fragment key={product.id}>
-                <li className={classes["info-table-item__products-item"]}>
-                  <span
-                    className={classes["info-table-item__products-item--count"]}
-                  >
-                    {product.totalProductAmount}
-                  </span>
-                  <span
-                    className={
-                      classes["info-table-item__products-item--category"]
-                    }
-                  >
-                    {product.category}
-                  </span>
-                </li>
-              </Fragment>
-            );
-          })}
+          {props.tableId === DBTables.PURCHASES_TABLE &&
+            props.data.products.map((product: any) => {
+              return (
+                <Fragment key={product.id}>
+                  <li className={classes["info-table-item__products-item"]}>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--count"]
+                      }
+                    >
+                      {product.totalProductAmount}
+                    </span>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--category"]
+                      }
+                    >
+                      {product.category}
+                    </span>
+                  </li>
+                </Fragment>
+              );
+            })}
+          {props.tableId === DBTables.BILLS_TABLE &&
+            props.data.type === BillType.NORMAL_BILL &&
+            props.data.products.map((product: any) => {
+              console.log("props.billType: ", props.data.type);
+              console.log("products: ", product);
+              return (
+                <Fragment key={product.id}>
+                  <li className={classes["info-table-item__products-item"]}>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--count"]
+                      }
+                    >
+                      {product.totalProductAmount}
+                    </span>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--category"]
+                      }
+                    >
+                      {product.category}
+                    </span>
+                  </li>
+                </Fragment>
+              );
+            })}
+
+          {props.tableId === DBTables.BILLS_TABLE &&
+            props.data.type === BillType.RETURNED_BILL &&
+            props.data.products.map((product: any) => {
+              console.log("props.billType: ", props.data.type);
+              console.log("products: ", product);
+              return (
+                <Fragment key={product.id}>
+                  <li className={classes["info-table-item__products-item"]}>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--count"]
+                      }
+                    >
+                      {product.totalProductAmount}
+                    </span>
+                    <span
+                      className={
+                        classes["info-table-item__products-item--category"]
+                      }
+                    >
+                      {product.category}
+                    </span>
+                  </li>
+                </Fragment>
+              );
+            })}
+
           <div className={classes["info-table-item__bill-price"]}>
             {props.data.total} L.E
           </div>

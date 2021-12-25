@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { DBTables } from "../../../constants";
 import useReadData from "../../../hooks/use-read-data";
+import { BillType } from "../../../types/bills";
 import FilterByDate from "../../FilterByDate/FilterByDate";
 import BillModalContent from "../../Modal/BillModalContent/BillModalContent";
 import Modal from "../../Modal/Modal";

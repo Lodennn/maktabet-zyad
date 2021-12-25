@@ -18,15 +18,7 @@ const UpdateNewProductToBill: React.FC<{
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct, billType } = props;
 
-  // const { billProductsConfig, getSearchValue, onChangeProductAmountHandler } =
-  //   useBillProducts(
-  //     dispatchBillActions,
-  //     removeNewBillProduct,
-  //     billType,
-  //     props.billData,
-  //     props.CRUDRequest
-  //   );
-  const { billProductsConfig, onChangeProductAmountHandler } = useUpdateBill(
+  const { onChangeProductAmountHandler } = useUpdateBill(
     dispatchBillActions,
     removeNewBillProduct,
     billType,
@@ -48,7 +40,7 @@ const UpdateNewProductToBill: React.FC<{
         //prettier-ignore
         const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
         //prettier-ignore
-        const updatedProductAmount = product.updatedProductAmount ? product.updatedProductAmount : 1;
+        const updatedProductAmount = product.updatedProductAmount ? product.updatedProductAmount : 0;
 
         return (
           <Fragment key={product.id}>

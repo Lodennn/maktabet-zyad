@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardDataCards from "../../components/DashboardCards/DashboardDataCards";
 import LineChartComponent from "../../components/DashboardAnalysis/LineChart/LineChart";
 import PieChartComponent from "../../components/DashboardAnalysis/PieChart/PieChart";
@@ -16,6 +16,8 @@ import { addStockDataToStore } from "../../store/stock/stock-slice";
 import { addMissingProductsDataToStore } from "../../store/missing-products/missing-products-slice";
 import classes from "./StockPage.module.scss";
 import { addPurchasesDataToStore } from "../../store/purchases/purchases-slice";
+import { BillsDoc } from "../../interfaces";
+import { BillType } from "../../types/bills";
 
 const StockPage = () => {
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
@@ -26,12 +28,16 @@ const StockPage = () => {
     (state) => state.bills
   );
 
+  const [normalBillsData, setNormalBillsData] = useState<BillsDoc[]>([]);
+  const [returnedBillsData, setReturnedBillsData] = useState<BillsDoc[]>([]);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(addStockDataToStore());
-    dispatch(addMissingProductsDataToStore());
-    dispatch(addPurchasesDataToStore());
+    //prettier-ignore
+    setNormalBillsData(billsData.filter(billData => billData.type === BillType.NORMAL_BILL));
+    //prettier-ignore
+    setReturnedBillsData(billsData.filter(billData => billData.type === BillType.RETURNED_BILL));
   }, [dispatch]);
 
   return (
@@ -55,12 +61,12 @@ const StockPage = () => {
           <InfoTable
             tableId={DBTables.BILLS_TABLE}
             title="الفواتير"
-            data={billsData}
+            data={normalBillsData}
           />
           <InfoTable
             tableId={DBTables.BILLS_TABLE}
             title="المرتجع"
-            data={billsData}
+            data={returnedBillsData}
           />
         </div>
         {/** MOSHTRYAT TABLE */}
