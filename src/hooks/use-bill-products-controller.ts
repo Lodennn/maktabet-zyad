@@ -1,5 +1,6 @@
 import { useReducer } from "react";
 import { CRUDRequest } from "../constants";
+import { resetBillProductsTotalAmount } from "../helpers/functions";
 import { StockDoc } from "../interfaces";
 import { BillType } from "../types/bills";
 
@@ -27,9 +28,11 @@ const useBillProductsController = (
     action: PurchaseBillActionType
   ) => {
     if (action.type === "UPDATE_PRODUCT") {
+      //prettier-ignore
+      const billProducts = resetBillProductsTotalAmount(action.payload.data.products);
       return {
         ...state,
-        billSelectedProducts: action.payload.data.products,
+        billSelectedProducts: billProducts,
         billTotal: action.payload.data.total,
       };
     }
@@ -71,13 +74,6 @@ const useBillProductsController = (
             updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
               return acc + cur.priceOfUnit * cur.updatedProductAmount!;
             }, 0);
-            // updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-            //   return (
-            //     acc +
-            //     cur.priceOfUnit *
-            //       (cur.totalProductAmount! + cur.oldProductAmount!)
-            //   );
-            // }, 0);
           }
         }
       }

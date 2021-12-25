@@ -25,7 +25,11 @@ import {
   transformDataFromNormalBillToStock,
 } from "../../../store/stock/stock-slice";
 import { useAppSelector } from "../../../hooks/use-app-selector";
-import { trimBillDataBeforeAction } from "../../../helpers/functions";
+import {
+  changeBillProductsTotalAmount,
+  resetBillProductsTotalAmount,
+  trimBillDataBeforeAction,
+} from "../../../helpers/functions";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
@@ -71,13 +75,14 @@ const UpdateBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
+    console.log("billData: ", billData);
+    console.log("props.data: ", props.data);
+
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    billData.products.forEach((billProduct: any) => {
-      billProduct.totalProductAmount = billProduct.updatedProductAmount;
-    });
+    changeBillProductsTotalAmount(billData.products);
 
     trimBillDataBeforeAction(billData.products);
 
