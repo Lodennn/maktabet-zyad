@@ -38,9 +38,14 @@ export const sendData = async (requestData: SendRequestData) => {
 
 // Update
 export const updateData = async (requestData: UpdateRequestData) => {
-  const { collectionName, docId, newData } = requestData;
-  const docRef = doc(db, collectionName, docId);
-  await updateDoc(docRef, newData);
+  try {
+    const { collectionName, docId, newData } = requestData;
+    console.log("UPDATE: ", newData, docId);
+    const docRef = doc(db, collectionName, docId);
+    await updateDoc(docRef, newData);
+  } catch (err) {
+    console.error("err: ", err);
+  }
 };
 
 // Delete

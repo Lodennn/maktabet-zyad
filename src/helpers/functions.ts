@@ -5,3 +5,10 @@ import { StockDoc } from "../interfaces";
 //     delete product.totalProductAmount;
 //   });
 // };
+
+export const trimBillDataBeforeAction = (productsArray: any[]) => {
+  productsArray.forEach((product: any) => {
+    delete product.oldProductAmount;
+    delete product.updatedProductAmount;
+  });
+};

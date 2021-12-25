@@ -39,42 +39,47 @@ const useBillProductsController = (
       );
 
       let updatedBillProducts: StockDoc[] = [];
-      let searchedProduct: any;
 
       if (searchedProductIndex >= 0) {
         updatedBillProducts = [...state.billSelectedProducts];
         //prettier-ignore
-        if (billType !== BillType.PURCHASES_BILL && crudID && crudID === CRUDRequest.UPDATE) {
-          searchedProduct = {
-            ...action.payload.data,
-
-            totalProductAmount: Math.abs(
-              action.payload.data.oldProductAmount -
-              action.payload.data.totalProductAmount
-              ),
-            };
-            
-          } else {
-            searchedProduct = {...action.payload.data};
-        }
 
         //prettier-ignore
-        updatedBillProducts[searchedProductIndex] = searchedProduct
+        updatedBillProducts[searchedProductIndex] = action.payload.data
       } else {
         updatedBillProducts = state.billSelectedProducts.concat(
           action.payload.data
         );
       }
 
+      console.log("BILL CONTROLLER - ", updatedBillProducts);
+
       let updatedBillTotal;
+
       if (billType === BillType.PURCHASES_BILL) {
         updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
           return acc + cur.priceOfPiece * cur.totalProductAmount!;
         }, 0);
       } else {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfUnit * cur.totalProductAmount!;
-        }, 0);
+        if (crudID) {
+          if (crudID === CRUDRequest.CREATE) {
+            updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+              return acc + cur.priceOfUnit * cur.totalProductAmount!;
+            }, 0);
+          }
+          if (crudID === CRUDRequest.UPDATE) {
+            updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+              return acc + cur.priceOfUnit * cur.updatedProductAmount!;
+            }, 0);
+            // updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+            //   return (
+            //     acc +
+            //     cur.priceOfUnit *
+            //       (cur.totalProductAmount! + cur.oldProductAmount!)
+            //   );
+            // }, 0);
+          }
+        }
       }
 
       return {

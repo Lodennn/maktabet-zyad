@@ -7,7 +7,11 @@ import { BillsDoc, SendRequestData } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
+import {
+  BillRequestAction,
+  COLLECTIONS,
+  CRUDRequest,
+} from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
@@ -31,7 +35,8 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     dispatchBillActions,
     billType: controllerBillType,
   } = useBillProductsController(
-    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL
+    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
+    CRUDRequest.CREATE
   );
 
   const {

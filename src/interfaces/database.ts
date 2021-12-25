@@ -14,9 +14,11 @@ export interface StockDoc {
   totalProfit: number;
   profitPercent: number;
   totalProductAmount?: number;
+  oldProductAmount?: number;
   totalNumberOfUnits: number;
   remainingAmountOfPieces: number;
   remainingAmountOfUnits: number;
+  updatedProductAmount?: number;
 }
 
 export interface BillsDoc {
@@ -25,6 +27,7 @@ export interface BillsDoc {
   type: BillType;
   total: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface PurchasesDoc {

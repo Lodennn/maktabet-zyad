@@ -25,6 +25,7 @@ import {
   transformDataFromNormalBillToStock,
 } from "../../../store/stock/stock-slice";
 import { useAppSelector } from "../../../hooks/use-app-selector";
+import { trimBillDataBeforeAction } from "../../../helpers/functions";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
@@ -62,30 +63,36 @@ const UpdateBillModalContent: React.FC<{
     event.preventDefault();
 
     const billData: BillsDoc = {
+      id: props.data.id,
       total: billProductsData.billTotal,
-      createdAt: new Date().toString(),
+      createdAt: props.data.createdAt,
       products: [...billProductsData.billSelectedProducts],
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
+      updatedAt: new Date().toString(),
     };
-
-    console.log('FINAL DATA: ', billData)
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
+    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
+
+    billData.products.forEach((billProduct: any) => {
+      billProduct.totalProductAmount = billProduct.updatedProductAmount;
+    });
+
+    trimBillDataBeforeAction(billData.products);
 
     // UPDATE BILL IN DATABASE
-    // updateBill({
-    //   collectionName: COLLECTIONS.BILLS,
-    //   docId: billData.id,
-    //   newData: billData,
-    // } as UpdateRequestData)
-    //   .then((_) => {
-    //     dispatch(addBillsData());
-    //   })
-    //   .then((_) => {
-    //     props.hideUpdateModal();
-    //   });
+    updateBill({
+      collectionName: COLLECTIONS.BILLS,
+      docId: billData.id,
+      newData: billData,
+    } as UpdateRequestData)
+      .then((_) => {
+        dispatch(addBillsData());
+      })
+      .then((_) => {
+        props.hideUpdateModal();
+      });
   };
 
   return (
@@ -164,7 +171,7 @@ const UpdateBillModalContent: React.FC<{
                 <span className="value">{props.data.products.length}</span>
               </li>
               <li className={classes["add-bill-form__actions--info-item"]}>
-                <span className="label">المجموع</span>
+                <span className="label">المجموع الجديد</span>
                 <span className="value">{billProductsData.billTotal}</span>
               </li>
             </ul>

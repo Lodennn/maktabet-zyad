@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CRUDRequest } from "../../../../constants";
 import useBillProducts from "../../../../hooks/use-bill-products";
+import useUpdateBill from "../../../../hooks/use-update-bill";
 import { BillsDoc } from "../../../../interfaces";
 import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
@@ -17,14 +18,28 @@ const UpdateNewProductToBill: React.FC<{
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct, billType } = props;
 
-  const { billProductsConfig, getSearchValue, onChangeProductAmountHandler } =
-    useBillProducts(
-      dispatchBillActions,
-      removeNewBillProduct,
-      billType,
-      props.billData,
-      props.CRUDRequest
-    );
+  // const { billProductsConfig, getSearchValue, onChangeProductAmountHandler } =
+  //   useBillProducts(
+  //     dispatchBillActions,
+  //     removeNewBillProduct,
+  //     billType,
+  //     props.billData,
+  //     props.CRUDRequest
+  //   );
+  const { billProductsConfig, onChangeProductAmountHandler } = useUpdateBill(
+    dispatchBillActions,
+    removeNewBillProduct,
+    billType,
+    props.billData,
+    props.CRUDRequest
+  );
+
+  const billTotalClasses =
+    billType === BillType.NORMAL_BILL
+      ? `${classes["update-bill-product__info--minus-total"]}`
+      : `${classes["update-bill-product__info--plus-total"]}`;
+
+  const isNormalBill = billType === BillType.NORMAL_BILL;
 
   return (
     <Fragment>
@@ -97,15 +112,14 @@ const UpdateNewProductToBill: React.FC<{
               {/** PRODUCT TOTAL PRICE */}
               <div className={classes["update-bill-product__info"]}>
                 <label htmlFor="bill-product-total" className="form-label">
-                  المجموع
+                  المجموع {isNormalBill ? "الناقص" : "الأضافي"}
                 </label>
                 {product.id && (
                   <span
-                    className={
-                      classes["update-bill-product__info--static-value"]
-                    }
+                    className={`${classes["update-bill-product__info--static-value"]} ${billTotalClasses}`}
                   >
                     {product.priceOfUnit * product.totalProductAmount}
+                    {isNormalBill ? "-" : "+"}
                   </span>
                 )}
               </div>

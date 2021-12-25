@@ -22,6 +22,12 @@
       font-size: 1.3rem;
       align-self: center;
     }
+    &--plus-total {
+      color: $color-success;
+    }
+    &--minus-total {
+      color: $color-danger;
+    }
     &--input {
       display: block;
       width: 50%;
