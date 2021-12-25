@@ -18,6 +18,8 @@ import classes from "./StockPage.module.scss";
 import { addPurchasesDataToStore } from "../../store/purchases/purchases-slice";
 import { BillsDoc } from "../../interfaces";
 import { BillType } from "../../types/bills";
+import useDate from "../../hooks/use-date";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const StockPage = () => {
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
@@ -28,17 +30,25 @@ const StockPage = () => {
     (state) => state.bills
   );
 
-  const [normalBillsData, setNormalBillsData] = useState<BillsDoc[]>([]);
-  const [returnedBillsData, setReturnedBillsData] = useState<BillsDoc[]>([]);
+  const { dateValue, onChangeDateHandler } = useDate();
+  const {
+    dateValue: returnedBillDateValue,
+    onChangeDateHandler: returnedBillsChangeDateHandler,
+  } = useDate();
 
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    //prettier-ignore
-    setNormalBillsData(billsData.filter(billData => billData.type === BillType.NORMAL_BILL));
-    //prettier-ignore
-    setReturnedBillsData(billsData.filter(billData => billData.type === BillType.RETURNED_BILL));
-  }, [dispatch]);
+  const normalBillsData = billsData
+    .filter((billData) => billData.type === BillType.NORMAL_BILL)
+    .filter(
+      (billProduct) =>
+        resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+    );
+  const returnedBillsData = billsData
+    .filter((billData) => billData.type === BillType.RETURNED_BILL)
+    .filter(
+      (billProduct) =>
+        resetDate(dateMe(billProduct.createdAt)) ===
+        resetDate(returnedBillDateValue)
+    );
 
   return (
     <div className={classes["page"]}>
@@ -62,11 +72,13 @@ const StockPage = () => {
             tableId={DBTables.BILLS_TABLE}
             title="الفواتير"
             data={normalBillsData}
+            onChangeDateHandler={onChangeDateHandler}
           />
           <InfoTable
             tableId={DBTables.BILLS_TABLE}
             title="المرتجع"
             data={returnedBillsData}
+            onChangeDateHandler={returnedBillsChangeDateHandler}
           />
         </div>
         {/** MOSHTRYAT TABLE */}

@@ -1,3 +1,4 @@
+import moment from "moment";
 import { StockDoc } from "../interfaces";
 
 // export const trimStockProductsData = (productsArray: StockDoc[]) => {
@@ -24,11 +25,27 @@ export const resetBillProductsTotalAmount = (billProducts: any[]) => {
   return updatedBillProducts.map((billProduct: any) => {
     return { ...billProduct, totalProductAmount: 0 };
   });
-  // updatedBillProducts.forEach((billProduct: any) => {
-  //   const updatedProduct = { ...billProduct };
-  //   updatedProduct.totalProductAmount = 0;
-  //   //prettier-ignore
-  //   const index = updatedBillProducts.findIndex((updatedBillProduct) => updatedBillProduct.id === billProduct.id);
-  //   updatedBillProducts[index] = updatedProduct;
-  // });
 };
+
+export const formatDate = (date: string) => {
+  return moment(new Date(date)).startOf("hour").fromNow();
+};
+
+export const maxDate = () => {
+  const now: Date = new Date();
+  let day: string | number = now.getDate();
+  let month: string | number = now.getMonth() + 1;
+  const year: number = now.getFullYear();
+
+  if (month < 10) {
+    month = `0${month}`;
+  }
+  if (day < 10) {
+    day = `0${day}`;
+  }
+  return `${year}-${month}-${day}`;
+};
+
+export const dateMe = (date: string) => new Date(date);
+
+export const resetDate = (date: Date) => date.setHours(0, 0, 0, 0);

@@ -18,6 +18,8 @@ import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import Button from "../../core-ui/Button/Button";
+import useDate from "../../hooks/use-date";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const HomePage = () => {
   const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
@@ -36,6 +38,13 @@ const HomePage = () => {
   };
 
   const { showModal, triggerModalAction, hideModal } = useReadData();
+
+  const { dateValue, onChangeDateHandler } = useDate();
+
+  const filteredBillsData = billsData.filter(
+    (billProduct) =>
+      resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+  );
 
   return (
     <div className={classes["home-page"]}>
@@ -86,7 +95,8 @@ const HomePage = () => {
                 tableId={DBTables.BILLS_TABLE}
                 className="mt-md"
                 admin={true}
-                data={billsData}
+                data={filteredBillsData}
+                onChangeDateHandler={onChangeDateHandler}
               />
             </Fragment>
           )}

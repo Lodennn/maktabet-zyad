@@ -1,25 +1,25 @@
 import React, { Fragment, MouseEvent } from "react";
+
 import {
   BillRequestAction,
   COLLECTIONS,
   DBTables,
 } from "../../../../constants";
-import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
-import useHttp from "../../../../hooks/use-http";
+
 import {
   BillsDoc,
   DeleteRequestData,
-  UpdateRequestData,
   PurchasesDoc,
 } from "../../../../interfaces";
-import { deleteData, updateData } from "../../../../services/api";
+import moment from "moment";
+import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
+import useHttp from "../../../../hooks/use-http";
+import { deleteData } from "../../../../services/api";
 import { addBillsData } from "../../../../store/bills/bill-slice";
-import {
-  stockActions,
-  transformDataFromNormalBillToStock,
-} from "../../../../store/stock/stock-slice";
+import { transformDataFromNormalBillToStock } from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
+import { formatDate } from "../../../../helpers/functions";
 
 const InfoTableItem: React.FC<{
   tableId?: string;
@@ -32,25 +32,6 @@ const InfoTableItem: React.FC<{
   const dispatch = useAppDispatch();
 
   const { sendHttpRequest: deleteBill } = useHttp(deleteData);
-
-  // const { sendHttpRequest: updateBill } = useHttp(updateData);
-  // const onUpdateBasicBill = (
-  //   bill: BillsDoc,
-  //   event: React.MouseEvent<HTMLLIElement>
-  // ) => {
-
-  //   // UPDATE STOCK IN DATABASE
-  //   // prettier-ignore
-  //   dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.UPDATE_BILL}));
-
-  //   // UPDATE BILL TO DATABASE
-  //   updateBill({
-  //     collectionName: COLLECTIONS.BILLS,
-  //     docId: bill.id,
-  //   } as UpdateRequestData).then((_) => {
-  //     dispatch(addBillsData());
-  //   });
-  // };
 
   const onDeleteBasicBill = (
     bill: BillsDoc,
@@ -75,6 +56,7 @@ const InfoTableItem: React.FC<{
       : props.data.type === BillType.RETURNED_BILL
       ? `${classes[`info-table-item__bill-type--returned`]}`
       : null;
+
   return (
     <div className={classes["info-table-item"]}>
       <div className={classes["info-table-item__bill-info"]}>
@@ -117,8 +99,6 @@ const InfoTableItem: React.FC<{
           {props.tableId === DBTables.BILLS_TABLE &&
             props.data.type === BillType.NORMAL_BILL &&
             props.data.products.map((product: any) => {
-              console.log("props.billType: ", props.data.type);
-              console.log("products: ", product);
               return (
                 <Fragment key={product.id}>
                   <li className={classes["info-table-item__products-item"]}>
@@ -144,8 +124,6 @@ const InfoTableItem: React.FC<{
           {props.tableId === DBTables.BILLS_TABLE &&
             props.data.type === BillType.RETURNED_BILL &&
             props.data.products.map((product: any) => {
-              console.log("props.billType: ", props.data.type);
-              console.log("products: ", product);
               return (
                 <Fragment key={product.id}>
                   <li className={classes["info-table-item__products-item"]}>
@@ -172,7 +150,7 @@ const InfoTableItem: React.FC<{
             {props.data.total} L.E
           </div>
           <p className={classes["info-table-item__bill-date"]}>
-            {new Date(props.data.createdAt).getFullYear()}
+            {formatDate(props.data.createdAt)}
           </p>
         </ul>
       </div>

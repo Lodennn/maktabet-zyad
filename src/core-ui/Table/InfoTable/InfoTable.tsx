@@ -1,5 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { DBTables } from "../../../constants";
+import useDate from "../../../hooks/use-date";
 import useReadData from "../../../hooks/use-read-data";
 import { BillType } from "../../../types/bills";
 import FilterByDate from "../../FilterByDate/FilterByDate";
@@ -15,6 +16,7 @@ const InfoTable: React.FC<{
   data: any[];
   className?: string;
   admin?: boolean;
+  onChangeDateHandler?: (e: React.FormEvent<HTMLInputElement>) => void;
 }> = (props) => {
   const { showModal, triggerModalAction, hideModal, readData } = useReadData();
   const {
@@ -54,7 +56,7 @@ const InfoTable: React.FC<{
               {props.title}
             </h3>
           )}
-          <FilterByDate />
+          <FilterByDate onChangeDateHandler={props.onChangeDateHandler} />
         </div>
         {props.data.length > 0 ? (
           props.data.map((data) => {

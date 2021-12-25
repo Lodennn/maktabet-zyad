@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import billReducer from "./bills/bill-slice";
 import missingProductsReducer from "./missing-products/missing-products-slice";
 import purchasesReducer from "./purchases/purchases-slice";
@@ -36,6 +36,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
+      // serializableCheck: false,
     }),
 });
 
