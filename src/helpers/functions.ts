@@ -28,6 +28,13 @@ export const resetBillProductsTotalAmount = (billProducts: any[]) => {
   });
 };
 
+// export const addOldProductsAmount = (billProducts: any[]) => {
+//   const updatedBillProducts = [...billProducts];
+//   return updatedBillProducts.map((billProduct: any) => {
+//     return { ...billProduct, totalProductAmount: 0 };
+//   });
+// };
+
 export const formatDateByHours = (date: string | Date) => {
   return moment(new Date(date)).startOf("hour").fromNow();
 };

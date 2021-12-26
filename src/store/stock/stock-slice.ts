@@ -81,7 +81,11 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
           }
           if(data.action === BillRequestAction.UPDATE_BILL) {
-            updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+            if(billProduct.updatedProductAmount > billProduct.oldProductAmount) {
+              updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+            } else {
+              updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+            }
           }
           if(data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;

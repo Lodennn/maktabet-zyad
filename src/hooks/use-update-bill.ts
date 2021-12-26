@@ -100,6 +100,7 @@ const useUpdateBill = (
         //prettier-ignore
         updatedSearchedProductData.totalProductAmount = targetValue;
         updatedSearchedProductData.initialProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount - targetValue);
+
     }
 
     dispatchBillConfigActions({
