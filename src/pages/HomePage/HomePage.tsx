@@ -41,7 +41,7 @@ const HomePage = () => {
 
   const { dateValue, onChangeDateHandler } = useDate();
 
-  const filteredBillsData = billsData.filter(
+  const filteredByDateBillsData = billsData.filter(
     (billProduct) =>
       resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
   );
@@ -95,8 +95,9 @@ const HomePage = () => {
                 tableId={DBTables.BILLS_TABLE}
                 className="mt-md"
                 admin={true}
-                data={filteredBillsData}
+                data={filteredByDateBillsData}
                 onChangeDateHandler={onChangeDateHandler}
+                dateValue={dateValue}
               />
             </Fragment>
           )}

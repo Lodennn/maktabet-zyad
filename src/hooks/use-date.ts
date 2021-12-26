@@ -5,7 +5,7 @@ const useDate = () => {
 
   const onChangeDateHandler = (e: React.FormEvent<HTMLInputElement>): void => {
     const targetElement = e.target as HTMLInputElement;
-    console.log("CHANGE");
+
     setDateValue(new Date(targetElement.value));
   };
 

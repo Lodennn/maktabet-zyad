@@ -73,12 +73,14 @@ const StockPage = () => {
             title="الفواتير"
             data={normalBillsData}
             onChangeDateHandler={onChangeDateHandler}
+            dateValue={dateValue}
           />
           <InfoTable
             tableId={DBTables.BILLS_TABLE}
             title="المرتجع"
             data={returnedBillsData}
             onChangeDateHandler={returnedBillsChangeDateHandler}
+            dateValue={returnedBillDateValue}
           />
         </div>
         {/** MOSHTRYAT TABLE */}
@@ -95,6 +97,7 @@ const StockPage = () => {
             tableId={DBTables.PURCHASES_TABLE}
             title="أخر المشتريات"
             data={purchasesData}
+            dateValue={dateValue}
           />
           <IncomeTable />
         </div>

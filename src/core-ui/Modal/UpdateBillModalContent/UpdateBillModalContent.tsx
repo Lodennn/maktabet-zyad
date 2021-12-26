@@ -75,13 +75,17 @@ const UpdateBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
+    console.log("billData: ", billData);
+
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    changeBillProductsTotalAmount(billData.products);
+    // changeBillProductsTotalAmount(billData.products);
 
-    trimBillDataBeforeAction(billData.products);
+    // console.log("billData AFTER: ", billData);
+
+    // trimBillDataBeforeAction(billData.products);
 
     // UPDATE BILL IN DATABASE
     updateBill({

@@ -19,7 +19,7 @@ import { addBillsData } from "../../../../store/bills/bill-slice";
 import { transformDataFromNormalBillToStock } from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
-import { formatDate } from "../../../../helpers/functions";
+import { formatDateByHours } from "../../../../helpers/functions";
 
 const InfoTableItem: React.FC<{
   tableId?: string;
@@ -101,22 +101,24 @@ const InfoTableItem: React.FC<{
             props.data.products.map((product: any) => {
               return (
                 <Fragment key={product.id}>
-                  <li className={classes["info-table-item__products-item"]}>
-                    <span
-                      className={
-                        classes["info-table-item__products-item--count"]
-                      }
-                    >
-                      {product.totalProductAmount}
-                    </span>
-                    <span
-                      className={
-                        classes["info-table-item__products-item--category"]
-                      }
-                    >
-                      {product.category}
-                    </span>
-                  </li>
+                  {product.totalProductAmount ? (
+                    <li className={classes["info-table-item__products-item"]}>
+                      <span
+                        className={
+                          classes["info-table-item__products-item--count"]
+                        }
+                      >
+                        {product.totalProductAmount}
+                      </span>
+                      <span
+                        className={
+                          classes["info-table-item__products-item--category"]
+                        }
+                      >
+                        {product.category}
+                      </span>
+                    </li>
+                  ) : null}
                 </Fragment>
               );
             })}
@@ -126,22 +128,24 @@ const InfoTableItem: React.FC<{
             props.data.products.map((product: any) => {
               return (
                 <Fragment key={product.id}>
-                  <li className={classes["info-table-item__products-item"]}>
-                    <span
-                      className={
-                        classes["info-table-item__products-item--count"]
-                      }
-                    >
-                      {product.totalProductAmount}
-                    </span>
-                    <span
-                      className={
-                        classes["info-table-item__products-item--category"]
-                      }
-                    >
-                      {product.category}
-                    </span>
-                  </li>
+                  {product.totalProductAmount ? (
+                    <li className={classes["info-table-item__products-item"]}>
+                      <span
+                        className={
+                          classes["info-table-item__products-item--count"]
+                        }
+                      >
+                        {product.totalProductAmount}
+                      </span>
+                      <span
+                        className={
+                          classes["info-table-item__products-item--category"]
+                        }
+                      >
+                        {product.category}
+                      </span>
+                    </li>
+                  ) : null}
                 </Fragment>
               );
             })}
@@ -150,7 +154,7 @@ const InfoTableItem: React.FC<{
             {props.data.total} L.E
           </div>
           <p className={classes["info-table-item__bill-date"]}>
-            {formatDate(props.data.createdAt)}
+            {formatDateByHours(props.data.createdAt)}
           </p>
         </ul>
       </div>

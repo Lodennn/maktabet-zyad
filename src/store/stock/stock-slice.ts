@@ -81,7 +81,7 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
           }
           if(data.action === BillRequestAction.UPDATE_BILL) {
-            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+            updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
           }
           if(data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
@@ -92,7 +92,7 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
           }
           if(data.action === BillRequestAction.UPDATE_BILL) {
-            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+            updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
           }
           if(data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;

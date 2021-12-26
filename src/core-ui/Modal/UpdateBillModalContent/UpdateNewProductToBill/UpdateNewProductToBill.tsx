@@ -93,7 +93,7 @@ const UpdateNewProductToBill: React.FC<{
                   type="number"
                   id={`bill-product-amount-${product.id}`}
                   className={classes["update-bill-product__info--input"]}
-                  min={1}
+                  min={0}
                   max={product.totalNumberOfUnits}
                   step="0.01"
                   name="bill-product-amount"
@@ -110,7 +110,7 @@ const UpdateNewProductToBill: React.FC<{
                   <span
                     className={`${classes["update-bill-product__info--static-value"]} ${billTotalClasses}`}
                   >
-                    {product.priceOfUnit * product.totalProductAmount}
+                    {product.priceOfUnit * product.initialProductAmount}
                     {isNormalBill ? "-" : "+"}
                   </span>
                 )}

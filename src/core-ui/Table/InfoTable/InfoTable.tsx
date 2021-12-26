@@ -17,6 +17,7 @@ const InfoTable: React.FC<{
   className?: string;
   admin?: boolean;
   onChangeDateHandler?: (e: React.FormEvent<HTMLInputElement>) => void;
+  dateValue?: Date;
 }> = (props) => {
   const { showModal, triggerModalAction, hideModal, readData } = useReadData();
   const {
@@ -56,7 +57,10 @@ const InfoTable: React.FC<{
               {props.title}
             </h3>
           )}
-          <FilterByDate onChangeDateHandler={props.onChangeDateHandler} />
+          <FilterByDate
+            onChangeDateHandler={props.onChangeDateHandler}
+            dateValue={props.dateValue}
+          />
         </div>
         {props.data.length > 0 ? (
           props.data.map((data) => {

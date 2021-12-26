@@ -9,6 +9,7 @@ export interface PurchaseBillConfigInitialState {
   searchedProductAmount: number;
   searchedProductOldAmount: number;
   searchedUpdatedProductAmount: number;
+  initialProductAmount: number;
 }
 
 type PurchaseBillActionType = {
@@ -21,6 +22,7 @@ const initialState: PurchaseBillConfigInitialState = {
   searchedProductAmount: 1,
   searchedProductOldAmount: 0,
   searchedUpdatedProductAmount: 0,
+  initialProductAmount: 0,
 };
 
 const reducerFn = (
@@ -96,7 +98,8 @@ const useUpdateBill = (
         updatedSearchedProductData.oldProductAmount = searchedProduct.totalProductAmount;
         updatedSearchedProductData.updatedProductAmount = targetValue;
         //prettier-ignore
-        updatedSearchedProductData.totalProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount - targetValue);
+        updatedSearchedProductData.totalProductAmount = targetValue;
+        updatedSearchedProductData.initialProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount - targetValue);
     }
 
     dispatchBillConfigActions({

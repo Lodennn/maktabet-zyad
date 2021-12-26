@@ -29,10 +29,10 @@ const useBillProductsController = (
   ) => {
     if (action.type === "UPDATE_PRODUCT") {
       //prettier-ignore
-      const billProducts = resetBillProductsTotalAmount(action.payload.data.products);
+      // const billProducts = resetBillProductsTotalAmount(action.payload.data.products);
       return {
         ...state,
-        billSelectedProducts: billProducts,
+        billSelectedProducts: action.payload.data.products,
         billTotal: action.payload.data.total,
       };
     }

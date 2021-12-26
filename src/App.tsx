@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useAppDispatch } from "./hooks/use-app-dispatch";
@@ -12,8 +13,10 @@ import { addBillsData } from "./store/bills/bill-slice";
 import { addMissingProductsDataToStore } from "./store/missing-products/missing-products-slice";
 import { addPurchasesDataToStore } from "./store/purchases/purchases-slice";
 import { addStockDataToStore } from "./store/stock/stock-slice";
+import "moment/locale/ar";
 
 function App() {
+  moment.locale("ar");
   const dispatch = useAppDispatch();
 
   useEffect(() => {

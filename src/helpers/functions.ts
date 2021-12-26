@@ -11,6 +11,7 @@ export const trimBillDataBeforeAction = (productsArray: any[]) => {
   productsArray.forEach((product: any) => {
     delete product.oldProductAmount;
     delete product.updatedProductAmount;
+    delete product.initialProductAmount;
   });
 };
 
@@ -27,8 +28,12 @@ export const resetBillProductsTotalAmount = (billProducts: any[]) => {
   });
 };
 
-export const formatDate = (date: string) => {
+export const formatDateByHours = (date: string | Date) => {
   return moment(new Date(date)).startOf("hour").fromNow();
+};
+
+export const formatDateByDay = (date: string | Date) => {
+  return moment(new Date(date)).format("dddd");
 };
 
 export const maxDate = () => {
