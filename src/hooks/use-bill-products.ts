@@ -71,10 +71,7 @@ const reducerFn = (
 
 const useBillProducts = (
   dispatchBillActions: Function,
-  removeNewBillProduct: Function,
-  billType: BillType,
-  billData?: BillsDoc,
-  crudID?: CRUDRequest
+  removeNewBillProduct: Function
 ) => {
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
@@ -138,80 +135,6 @@ const useBillProducts = (
     });
   };
 
-  const onChangePiecePriceHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
-
-    dispatchBillConfigActions({
-      type: "CHANGE_PIECE_PRICE",
-      payload: { data: targetValue },
-    });
-    const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
-      productName: searchedProduct.productName,
-      category: searchedProduct.category,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-    };
-
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
-
-  const onChangeNumberOfUnitsHandler = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
-
-    dispatchBillConfigActions({
-      type: "CHANGE_UNITS_NUMBER",
-      payload: { data: targetValue },
-    });
-
-    const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
-      productName: searchedProduct.productName,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-      category: searchedProduct.category,
-    };
-
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
-
-  const onChangePriceOfUnit = (
-    searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLInputElement>
-  ): void => {
-    const target = event.target as HTMLInputElement;
-    const targetValue = +target.value;
-
-    dispatchBillConfigActions({
-      type: "CHANGE_UNIT_PRICE",
-      payload: { data: targetValue },
-    });
-
-    const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
-      productName: searchedProduct.productName,
-      category: searchedProduct.category,
-      totalProductAmount: billProductsConfig.searchedProductAmount,
-    };
-
-    dispatchBillActions({
-      type: "ADD_PRODUCT",
-      payload: { data: updatedSearchedProductData },
-    });
-  };
-
   const removeProductFromBill = (searchedProduct: StockDoc) => {
     removeNewBillProduct();
 
@@ -233,9 +156,6 @@ const useBillProducts = (
     billProductsConfig,
     getSearchValue,
     onChangeProductAmountHandler,
-    onChangePiecePriceHandler,
-    onChangeNumberOfUnitsHandler,
-    onChangePriceOfUnit,
     removeProductFromBill,
   };
 };

@@ -106,7 +106,8 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
           }
 
-        } else if (data.billData.type === BillType.RETURNED_BILL) {
+        } 
+        if (data.billData.type === BillType.RETURNED_BILL) {
           if(data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
           }

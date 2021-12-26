@@ -11,22 +11,15 @@ const AddNewProductToBill: React.FC<{
   removeNewBillProduct: Function;
   firstProductInBill: number;
   dispatchBillActions: Function;
-  billType: BillType;
 }> = (props) => {
-  const { dispatchBillActions, removeNewBillProduct, billType } = props;
+  const { dispatchBillActions, removeNewBillProduct } = props;
 
   const {
     billProductsConfig,
     getSearchValue,
     onChangeProductAmountHandler,
     removeProductFromBill,
-  } = useBillProducts(
-    dispatchBillActions,
-    removeNewBillProduct,
-    billType,
-    undefined,
-    CRUDRequest.CREATE
-  );
+  } = useBillProducts(dispatchBillActions, removeNewBillProduct);
 
   return (
     <Fragment>

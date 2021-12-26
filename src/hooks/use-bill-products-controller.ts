@@ -13,10 +13,7 @@ type PurchaseBillActionType = {
   payload: { data: any };
 };
 
-const useBillProductsController = (
-  billType: BillType,
-  crudID?: CRUDRequest
-) => {
+const useBillProductsController = () => {
   const initialState: PurchaseBillInitialState = {
     billSelectedProducts: [],
     billTotal: 0,
@@ -26,14 +23,14 @@ const useBillProductsController = (
     state: PurchaseBillInitialState = initialState,
     action: PurchaseBillActionType
   ) => {
-    if (action.type === "UPDATE_PRODUCT") {
-      //prettier-ignore
-      return {
-        ...state,
-        billSelectedProducts: action.payload.data.products,
-        billTotal: action.payload.data.total,
-      };
-    }
+    // if (action.type === "UPDATE_PRODUCT") {
+    //   //prettier-ignore
+    //   return {
+    //     ...state,
+    //     billSelectedProducts: action.payload.data.products,
+    //     billTotal: action.payload.data.total,
+    //   };
+    // }
     if (action.type === "ADD_PRODUCT") {
       const searchedProductIndex = [...state.billSelectedProducts].findIndex(
         (searchedProduct) => searchedProduct.id === action.payload.data.id
@@ -53,17 +50,9 @@ const useBillProductsController = (
         );
       }
 
-      let updatedBillTotal;
-
-      if (billType === BillType.PURCHASES_BILL) {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfPiece * cur.totalProductAmount!;
-        }, 0);
-      } else {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfUnit * cur.totalProductAmount!;
-        }, 0);
-      }
+      const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+        return acc + cur.priceOfUnit * cur.totalProductAmount!;
+      }, 0);
 
       return {
         billSelectedProducts: updatedBillProducts,
@@ -72,21 +61,13 @@ const useBillProductsController = (
       // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
     }
     if (action.type === "REMOVE_PRODUCT") {
-      let updatedBillProducts = [...state.billSelectedProducts];
-      updatedBillProducts = state.billSelectedProducts.filter(
+      let updatedBillProducts = state.billSelectedProducts.filter(
         (billProduct) => billProduct.id !== action.payload.data.id
       );
 
-      let updatedBillTotal;
-      if (billType === BillType.PURCHASES_BILL) {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfPiece * cur.totalProductAmount!;
-        }, 0);
-      } else {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfUnit * cur.totalProductAmount!;
-        }, 0);
-      }
+      let updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+        return acc + cur.priceOfUnit * cur.totalProductAmount!;
+      }, 0);
 
       return {
         billSelectedProducts: updatedBillProducts,
@@ -101,7 +82,7 @@ const useBillProductsController = (
     initialState
   );
 
-  return { billProductsData, dispatchBillActions, billType, crudID };
+  return { billProductsData, dispatchBillActions };
 };
 
 export default useBillProductsController;

@@ -30,13 +30,7 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   const { data: stockData } = useAppSelector((state) => state.stock);
 
-  const {
-    billProductsData,
-    dispatchBillActions,
-    billType: controllerBillType,
-  } = useBillProductsController(
-    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL
-  );
+  const { billProductsData, dispatchBillActions } = useBillProductsController();
 
   const {
     productFormArray: billProducts,
@@ -133,7 +127,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                     )}
                     firstProductInBill={billProductsArray[0]}
                     dispatchBillActions={dispatchBillActions}
-                    billType={controllerBillType}
                   />
                 );
               })}
