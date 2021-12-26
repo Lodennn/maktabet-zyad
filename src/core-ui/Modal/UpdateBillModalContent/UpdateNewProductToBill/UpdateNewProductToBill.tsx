@@ -18,7 +18,7 @@ const UpdateNewProductToBill: React.FC<{
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct, billType } = props;
 
-  const { onChangeProductAmountHandler } = useUpdateBill(
+  const { billProductsConfig, onChangeProductAmountHandler } = useUpdateBill(
     dispatchBillActions,
     removeNewBillProduct,
     billType,
@@ -97,7 +97,7 @@ const UpdateNewProductToBill: React.FC<{
                   max={product.totalNumberOfUnits}
                   step="0.01"
                   name="bill-product-amount"
-                  value={updatedProductAmount}
+                  value={product.updatedProductAmount}
                   onChange={onChangeProductAmountHandler.bind(null, oldProduct)}
                 />
               </div>

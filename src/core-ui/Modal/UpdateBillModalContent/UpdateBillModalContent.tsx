@@ -28,7 +28,7 @@ import { useAppSelector } from "../../../hooks/use-app-selector";
 import {
   changeBillProductsTotalAmount,
   formatFullDate,
-  resetBillProductsTotalAmount,
+  resetBillProductsValue,
   trimBillDataBeforeAction,
 } from "../../../helpers/functions";
 import moment from "moment";
@@ -77,11 +77,13 @@ const UpdateBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
-    console.log("billData: ", billData);
-
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
+
+    //prettier-ignore
+    const newBillProducts = resetBillProductsValue(billData.products, "updatedProductAmount");
+    billData.products = newBillProducts;
 
     // UPDATE BILL IN DATABASE
     updateBill({
@@ -173,7 +175,7 @@ const UpdateBillModalContent: React.FC<{
                 <span className="value">{props.data.products.length}</span>
               </li>
               <li className={classes["add-bill-form__actions--info-item"]}>
-                <span className="label">المجموع الجديد</span>
+                <span className="label">المجموع</span>
                 <span className="value">{billProductsData.billTotal}</span>
               </li>
             </ul>

@@ -19,7 +19,8 @@ import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import Button from "../../core-ui/Button/Button";
 import useDate from "../../hooks/use-date";
-import { dateMe, resetDate } from "../../helpers/functions";
+import { dateMe, formatDateByDay, resetDate } from "../../helpers/functions";
+import moment from "moment";
 
 const HomePage = () => {
   const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
@@ -59,7 +60,8 @@ const HomePage = () => {
           <div className={classes["home-page__intro"]}>
             <div className={classes["home-page__intro--wrapper"]}>
               <h2 className={classes["home-page__full-date"]}>
-                اليوم, الأحد 27/10/2022
+                اليوم, {formatDateByDay(new Date())}{" "}
+                {moment(new Date()).format("L")}
               </h2>
               <Button
                 className={"btn btn--primary btn--add mt-sm"}

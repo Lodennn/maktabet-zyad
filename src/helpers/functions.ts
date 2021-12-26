@@ -21,11 +21,12 @@ export const changeBillProductsTotalAmount = (billProducts: any[]) => {
   });
 };
 
-export const resetBillProductsTotalAmount = (billProducts: any[]) => {
+export const resetBillProductsValue = (billProducts: any[], value: string) => {
   const updatedBillProducts = [...billProducts];
-  return updatedBillProducts.map((billProduct: any) => {
-    return { ...billProduct, totalProductAmount: 0 };
+  billProducts = updatedBillProducts.map((billProduct: any) => {
+    return { ...billProduct, [value]: 0 };
   });
+  return billProducts;
 };
 
 // export const addOldProductsAmount = (billProducts: any[]) => {

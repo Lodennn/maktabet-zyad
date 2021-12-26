@@ -12,11 +12,13 @@ import classes from "../StockPage/StockPage.module.scss";
 import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
+import useDate from "../../hooks/use-date";
 
 const BillsPage: React.FC = () => {
   const { data: billsData, isLoading } = useAppSelector((state) => state.bills);
 
   const { showModal, hideModal, triggerModalAction } = useReadData();
+  const { dateValue, onChangeDateHandler } = useDate();
 
   return (
     <Fragment>
@@ -42,6 +44,8 @@ const BillsPage: React.FC = () => {
                 title="الفواتير"
                 admin={true}
                 data={billsData}
+                dateValue={dateValue}
+                onChangeDateHandler={onChangeDateHandler}
               />
             ) : (
               <LoadingSpinner />

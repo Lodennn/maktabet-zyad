@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { DBTables } from "../../../constants";
-import useDate from "../../../hooks/use-date";
 import useReadData from "../../../hooks/use-read-data";
 import { BillType } from "../../../types/bills";
 import FilterByDate from "../../FilterByDate/FilterByDate";
