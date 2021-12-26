@@ -34,13 +34,6 @@ const reducerFn = (
   state: PurchaseBillConfigInitialState = initialState,
   action: PurchaseBillActionType
 ) => {
-  if (action.type === "CHANGE_UPDATED_PRODUCT_AMOUNT") {
-    return {
-      ...state,
-      searchedProductOldAmount: action.payload.data,
-      searchedUpdatedProductAmount: action.payload.data,
-    };
-  }
   if (action.type === "SET_SEARCHED_PRODUCT") {
     return {
       ...state,
@@ -81,19 +74,6 @@ const useBillProducts = (
   billData?: BillsDoc,
   crudID?: CRUDRequest
 ) => {
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  // UPDATE BILL CASE =========================================
-  // UPDATE BILL CASE =========================================
-  useEffect(() => {
-    //prettier-ignore
-    if(billData && billData.id) {
-      dispatchBillActions({type: "UPDATE_PRODUCT", payload: { data: billData }});
-    }
-  }, []);
-  // UPDATE BILL CASE =========================================
-  // UPDATE BILL CASE =========================================
-  //////////////////////////////////////////////////////////////////////////////////////////////
-
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
     initialState
@@ -104,6 +84,7 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: 1,
+      totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
     };
     if (billType === BillType.PURCHASES_BILL) {
       //prettier-ignore
@@ -115,7 +96,6 @@ const useBillProducts = (
     }
     dispatchBillConfigActions({
       type: "SET_SEARCHED_PRODUCT",
-      // payload: { data: { updatedSearchedProductData } },
       payload: { data: { ...searchedProduct, totalProductAmount: 1 } },
     });
 
@@ -161,11 +141,6 @@ const useBillProducts = (
     }
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
-      payload: { data: targetValue },
-    });
-
-    dispatchBillConfigActions({
-      type: "CHANGE_UPDATED_PRODUCT_AMOUNT",
       payload: { data: targetValue },
     });
 

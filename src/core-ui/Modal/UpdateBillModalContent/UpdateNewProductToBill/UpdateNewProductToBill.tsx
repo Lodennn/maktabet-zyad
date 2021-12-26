@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CRUDRequest } from "../../../../constants";
+import { useAppSelector } from "../../../../hooks/use-app-selector";
 import useBillProducts from "../../../../hooks/use-bill-products";
 import useUpdateBill from "../../../../hooks/use-update-bill";
-import { BillsDoc } from "../../../../interfaces";
+import { BillsDoc, StockDoc } from "../../../../interfaces";
 import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./UpdateNewProductToBill.module.scss";
@@ -17,6 +18,8 @@ const UpdateNewProductToBill: React.FC<{
   billFallbackData: any;
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct, billType } = props;
+
+  const { data: stockData } = useAppSelector((state) => state.stock);
 
   const { billProductsConfig, onChangeProductAmountHandler } = useUpdateBill(
     dispatchBillActions,

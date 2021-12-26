@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
 import { HttpInitialState } from "../../interfaces/index";
-import { readData } from "../../services/api";
+import { readData, sendData } from "../../services/api";
 import { AppDispatch } from "../index";
 import { MissingProductsDoc } from "../../interfaces/database";
 
@@ -45,6 +45,15 @@ export const addMissingProductsDataToStore =
     } catch (err) {
       dispatch(missingProductsActions.errorMissingProductsData({}));
     }
+  };
+
+export const insertMissingProduct =
+  (insertData: MissingProductsDoc) => async (dispatch: AppDispatch) => {
+    const data = {
+      collectionName: COLLECTIONS.MISSING_PRODUCTS,
+      data: insertData,
+    };
+    await sendData(data);
   };
 
 export default missingProductsSlice.reducer;

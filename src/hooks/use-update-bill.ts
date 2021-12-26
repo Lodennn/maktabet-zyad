@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { CRUDRequest } from "../constants";
 import { BillsDoc, StockDoc } from "../interfaces";
 import { BillType } from "../types/bills";
@@ -69,6 +69,13 @@ const useUpdateBill = (
     reducerFn,
     initialState
   );
+
+  const onUpdateBill = (event: React.MouseEvent<HTMLButtonElement>) => {
+    dispatchBillActions({
+      type: "UPDATE_PRODUCT",
+      payload: { data: billData },
+    });
+  };
 
   const onChangeProductAmountHandler = (
     searchedProduct: StockDoc,

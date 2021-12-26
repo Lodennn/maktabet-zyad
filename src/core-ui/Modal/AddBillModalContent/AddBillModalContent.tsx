@@ -17,7 +17,7 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
 import {
-  stockActions,
+  addStockDataToStore,
   transformDataFromNormalBillToStock,
 } from "../../../store/stock/stock-slice";
 import { useAppSelector } from "../../../hooks/use-app-selector";
@@ -72,6 +72,7 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     } as SendRequestData)
       .then((_) => {
         dispatch(addBillsData());
+        dispatch(addStockDataToStore());
       })
       .then((_) => {
         props.hideAddBillModal();

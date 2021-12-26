@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BillRequestAction, COLLECTIONS } from "../../constants";
-import { StockDoc } from "../../interfaces";
+import { MissingProductsDoc, StockDoc } from "../../interfaces";
 import { StockInitialState } from "../../interfaces/redux-store";
 import { readData, updateData } from "../../services/api";
 import { BillType } from "../../types/bills";
 import { AppDispatch } from "../index";
+import { insertMissingProduct } from "../missing-products/missing-products-slice";
 
 const initialState: StockInitialState = {
   isLoading: false,
@@ -75,16 +76,30 @@ export const transformDataFromNormalBillToStock =
       if (data.billData.type !== BillType.PURCHASES_BILL && stockProductInBillIndex >= 0) {
 
         updatedProduct = {...stockData[stockProductInBillIndex]};
+
+        const missingProduct: MissingProductsDoc = {
+          productName: updatedProduct.productName,
+          category: updatedProduct.category,
+          createdAt: new Date().toString(),
+          priceOfPiece: updatedProduct.priceOfPiece
+        }
         
         if(data.billData.type === BillType.NORMAL_BILL) {
           if(data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+            if(updatedProduct.totalNumberOfUnits === 0) {
+              dispatch(insertMissingProduct(missingProduct));
+            }
           }
           if(data.action === BillRequestAction.UPDATE_BILL) {
             if(billProduct.updatedProductAmount > billProduct.oldProductAmount) {
               updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+              if(updatedProduct.totalNumberOfUnits === 0) {
+                dispatch(insertMissingProduct(missingProduct));
+              }
             } else {
               updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+              
             }
           }
           if(data.action === BillRequestAction.DELETE_BILL) {

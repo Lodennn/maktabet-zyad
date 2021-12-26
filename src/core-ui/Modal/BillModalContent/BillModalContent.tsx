@@ -11,12 +11,14 @@ const BillModalContent: React.FC<{
   data: BillsDoc & PurchasesDoc;
   fullData: BillsDoc[];
 }> = (props) => {
+  
   const billTypeClasses =
     props.data.type === BillType.NORMAL_BILL
       ? `${classes[`bill-modal__body--type-normal`]}`
       : props.data.type === BillType.RETURNED_BILL
       ? `${classes[`bill-modal__body--type-returned`]}`
       : null;
+
   return (
     <div className={classes["bill-modal"]}>
       <div className={classes["bill-modal__header"]}>

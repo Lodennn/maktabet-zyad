@@ -44,8 +44,7 @@ export interface MissingProductsDoc {
   id?: string;
   productName: string;
   category: string;
-  priceOfUnit: number;
-  profitPercent: number;
+  priceOfPiece: number;
   createdAt: string;
 }
 
@@ -57,7 +56,8 @@ export interface DatabaseCollectionsType
 
 export interface SendRequestData {
   collectionName: COLLECTIONS;
-  data: DatabaseCollectionsType;
+  data: any;
+  // data: DatabaseCollectionsType;
 }
 
 export interface UpdateRequestData {

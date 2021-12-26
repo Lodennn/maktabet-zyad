@@ -9,7 +9,7 @@ const MissingProductsTableData: React.FC<{
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.productName}</td>
       <td>{props.dataItem.category}</td>
-      <td>{props.dataItem.priceOfUnit}</td>
+      <td>{props.dataItem.priceOfPiece}</td>
       <td>{props.dataItem.createdAt}</td>
       {props.admin && (
         <td className="table__actions">

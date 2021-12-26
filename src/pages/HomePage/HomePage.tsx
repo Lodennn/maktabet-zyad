@@ -30,9 +30,8 @@ const HomePage = () => {
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
     useAppSelector((state) => state.missingProducts);
 
-  const [displayContent, setDisplayContent] = useState<DBTables>(
-    DBTables.STOCK_TABLE
-  );
+  //prettier-ignore
+  const [displayContent, setDisplayContent] = useState<DBTables>(DBTables.STOCK_TABLE);
 
   const getDisplayContentValue = (content: DBTables) => {
     setDisplayContent(content);
@@ -46,6 +45,8 @@ const HomePage = () => {
     (billProduct) =>
       resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
   );
+
+  console.log("stockData: ", stockData);
 
   return (
     <div className={classes["home-page"]}>
