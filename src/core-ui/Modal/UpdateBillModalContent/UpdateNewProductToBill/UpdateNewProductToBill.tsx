@@ -26,13 +26,6 @@ const UpdateNewProductToBill: React.FC<{
     props.CRUDRequest
   );
 
-  const billTotalClasses =
-    billType === BillType.NORMAL_BILL
-      ? `${classes["update-bill-product__info--minus-total"]}`
-      : `${classes["update-bill-product__info--plus-total"]}`;
-
-  const isNormalBill = billType === BillType.NORMAL_BILL;
-
   return (
     <Fragment>
       {/* {props.billFallbackData.billSelectedProducts.map((product: any) => { */}
@@ -41,6 +34,13 @@ const UpdateNewProductToBill: React.FC<{
         const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
         //prettier-ignore
         const updatedProductAmount = product.updatedProductAmount ? product.updatedProductAmount : 0;
+
+        // const isLessAmount =
+        //   oldProduct.oldProductAmount! > product.updatedProductAmount;
+
+        // const billTotalClasses = isLessAmount
+        //   ? `${classes["update-bill-product__info--minus-total"]}`
+        //   : `${classes["update-bill-product__info--plus-total"]}`;
 
         return (
           <Fragment key={product.id}>
@@ -102,19 +102,19 @@ const UpdateNewProductToBill: React.FC<{
                 />
               </div>
               {/** PRODUCT TOTAL PRICE */}
-              <div className={classes["update-bill-product__info"]}>
+              {/* <div className={classes["update-bill-product__info"]}>
                 <label htmlFor="bill-product-total" className="form-label">
-                  المجموع {isNormalBill ? "الناقص" : "الأضافي"}
+                  المجموع {isLessAmount ? "الناقص" : "الأضافي"}
                 </label>
                 {product.id && (
                   <span
                     className={`${classes["update-bill-product__info--static-value"]} ${billTotalClasses}`}
                   >
                     {product.priceOfUnit * product.initialProductAmount}
-                    {isNormalBill ? "-" : "+"}
+                    {isLessAmount ? "-" : "+"}
                   </span>
                 )}
-              </div>
+              </div> */}
             </div>
             {/** PRODUCT *************************** */}
           </Fragment>

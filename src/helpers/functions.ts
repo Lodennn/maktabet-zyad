@@ -43,6 +43,10 @@ export const formatDateByDay = (date: string | Date) => {
   return moment(new Date(date)).format("dddd");
 };
 
+export const formatFullDate = (date: string | Date) => {
+  return moment(new Date(date)).format("LL");
+};
+
 export const maxDate = () => {
   const now: Date = new Date();
   let day: string | number = now.getDate();

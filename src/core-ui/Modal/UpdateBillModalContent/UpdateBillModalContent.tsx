@@ -27,9 +27,11 @@ import {
 import { useAppSelector } from "../../../hooks/use-app-selector";
 import {
   changeBillProductsTotalAmount,
+  formatFullDate,
   resetBillProductsTotalAmount,
   trimBillDataBeforeAction,
 } from "../../../helpers/functions";
+import moment from "moment";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
@@ -81,12 +83,6 @@ const UpdateBillModalContent: React.FC<{
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    // changeBillProductsTotalAmount(billData.products);
-
-    // console.log("billData AFTER: ", billData);
-
-    // trimBillDataBeforeAction(billData.products);
-
     // UPDATE BILL IN DATABASE
     updateBill({
       collectionName: COLLECTIONS.BILLS,
@@ -105,7 +101,7 @@ const UpdateBillModalContent: React.FC<{
     <div className={classes["add-bill-modal"]}>
       <div className={classes["add-bill-modal__header"]}>
         <h2 className={classes["add-bill-modal__header--date"]}>
-          تعديل فاتوره
+          تعديل فاتوره بتاريخ - {formatFullDate(props.data.createdAt)}
         </h2>
         <div className="separator separator--soft"></div>
       </div>

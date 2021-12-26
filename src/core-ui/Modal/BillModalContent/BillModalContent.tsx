@@ -1,5 +1,6 @@
 import { DBTables } from "../../../constants";
 import { billsTableHeadData, purchasesTableHeadData } from "../../../helpers";
+import { formatFullDate } from "../../../helpers/functions";
 import { BillsDoc, PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
@@ -21,12 +22,12 @@ const BillModalContent: React.FC<{
       <div className={classes["bill-modal__header"]}>
         {props.billId === DBTables.BILLS_TABLE && (
           <h2 className={classes["bill-modal__header--date"]}>
-            فحص فاتورة بتاريخ - {props.data.createdAt}
+            فحص فاتورة بتاريخ - {formatFullDate(props.data.createdAt)}
           </h2>
         )}
         {props.billId === DBTables.PURCHASES_TABLE && (
           <h2 className={classes["bill-modal__header--date"]}>
-            فحص فاتورة شراء بتاريخ - {props.data.createdAt}
+            فحص فاتورة شراء بتاريخ - {formatFullDate(props.data.createdAt)}
           </h2>
         )}
         <div className="separator separator--soft"></div>
