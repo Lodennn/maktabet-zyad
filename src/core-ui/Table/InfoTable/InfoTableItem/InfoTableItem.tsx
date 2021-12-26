@@ -26,8 +26,9 @@ const InfoTableItem: React.FC<{
   admin?: boolean;
   data: BillsDoc & PurchasesDoc;
   triggerModalAction: (data: any, event: React.MouseEvent) => void;
-  triggerUpdateModalAction: (data: any, event: React.MouseEvent) => void;
+  triggerUpdateModalAction: (data: any) => void;
   hideModal: (event: React.MouseEvent) => void;
+  dispatchUpdateBill: (updateData: any) => void;
 }> = (props) => {
   const dispatch = useAppDispatch();
 
@@ -171,7 +172,10 @@ const InfoTableItem: React.FC<{
             <Fragment>
               <li
                 className={classes["info-table-item__controls-control"]}
-                onClick={props.triggerUpdateModalAction.bind(null, props.data)}
+                onClick={() => {
+                  props.triggerUpdateModalAction(props.data);
+                  props.dispatchUpdateBill(props.data);
+                }}
               >
                 تعديل
               </li>

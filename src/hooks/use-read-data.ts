@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { DatabaseCollectionsType } from "../interfaces/database";
 
 const useReadData = () => {
@@ -6,7 +6,7 @@ const useReadData = () => {
   const [readData, setReadData] = useState<DatabaseCollectionsType>();
 
   const triggerModalAction = useCallback(
-    (data?: any, event?: React.MouseEvent): void => {
+    (data: any, event?: React.MouseEvent): void => {
       setReadData(data);
       setShowModal(true);
     },

@@ -48,24 +48,7 @@ const reducerFn = (
       searchedProductAmount: action.payload.data,
     };
   }
-  if (action.type === "CHANGE_UNITS_NUMBER") {
-    return {
-      ...state,
-      searchedProductNumberOfUnits: action.payload.data,
-    };
-  }
-  if (action.type === "CHANGE_PIECE_PRICE") {
-    return {
-      ...state,
-      searchedProductPiecePrice: action.payload.data,
-    };
-  }
-  if (action.type === "CHANGE_UNIT_PRICE") {
-    return {
-      ...state,
-      searchedProductUnitPrice: action.payload.data,
-    };
-  }
+
   return state;
 };
 

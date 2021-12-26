@@ -35,47 +35,15 @@ const reducerFn = (
       searchedUpdatedProductAmount: action.payload.data,
     };
   }
-  if (action.type === "CHANGE_PRODUCT_AMOUNT") {
-    return {
-      ...state,
-      searchedProductAmount: action.payload.data,
-    };
-  }
 
   return state;
 };
 
-const useUpdateBill = (
-  dispatchBillActions: Function,
-  removeNewBillProduct: Function,
-  billType: BillType,
-  billData?: BillsDoc,
-  crudID?: CRUDRequest
-) => {
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  // UPDATE BILL CASE =========================================
-  // UPDATE BILL CASE =========================================
-  useEffect(() => {
-    //prettier-ignore
-    if(billData && billData.id) {
-      dispatchBillActions({type: "UPDATE_PRODUCT", payload: { data: billData }});
-    }
-  }, []);
-  // UPDATE BILL CASE =========================================
-  // UPDATE BILL CASE =========================================
-  //////////////////////////////////////////////////////////////////////////////////////////////
-
+const useUpdateBill = (dispatchBillActions: Function, billData?: BillsDoc) => {
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
     initialState
   );
-
-  const onUpdateBill = (event: React.MouseEvent<HTMLButtonElement>) => {
-    dispatchBillActions({
-      type: "UPDATE_PRODUCT",
-      payload: { data: billData },
-    });
-  };
 
   const onChangeProductAmountHandler = (
     searchedProduct: StockDoc,
@@ -89,25 +57,17 @@ const useUpdateBill = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: targetValue,
-      oldProductAmount: 0,
-      updatedProductAmount: searchedProduct.totalProductAmount,
+      oldProductAmount: searchedProduct.totalProductAmount,
     };
 
+    updatedSearchedProductData.priceOfUnit = searchedProduct.priceOfUnit;
+    if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
+      return;
+
     //prettier-ignore
-    if (billType === BillType.NORMAL_BILL || billType === BillType.RETURNED_BILL) {
-    
-      updatedSearchedProductData.priceOfUnit = searchedProduct.priceOfUnit;
-      if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
-        return;
-
-        //prettier-ignore
-        updatedSearchedProductData.oldProductAmount = searchedProduct.totalProductAmount;
-        updatedSearchedProductData.updatedProductAmount = targetValue;
-        //prettier-ignore
-        updatedSearchedProductData.totalProductAmount = targetValue;
-        updatedSearchedProductData.initialProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount - targetValue);
-
-    }
+    updatedSearchedProductData.totalProductAmount = targetValue;
+    //prettier-ignore
+    updatedSearchedProductData.initialProductAmount = Math.abs(updatedSearchedProductData.oldProductAmount! - targetValue);
 
     dispatchBillConfigActions({
       type: "CHANGE_UPDATED_PRODUCT_AMOUNT",

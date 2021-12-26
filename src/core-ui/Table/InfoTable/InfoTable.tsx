@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { DBTables } from "../../../constants";
 import useReadData from "../../../hooks/use-read-data";
+import useUpdateBillController from "../../../hooks/use-update-bill-controller";
 import { BillType } from "../../../types/bills";
 import FilterByDate from "../../FilterByDate/FilterByDate";
 import BillModalContent from "../../Modal/BillModalContent/BillModalContent";
@@ -26,6 +27,13 @@ const InfoTable: React.FC<{
     readData: updateData,
   } = useReadData();
 
+  const { billProductsData, dispatchBillActions } = useUpdateBillController();
+
+  const dispatchUpdateBill = (updateData: any) => {
+    console.log("updateData: ", updateData);
+    dispatchBillActions({ type: "UPDATE_BILL", payload: { data: updateData } });
+  };
+
   return (
     <Fragment>
       {showModal && (
@@ -45,6 +53,8 @@ const InfoTable: React.FC<{
             <UpdateBillModalContent
               data={updateData}
               hideUpdateModal={hideUpdateModal}
+              updatedBillData={billProductsData}
+              dispatchBillActions={dispatchBillActions}
             />
           )}
         </Modal>
@@ -72,6 +82,7 @@ const InfoTable: React.FC<{
                 hideModal={hideModal}
                 triggerModalAction={triggerModalAction}
                 triggerUpdateModalAction={triggerUpdateModalAction}
+                dispatchUpdateBill={dispatchUpdateBill}
               />
             );
           })

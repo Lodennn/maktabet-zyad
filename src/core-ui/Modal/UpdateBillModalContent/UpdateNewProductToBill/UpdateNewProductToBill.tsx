@@ -1,49 +1,30 @@
-import React, { Fragment, useEffect } from "react";
-import { RiCloseCircleFill } from "react-icons/ri";
+import React, { Fragment } from "react";
 import { CRUDRequest } from "../../../../constants";
 import { useAppSelector } from "../../../../hooks/use-app-selector";
-import useBillProducts from "../../../../hooks/use-bill-products";
 import useUpdateBill from "../../../../hooks/use-update-bill";
-import { BillsDoc, StockDoc } from "../../../../interfaces";
-import { BillType } from "../../../../types/bills";
-import SmartSearch from "../../../SmartSearch/SmartSearch";
+import { BillsDoc } from "../../../../interfaces";
 import classes from "./UpdateNewProductToBill.module.scss";
 
 const UpdateNewProductToBill: React.FC<{
   dispatchBillActions: Function;
   billData: BillsDoc;
-  billType: BillType;
   CRUDRequest?: CRUDRequest;
-  removeNewBillProduct: Function;
   billFallbackData: any;
 }> = (props) => {
-  const { dispatchBillActions, removeNewBillProduct, billType } = props;
+  const { dispatchBillActions } = props;
 
   const { data: stockData } = useAppSelector((state) => state.stock);
 
-  const { billProductsConfig, onChangeProductAmountHandler } = useUpdateBill(
+  const { onChangeProductAmountHandler } = useUpdateBill(
     dispatchBillActions,
-    removeNewBillProduct,
-    billType,
-    props.billData,
-    props.CRUDRequest
+    props.billData
   );
 
   return (
     <Fragment>
-      {/* {props.billFallbackData.billSelectedProducts.map((product: any) => { */}
       {props.billFallbackData.billSelectedProducts.map((product: any) => {
         //prettier-ignore
         const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
-        //prettier-ignore
-        const updatedProductAmount = product.updatedProductAmount ? product.updatedProductAmount : 0;
-
-        // const isLessAmount =
-        //   oldProduct.oldProductAmount! > product.updatedProductAmount;
-
-        // const billTotalClasses = isLessAmount
-        //   ? `${classes["update-bill-product__info--minus-total"]}`
-        //   : `${classes["update-bill-product__info--plus-total"]}`;
 
         return (
           <Fragment key={product.id}>
@@ -104,20 +85,6 @@ const UpdateNewProductToBill: React.FC<{
                   onChange={onChangeProductAmountHandler.bind(null, oldProduct)}
                 />
               </div>
-              {/** PRODUCT TOTAL PRICE */}
-              {/* <div className={classes["update-bill-product__info"]}>
-                <label htmlFor="bill-product-total" className="form-label">
-                  المجموع {isLessAmount ? "الناقص" : "الأضافي"}
-                </label>
-                {product.id && (
-                  <span
-                    className={`${classes["update-bill-product__info--static-value"]} ${billTotalClasses}`}
-                  >
-                    {product.priceOfUnit * product.initialProductAmount}
-                    {isLessAmount ? "-" : "+"}
-                  </span>
-                )}
-              </div> */}
             </div>
             {/** PRODUCT *************************** */}
           </Fragment>

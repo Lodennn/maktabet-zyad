@@ -27,37 +27,33 @@ import {
 import { useAppSelector } from "../../../hooks/use-app-selector";
 import {
   changeBillProductsTotalAmount,
+  deleteBillProductsValue,
   formatFullDate,
   resetBillProductsValue,
   trimBillDataBeforeAction,
 } from "../../../helpers/functions";
 import moment from "moment";
+import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
+import useUpdateBillController from "../../../hooks/use-update-bill-controller";
+import { AppDispatch } from "../../../store";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
   hideUpdateModal: Function;
+  updatedBillData: any;
+  dispatchBillActions: Function;
 }> = (props) => {
   const billDataType = props.data.type === BillType.NORMAL_BILL;
+
   const [billType, setBillType] = useState<boolean>(billDataType);
 
   const dispatch = useAppDispatch();
 
   const { data: stockData } = useAppSelector((state) => state.stock);
 
-  const {
-    billProductsData,
-    dispatchBillActions,
-    billType: controllerBillType,
-    crudID: CRUDUpdateRequest,
-  } = useBillProductsController(
-    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
-    CRUDRequest.UPDATE
-  );
+  const { billProductsData, dispatchBillActions } = useUpdateBillController();
 
-  const {
-    productFormArray: billProducts,
-    removeProductFormData: removeNewBillProduct,
-  } = useProduct();
+  const { productFormArray: billProducts } = useProduct();
 
   const { sendHttpRequest: updateBill } = useHttp(updateData);
 
@@ -70,9 +66,9 @@ const UpdateBillModalContent: React.FC<{
 
     const billData: BillsDoc = {
       id: props.data.id,
-      total: billProductsData.billTotal,
+      total: props.updatedBillData.billTotal,
       createdAt: props.data.createdAt,
-      products: [...billProductsData.billSelectedProducts],
+      products: [...props.updatedBillData.billSelectedProducts],
       type: billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
       updatedAt: new Date().toString(),
     };
@@ -82,8 +78,10 @@ const UpdateBillModalContent: React.FC<{
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
     //prettier-ignore
-    const newBillProducts = resetBillProductsValue(billData.products, "updatedProductAmount");
-    billData.products = newBillProducts;
+    const newBillProducts = deleteBillProductsValue(billData.products, "initialProductAmount");
+    //prettier-ignore
+    const newerBillProducts = deleteBillProductsValue(newBillProducts, "oldProductAmount");
+    billData.products = newerBillProducts;
 
     // UPDATE BILL IN DATABASE
     updateBill({
@@ -143,16 +141,13 @@ const UpdateBillModalContent: React.FC<{
             {/** PRODUCTS */}
             <div className={classes["add-bill-form__products"]}>
               {/** PRODUCT *************************** */}
-              {billProducts.map((productIndex, _, billProductsArray) => {
+              {billProducts.map((productIndex) => {
                 return (
                   <UpdateNewProductToBill
                     key={productIndex}
-                    dispatchBillActions={dispatchBillActions}
+                    dispatchBillActions={props.dispatchBillActions}
                     billData={props.data}
-                    billFallbackData={billProductsData}
-                    billType={controllerBillType}
-                    CRUDRequest={CRUDUpdateRequest}
-                    removeNewBillProduct={removeNewBillProduct}
+                    billFallbackData={props.updatedBillData}
                   />
                 );
               })}
@@ -176,7 +171,7 @@ const UpdateBillModalContent: React.FC<{
               </li>
               <li className={classes["add-bill-form__actions--info-item"]}>
                 <span className="label">المجموع</span>
-                <span className="value">{billProductsData.billTotal}</span>
+                <span className="value">{props.updatedBillData.billTotal}</span>
               </li>
             </ul>
           </div>

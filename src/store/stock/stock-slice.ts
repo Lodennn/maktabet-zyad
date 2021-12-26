@@ -70,6 +70,9 @@ export const transformDataFromNormalBillToStock =
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) => stockProduct.id === billProduct.id
       );
+      const stockProductInBill = stockData.find(
+        (stockProduct: StockDoc) => stockProduct.id === billProduct.id
+      );
 
       let updatedProduct: StockDoc = {} as StockDoc;
       //prettier-ignore
@@ -92,15 +95,16 @@ export const transformDataFromNormalBillToStock =
             }
           }
           if(data.action === BillRequestAction.UPDATE_BILL) {
-            if(billProduct.updatedProductAmount > billProduct.oldProductAmount) {
-              updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
-              if(updatedProduct.totalNumberOfUnits === 0) {
-                dispatch(insertMissingProduct(missingProduct));
+            if(billProduct.oldProductAmount) {
+              if(billProduct.totalProductAmount > billProduct.oldProductAmount) {
+                updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+                if(updatedProduct.totalNumberOfUnits === 0) {
+                  dispatch(insertMissingProduct(missingProduct));
+                }
+              }else {
+                updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
               }
-            } else {
-              updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
-              
-            }
+            } 
           }
           if(data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;

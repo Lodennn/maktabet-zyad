@@ -8,11 +8,14 @@ import { StockDoc } from "../interfaces";
 // };
 
 export const trimBillDataBeforeAction = (productsArray: any[]) => {
-  productsArray.forEach((product: any) => {
-    delete product.oldProductAmount;
-    delete product.updatedProductAmount;
-    delete product.initialProductAmount;
-  });
+  const trimmedProductsArray = productsArray.map(
+    (product: any, _: number, arr: any) => {
+      delete product.oldProductAmount;
+      delete product.initialProductAmount;
+      return arr;
+    }
+  );
+  return trimmedProductsArray;
 };
 
 export const changeBillProductsTotalAmount = (billProducts: any[]) => {
@@ -27,6 +30,14 @@ export const resetBillProductsValue = (billProducts: any[], value: string) => {
     return { ...billProduct, [value]: 0 };
   });
   return billProducts;
+};
+
+export const deleteBillProductsValue = (billProducts: any[], value: string) => {
+  const updatedBillProducts = [...billProducts];
+  updatedBillProducts.forEach((billProduct: any) => {
+    delete billProduct[value];
+  });
+  return updatedBillProducts;
 };
 
 // export const addOldProductsAmount = (billProducts: any[]) => {

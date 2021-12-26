@@ -46,8 +46,6 @@ const HomePage = () => {
       resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
   );
 
-  console.log("stockData: ", stockData);
-
   return (
     <div className={classes["home-page"]}>
       {showModal && (
