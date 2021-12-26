@@ -30,7 +30,6 @@ const InfoTable: React.FC<{
   const { billProductsData, dispatchBillActions } = useUpdateBillController();
 
   const dispatchUpdateBill = (updateData: any) => {
-    console.log("updateData: ", updateData);
     dispatchBillActions({ type: "UPDATE_BILL", payload: { data: updateData } });
   };
 

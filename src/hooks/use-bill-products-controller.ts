@@ -1,7 +1,5 @@
 import { useReducer } from "react";
-import { CRUDRequest } from "../constants";
 import { StockDoc } from "../interfaces";
-import { BillType } from "../types/bills";
 
 export interface PurchaseBillInitialState {
   billSelectedProducts: StockDoc[];

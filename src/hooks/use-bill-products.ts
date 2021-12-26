@@ -1,7 +1,5 @@
-import { useEffect, useReducer, useState } from "react";
-import { CRUDRequest } from "../constants";
-import { BillsDoc, StockDoc } from "../interfaces";
-import { BillType } from "../types/bills";
+import { useReducer } from "react";
+import { StockDoc } from "../interfaces";
 
 export interface PurchaseBillConfigInitialState {
   searchedProduct: StockDoc;
@@ -9,10 +7,6 @@ export interface PurchaseBillConfigInitialState {
   searchedProductPiecePrice: number;
   searchedProductNumberOfUnits: number;
   searchedProductUnitPrice: number;
-  // UPDATE REASONS
-  // searchedProductOldAmount: number;
-  // searchedUpdatedProductAmount: number;
-  // initialProductAmount: number;
 }
 
 type PurchaseBillActionType = {
@@ -26,10 +20,6 @@ const initialState: PurchaseBillConfigInitialState = {
   searchedProductPiecePrice: 0,
   searchedProductNumberOfUnits: 0,
   searchedProductUnitPrice: 0,
-  // UPDATE REASONS
-  // searchedProductOldAmount: 0,
-  // searchedUpdatedProductAmount: 0,
-  // initialProductAmount: 0,
 };
 
 const reducerFn = (
@@ -92,17 +82,7 @@ const useBillProducts = (
       category: searchedProduct.category,
       totalProductAmount: targetValue,
       priceOfUnit: searchedProduct.priceOfUnit,
-      // FOR UPDATE REASONS
-      // oldProductAmount: 0,
-      // updatedProductAmount: 0,
-      // initialProductAmount: 0,
     };
-
-    // if (crudID === CRUDRequest.UPDATE) {
-    //   updatedSearchedProductData.oldProductAmount =
-    //     searchedProduct.totalProductAmount;
-    //   updatedSearchedProductData.updatedProductAmount = targetValue;
-    // }
 
     if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
       return;
