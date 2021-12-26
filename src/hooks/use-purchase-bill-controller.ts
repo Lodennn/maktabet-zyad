@@ -1,7 +1,6 @@
 import { useReducer } from "react";
 import { CRUDRequest } from "../constants";
 import { StockDoc } from "../interfaces";
-import { BillType } from "../types/bills";
 
 export interface PurchaseBillInitialState {
   billSelectedProducts: StockDoc[];
@@ -13,10 +12,7 @@ type PurchaseBillActionType = {
   payload: { data: any };
 };
 
-const useBillProductsController = (
-  billType: BillType,
-  crudID?: CRUDRequest
-) => {
+const usePurchaseBillController = (crudID?: CRUDRequest) => {
   const initialState: PurchaseBillInitialState = {
     billSelectedProducts: [],
     billTotal: 0,
@@ -26,14 +22,6 @@ const useBillProductsController = (
     state: PurchaseBillInitialState = initialState,
     action: PurchaseBillActionType
   ) => {
-    if (action.type === "UPDATE_PRODUCT") {
-      //prettier-ignore
-      return {
-        ...state,
-        billSelectedProducts: action.payload.data.products,
-        billTotal: action.payload.data.total,
-      };
-    }
     if (action.type === "ADD_PRODUCT") {
       const searchedProductIndex = [...state.billSelectedProducts].findIndex(
         (searchedProduct) => searchedProduct.id === action.payload.data.id
@@ -55,15 +43,9 @@ const useBillProductsController = (
 
       let updatedBillTotal;
 
-      if (billType === BillType.PURCHASES_BILL) {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfPiece * cur.totalProductAmount!;
-        }, 0);
-      } else {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfUnit * cur.totalProductAmount!;
-        }, 0);
-      }
+      updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+        return acc + cur.priceOfPiece * cur.totalProductAmount!;
+      }, 0);
 
       return {
         billSelectedProducts: updatedBillProducts,
@@ -78,15 +60,9 @@ const useBillProductsController = (
       );
 
       let updatedBillTotal;
-      if (billType === BillType.PURCHASES_BILL) {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfPiece * cur.totalProductAmount!;
-        }, 0);
-      } else {
-        updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
-          return acc + cur.priceOfUnit * cur.totalProductAmount!;
-        }, 0);
-      }
+      updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
+        return acc + cur.priceOfPiece * cur.totalProductAmount!;
+      }, 0);
 
       return {
         billSelectedProducts: updatedBillProducts,
@@ -101,7 +77,7 @@ const useBillProductsController = (
     initialState
   );
 
-  return { billProductsData, dispatchBillActions, billType, crudID };
+  return { billProductsData, dispatchBillActions, crudID };
 };
 
-export default useBillProductsController;
+export default usePurchaseBillController;

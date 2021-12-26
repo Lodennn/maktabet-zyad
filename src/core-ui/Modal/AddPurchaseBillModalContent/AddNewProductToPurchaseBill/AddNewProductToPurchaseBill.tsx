@@ -5,15 +5,15 @@ import classes from "./AddNewProductToPurchaseBill.module.scss";
 import useBillProducts from "../../../../hooks/use-bill-products";
 import { BillType } from "../../../../types/bills";
 import { CRUDRequest } from "../../../../constants";
+import usePurchaseBill from "../../../../hooks/use-purchase-bill";
 
 const AddNewProductToPurchaseBill: React.FC<{
   productIndex: number;
   removeNewBillProduct: Function;
   firstProductInBill: number;
   dispatchBillActions: Function;
-  billType: BillType;
 }> = (props) => {
-  const { dispatchBillActions, removeNewBillProduct, billType } = props;
+  const { dispatchBillActions, removeNewBillProduct } = props;
 
   const {
     billProductsConfig,
@@ -23,13 +23,7 @@ const AddNewProductToPurchaseBill: React.FC<{
     onChangeNumberOfUnitsHandler,
     onChangePriceOfUnit,
     removeProductFromBill,
-  } = useBillProducts(
-    dispatchBillActions,
-    removeNewBillProduct,
-    billType,
-    undefined,
-    CRUDRequest.CREATE
-  );
+  } = usePurchaseBill(dispatchBillActions, removeNewBillProduct);
 
   return (
     <Fragment>

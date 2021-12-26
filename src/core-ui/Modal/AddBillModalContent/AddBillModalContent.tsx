@@ -35,8 +35,7 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     dispatchBillActions,
     billType: controllerBillType,
   } = useBillProductsController(
-    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL,
-    CRUDRequest.CREATE
+    billType ? BillType.NORMAL_BILL : BillType.RETURNED_BILL
   );
 
   const {

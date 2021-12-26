@@ -11,6 +11,7 @@ import useBillProductsController from "../../../hooks/use-bill-products-controll
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
+import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
@@ -18,8 +19,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
   const purchaseBillMerchantNameRef = useRef<HTMLInputElement>(null);
 
-  const { billProductsData, dispatchBillActions, billType } =
-    useBillProductsController(BillType.PURCHASES_BILL);
+  const { billProductsData, dispatchBillActions } = usePurchaseBillController();
 
   const {
     productFormArray: billProducts,
@@ -97,7 +97,6 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                     )}
                     firstProductInBill={billProductsArray[0]}
                     dispatchBillActions={dispatchBillActions}
-                    billType={billType}
                   />
                 );
               })}

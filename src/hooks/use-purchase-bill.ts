@@ -1,7 +1,5 @@
-import { useEffect, useReducer, useState } from "react";
-import { CRUDRequest } from "../constants";
-import { BillsDoc, StockDoc } from "../interfaces";
-import { BillType } from "../types/bills";
+import { useReducer } from "react";
+import { StockDoc } from "../interfaces";
 
 export interface PurchaseBillConfigInitialState {
   searchedProduct: StockDoc;
@@ -9,10 +7,6 @@ export interface PurchaseBillConfigInitialState {
   searchedProductPiecePrice: number;
   searchedProductNumberOfUnits: number;
   searchedProductUnitPrice: number;
-  // UPDATE REASONS
-  // searchedProductOldAmount: number;
-  // searchedUpdatedProductAmount: number;
-  // initialProductAmount: number;
 }
 
 type PurchaseBillActionType = {
@@ -21,15 +15,16 @@ type PurchaseBillActionType = {
 };
 
 const initialState: PurchaseBillConfigInitialState = {
+  //
   searchedProduct: {} as StockDoc,
+  //
   searchedProductAmount: 1,
+  //
   searchedProductPiecePrice: 0,
+  //
   searchedProductNumberOfUnits: 0,
+  //
   searchedProductUnitPrice: 0,
-  // UPDATE REASONS
-  // searchedProductOldAmount: 0,
-  // searchedUpdatedProductAmount: 0,
-  // initialProductAmount: 0,
 };
 
 const reducerFn = (
@@ -48,16 +43,16 @@ const reducerFn = (
       searchedProductAmount: action.payload.data,
     };
   }
-  if (action.type === "CHANGE_UNITS_NUMBER") {
-    return {
-      ...state,
-      searchedProductNumberOfUnits: action.payload.data,
-    };
-  }
   if (action.type === "CHANGE_PIECE_PRICE") {
     return {
       ...state,
       searchedProductPiecePrice: action.payload.data,
+    };
+  }
+  if (action.type === "CHANGE_UNITS_NUMBER") {
+    return {
+      ...state,
+      searchedProductNumberOfUnits: action.payload.data,
     };
   }
   if (action.type === "CHANGE_UNIT_PRICE") {
@@ -69,12 +64,9 @@ const reducerFn = (
   return state;
 };
 
-const useBillProducts = (
+const usePurchaseBill = (
   dispatchBillActions: Function,
-  removeNewBillProduct: Function,
-  billType: BillType,
-  billData?: BillsDoc,
-  crudID?: CRUDRequest
+  removeNewBillProduct: Function
 ) => {
   const [billProductsConfig, dispatchBillConfigActions] = useReducer(
     reducerFn,
@@ -87,6 +79,9 @@ const useBillProducts = (
       category: searchedProduct.category,
       totalProductAmount: 1,
       totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
+      //prettier-ignore
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+      numberOfUnits: searchedProduct.numberOfUnits,
       priceOfUnit: searchedProduct.priceOfUnit,
     };
 
@@ -111,21 +106,13 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: targetValue,
-      priceOfUnit: searchedProduct.priceOfUnit,
-      // FOR UPDATE REASONS
-      // oldProductAmount: 0,
-      // updatedProductAmount: 0,
-      // initialProductAmount: 0,
+      //prettier-ignore
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+      //prettier-ignore
+      priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+      //prettier-ignore
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
     };
-
-    // if (crudID === CRUDRequest.UPDATE) {
-    //   updatedSearchedProductData.oldProductAmount =
-    //     searchedProduct.totalProductAmount;
-    //   updatedSearchedProductData.updatedProductAmount = targetValue;
-    // }
-
-    if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
-      return;
 
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
@@ -154,6 +141,11 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
+      //prettier-ignore
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+      //prettier-ignore
+      priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+      priceOfPiece: targetValue,
     };
 
     dispatchBillActions({
@@ -179,6 +171,11 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       category: searchedProduct.category,
+      //prettier-ignore
+      priceOfUnit: billProductsConfig.searchedProductUnitPrice,
+      numberOfUnits: targetValue,
+      //prettier-ignore
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
     };
 
     dispatchBillActions({
@@ -204,6 +201,11 @@ const useBillProducts = (
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
+      //prettier-ignore
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+      priceOfUnit: targetValue,
+      //prettier-ignore
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
     };
 
     dispatchBillActions({
@@ -240,4 +242,4 @@ const useBillProducts = (
   };
 };
 
-export default useBillProducts;
+export default usePurchaseBill;
