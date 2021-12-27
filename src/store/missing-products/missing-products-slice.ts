@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
 import { HttpInitialState } from "../../interfaces/index";
-import { readData, sendData } from "../../services/api";
+import { readData, sendData, deleteData } from "../../services/api";
 import { AppDispatch } from "../index";
-import { MissingProductsDoc } from "../../interfaces/database";
+import { MissingProductsDoc, StockDoc } from "../../interfaces/database";
 
 const initialState: HttpInitialState<MissingProductsDoc> = {
   isLoading: false,
@@ -54,6 +54,21 @@ export const insertMissingProduct =
       data: insertData,
     };
     await sendData(data);
+  };
+
+export const deleteMissingProduct =
+  (deleteData: MissingProductsDoc) =>
+  async (dispatch: AppDispatch, getState: any) => {
+    const stateData = [...getState().missingProducts.data];
+    //prettier-ignore
+    const onDeleteMissingProduct = stateData.find((state: MissingProductsDoc) => state.productName === deleteData.productName);
+
+    console.log("onDeleteMissingProduct: ", onDeleteMissingProduct);
+    // const data = {
+    //   collectionName: COLLECTIONS.MISSING_PRODUCTS,
+    //   docId: deleteData.id,
+    // };
+    // await deleteData(data);
   };
 
 export default missingProductsSlice.reducer;

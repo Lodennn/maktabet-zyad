@@ -23,7 +23,11 @@ import { dateMe, formatDateByDay, resetDate } from "../../helpers/functions";
 import moment from "moment";
 
 const HomePage = () => {
-  const { data: stockData, isLoading } = useAppSelector((state) => state.stock);
+  const {
+    data: stockData,
+    productsInStore,
+    isLoading,
+  } = useAppSelector((state) => state.stock);
   //prettier-ignore
   const { data: billsData, isLoading: billsIsLoading } = useAppSelector((state) => state.bills);
 
@@ -80,7 +84,7 @@ const HomePage = () => {
               <FullInfoTable
                 tableId={DBTables.STOCK_TABLE}
                 headData={stockTableHeadData}
-                data={stockData}
+                data={productsInStore}
                 isLoading={isLoading}
                 className="mt-md"
               />

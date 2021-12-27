@@ -20,6 +20,7 @@ export interface StockDoc {
   remainingAmountOfPieces: number;
   remainingAmountOfUnits: number;
   updatedProductAmount?: number;
+  missingAt?: string;
 }
 
 export interface BillsDoc {

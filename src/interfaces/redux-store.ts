@@ -2,6 +2,7 @@ import { BillsDoc, HttpInitialState, PurchasesDoc, StockDoc } from ".";
 
 export interface StockInitialState extends HttpInitialState<StockDoc> {
   filteredStockData: StockDoc[];
+  productsInStore: StockDoc[];
 }
 
 export interface BillsInitialState extends HttpInitialState<BillsDoc> {

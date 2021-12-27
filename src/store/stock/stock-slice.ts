@@ -1,16 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BillRequestAction, COLLECTIONS } from "../../constants";
+import { BillRequestAction, COLLECTIONS, CRUDRequest } from "../../constants";
 import { MissingProductsDoc, StockDoc } from "../../interfaces";
 import { StockInitialState } from "../../interfaces/redux-store";
-import { readData, updateData } from "../../services/api";
+import { deleteData, readData, sendData, updateData } from "../../services/api";
 import { BillType } from "../../types/bills";
 import { AppDispatch } from "../index";
-import { insertMissingProduct } from "../missing-products/missing-products-slice";
+import {
+  deleteMissingProduct,
+  insertMissingProduct,
+} from "../missing-products/missing-products-slice";
 
 const initialState: StockInitialState = {
   isLoading: false,
   error: null,
   data: [],
+  productsInStore: [],
   filteredStockData: [],
 };
 
@@ -27,14 +31,21 @@ const stockSlice = createSlice({
     },
     addStockData(state, action) {
       state.data = action.payload.data;
-      state.filteredStockData = action.payload.data;
+      state.filteredStockData = action.payload.data.filter(
+        (product: StockDoc) => product.totalNumberOfUnits > 0
+      );
+      state.productsInStore = action.payload.data.filter(
+        (product: StockDoc) => product.totalNumberOfUnits > 0
+      );
       state.isLoading = false;
       state.error = null;
     },
     filterStockData(state, action) {
       let tempStockData = [...state.data];
-      tempStockData = tempStockData.filter((data) =>
-        data.productName.includes(action.payload.searchValue)
+      tempStockData = tempStockData.filter(
+        (data) =>
+          data.productName.includes(action.payload.searchValue) &&
+          data.totalNumberOfUnits > 0
       );
       state.filteredStockData = tempStockData;
     },
@@ -75,64 +86,69 @@ export const transformDataFromNormalBillToStock =
       );
 
       let updatedProduct: StockDoc = {} as StockDoc;
-      //prettier-ignore
-      if (stockProductInBillIndex >= 0) {
 
-        updatedProduct = {...stockData[stockProductInBillIndex]};
+      // IF BILL PRODUCT IS FOUND IN STOCK !!!
+      if (stockProductInBillIndex >= 0) {
+        updatedProduct = { ...stockData[stockProductInBillIndex] };
 
         const missingProduct: MissingProductsDoc = {
           productName: updatedProduct.productName,
-          category: updatedProduct.category,
           createdAt: new Date().toString(),
-          priceOfPiece: updatedProduct.priceOfPiece
-        }
-        
-        if(data.billData.type === BillType.NORMAL_BILL) {
-          if(data.action === BillRequestAction.ADD_BILL) {
+          category: updatedProduct.category,
+          priceOfPiece: updatedProduct.priceOfPiece,
+        };
+
+        if (data.billData.type === BillType.NORMAL_BILL) {
+          if (data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-            if(updatedProduct.totalNumberOfUnits === 0) {
-              console.log('billProduct IN STOCK: ', billProduct, updatedProduct)
+            if (updatedProduct.totalNumberOfUnits <= 0) {
+              //prettier-ignore
               dispatch(insertMissingProduct(missingProduct));
             }
           }
-          if(data.action === BillRequestAction.UPDATE_BILL) {
-            if(billProduct.oldProductAmount) {
-              if(billProduct.totalProductAmount > billProduct.oldProductAmount) {
+          if (data.action === BillRequestAction.UPDATE_BILL) {
+            if (billProduct.oldProductAmount) {
+              if (
+                billProduct.totalProductAmount > billProduct.oldProductAmount
+              ) {
+                //prettier-ignore
                 updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
-                if(updatedProduct.totalNumberOfUnits === 0) {
+                if (updatedProduct.totalNumberOfUnits <= 0) {
+                  //prettier-ignore
                   dispatch(insertMissingProduct(missingProduct));
                 }
-              }else {
-                updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+              } else {
+                updatedProduct.totalNumberOfUnits +=
+                  billProduct.initialProductAmount;
               }
-            } 
+            }
           }
-          if(data.action === BillRequestAction.DELETE_BILL) {
+          if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
           }
-
-        } 
+        }
         if (data.billData.type === BillType.RETURNED_BILL) {
-          if(data.action === BillRequestAction.ADD_BILL) {
+          if (data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
           }
-          if(data.action === BillRequestAction.UPDATE_BILL) {
-            updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+          if (data.action === BillRequestAction.UPDATE_BILL) {
+            updatedProduct.totalNumberOfUnits +=
+              billProduct.initialProductAmount;
           }
-          if(data.action === BillRequestAction.DELETE_BILL) {
+          if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
           }
-          
         }
-        
+
         // THE PRODUCT IS ALREADY FOUNDED
-        if(data.billData.type === BillType.PURCHASES_BILL) {
-          console.log('PURCHASES BILL DATA FOUNDED')
-          if(data.action === BillRequestAction.ADD_BILL) {
+        if (data.billData.type === BillType.PURCHASES_BILL) {
+          console.log("PURCHASES BILL PRODUCT FOUNDED");
+          if (data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.numberOfUnits = billProduct.numberOfUnits;
             updatedProduct.priceOfPiece = billProduct.priceOfPiece;
             updatedProduct.priceOfUnit = billProduct.priceOfUnit;
-            updatedProduct.totalNumberOfUnits += (billProduct.totalProductAmount * billProduct.numberOfUnits);
+            //prettier-ignore
+            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount * billProduct.numberOfUnits;
           }
         }
         //prettier-ignore
@@ -140,13 +156,29 @@ export const transformDataFromNormalBillToStock =
         //prettier-ignore
         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+        // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+        updateData({
+          collectionName: COLLECTIONS.STOCK,
+          docId: updatedProduct.id,
+          newData: updatedProduct,
+        });
+      } else {
+        if (data.billData.type === BillType.PURCHASES_BILL) {
+          // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
+          console.log("PURCHASES BILL PRODUCT NOT FOUNDED");
+          console.log("ADD NEW ITEM TO STOCK");
+          // ADD TO STOCK
+          // sendData({
+          //   collectionName: COLLECTIONS.STOCK,
+          //   data: {},
+          // });
+          // REMOVE FROM MISSING
+          // deleteData({
+          //   collectionName: COLLECTIONS.MISSING,
+          //   data: {},
+          // });
+        }
       }
-      console.log("PURCHASES BILL DATA NOT FOUNDED");
-      updateData({
-        collectionName: COLLECTIONS.STOCK,
-        docId: updatedProduct.id,
-        newData: updatedProduct,
-      });
 
       return updatedProduct;
     });
