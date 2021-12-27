@@ -16,9 +16,7 @@ const AddNewProductToPurchaseBill: React.FC<{
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct } = props;
 
-  const { data: stockData, filteredStockData } = useAppSelector(
-    (state) => state.stock
-  );
+  const { data: stockData } = useAppSelector((state) => state.stock);
 
   const {
     billProductsConfig,
@@ -49,7 +47,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           <SmartSearch
             getSearchValue={getSearchValue}
             onChangeProductNameHandler={onChangeProductNameHandler}
-            filteredStockData={filteredStockData}
+            filteredStockData={stockData}
           />
         </div>
         {/** PRODUCT CATEGORY */}
