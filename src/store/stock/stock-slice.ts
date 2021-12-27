@@ -76,7 +76,7 @@ export const transformDataFromNormalBillToStock =
 
       let updatedProduct: StockDoc = {} as StockDoc;
       //prettier-ignore
-      if (data.billData.type !== BillType.PURCHASES_BILL && stockProductInBillIndex >= 0) {
+      if (stockProductInBillIndex >= 0) {
 
         updatedProduct = {...stockData[stockProductInBillIndex]};
 
@@ -122,15 +122,26 @@ export const transformDataFromNormalBillToStock =
           if(data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
           }
-
-        } 
+          
+        }
+        
+        // THE PRODUCT IS ALREADY FOUNDED
+        if(data.billData.type === BillType.PURCHASES_BILL) {
+          console.log('PURCHASES BILL DATA FOUNDED')
+          if(data.action === BillRequestAction.ADD_BILL) {
+            updatedProduct.numberOfUnits = billProduct.numberOfUnits;
+            updatedProduct.priceOfPiece = billProduct.priceOfPiece;
+            updatedProduct.priceOfUnit = billProduct.priceOfUnit;
+            updatedProduct.totalNumberOfUnits += (billProduct.totalProductAmount * billProduct.numberOfUnits);
+          }
+        }
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
         //prettier-ignore
         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
       }
-
+      console.log("PURCHASES BILL DATA NOT FOUNDED");
       updateData({
         collectionName: COLLECTIONS.STOCK,
         docId: updatedProduct.id,

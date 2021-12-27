@@ -1,17 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import { PurchasesDoc, SendRequestData } from "../../../interfaces";
-import { COLLECTIONS } from "../../../constants";
+import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
 import { sendData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
-import useBillProductsController from "../../../hooks/use-bill-products-controller";
-import classes from "./AddPurchaseBillModalContent.module.scss";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
+import classes from "./AddPurchaseBillModalContent.module.scss";
+import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
+
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
@@ -40,17 +41,23 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
       type: BillType.PURCHASES_BILL,
     };
 
+    // UPDATE STOCK IN DATABASE
+    //prettier-ignore
+    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
+
+    console.log("billData: ", billData);
+
     // INSERT BILL TO DATABASE
-    insertBill({
-      collectionName: COLLECTIONS.PURCHASES,
-      data: billData,
-    } as SendRequestData)
-      .then((_) => {
-        dispatch(addPurchasesDataToStore());
-      })
-      .then((_) => {
-        props.hideAddBillModal();
-      });
+    // insertBill({
+    //   collectionName: COLLECTIONS.PURCHASES,
+    //   data: billData,
+    // } as SendRequestData)
+    //   .then((_) => {
+    //     dispatch(addPurchasesDataToStore());
+    //   })
+    //   .then((_) => {
+    //     props.hideAddBillModal();
+    //   });
   };
 
   return (
