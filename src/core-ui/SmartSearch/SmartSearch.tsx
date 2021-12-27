@@ -7,6 +7,7 @@ import classes from "./SmartSearch.module.scss";
 
 const SmartSearch: React.FC<{
   getSearchValue: Function;
+  onChangeProductNameHandler?: (inputProductName: string) => void;
   updateValue?: string;
 }> = (props) => {
   //prettier-ignore
@@ -25,6 +26,9 @@ const SmartSearch: React.FC<{
     if (target.value === "") {
       setShowSmartSearch(false);
       return;
+    }
+    if (!!props.onChangeProductNameHandler) {
+      props.onChangeProductNameHandler(target.value);
     }
     dispatch(stockActions.filterStockData({ searchValue }));
     setShowSmartSearch(true);

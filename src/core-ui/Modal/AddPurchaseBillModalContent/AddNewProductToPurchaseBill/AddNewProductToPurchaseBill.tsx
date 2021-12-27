@@ -18,6 +18,7 @@ const AddNewProductToPurchaseBill: React.FC<{
   const {
     billProductsConfig,
     getSearchValue,
+    onChangeProductNameHandler,
     onChangeProductAmountHandler,
     onChangePiecePriceHandler,
     onChangeNumberOfUnitsHandler,
@@ -39,12 +40,16 @@ const AddNewProductToPurchaseBill: React.FC<{
           >
             اسم المنتج
           </label>
-          <SmartSearch getSearchValue={getSearchValue} />
+          <SmartSearch
+            getSearchValue={getSearchValue}
+            onChangeProductNameHandler={onChangeProductNameHandler}
+          />
         </div>
         {/** PRODUCT CATEGORY */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">نوع المنتج</label>
-          {billProductsConfig.searchedProduct.id && (
+          {(billProductsConfig.searchedProduct.id ||
+            !!billProductsConfig.searchedProductName) && (
             <select>
               <option>كراس</option>
               <option>قلم</option>
@@ -55,7 +60,8 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT PIECES AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد القطع</label>
-          {billProductsConfig.searchedProduct.id && (
+          {(billProductsConfig.searchedProduct.id ||
+            !!billProductsConfig.searchedProductName) && (
             <input
               type="number"
               value={billProductsConfig.searchedProductAmount}
@@ -69,7 +75,8 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT PIECE PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن القطعه(جمله)</label>
-          {billProductsConfig.searchedProduct.id && (
+          {(billProductsConfig.searchedProduct.id ||
+            !!billProductsConfig.searchedProductName) && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
@@ -84,7 +91,8 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT UNITS AMOUNT */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">عدد الوحده في القطعه</label>
-          {billProductsConfig.searchedProduct.id && (
+          {(billProductsConfig.searchedProduct.id ||
+            !!billProductsConfig.searchedProductName) && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
@@ -99,7 +107,8 @@ const AddNewProductToPurchaseBill: React.FC<{
         {/** PRODUCT UNIT PRICE */}
         <div className={classes["add-bill-product__info"]}>
           <label className="form-label">ثمن الوحده</label>
-          {billProductsConfig.searchedProduct.id && (
+          {(billProductsConfig.searchedProduct.id ||
+            !!billProductsConfig.searchedProductName) && (
             <input
               type="number"
               id={`bill-product-amount-${props.productIndex}`}

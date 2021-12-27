@@ -100,6 +100,7 @@ export const transformDataFromNormalBillToStock =
 
         if (data.billData.type === BillType.NORMAL_BILL) {
           if (data.action === BillRequestAction.ADD_BILL) {
+            console.log("ON ADD NORMAL BILL");
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
             if (updatedProduct.totalNumberOfUnits <= 0) {
               //prettier-ignore
@@ -108,9 +109,8 @@ export const transformDataFromNormalBillToStock =
           }
           if (data.action === BillRequestAction.UPDATE_BILL) {
             if (billProduct.oldProductAmount) {
-              if (
-                billProduct.totalProductAmount > billProduct.oldProductAmount
-              ) {
+              //prettier-ignore
+              if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
                 //prettier-ignore
                 updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
                 if (updatedProduct.totalNumberOfUnits <= 0) {
@@ -125,6 +125,7 @@ export const transformDataFromNormalBillToStock =
           }
           if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+            dispatch(deleteMissingProduct(missingProduct));
           }
         }
         if (data.billData.type === BillType.RETURNED_BILL) {
@@ -137,6 +138,7 @@ export const transformDataFromNormalBillToStock =
           }
           if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+            dispatch(deleteMissingProduct(missingProduct));
           }
         }
 

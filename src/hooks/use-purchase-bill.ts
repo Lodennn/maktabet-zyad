@@ -3,6 +3,7 @@ import { StockDoc } from "../interfaces";
 
 export interface PurchaseBillConfigInitialState {
   searchedProduct: StockDoc;
+  searchedProductName: string;
   searchedProductAmount: number;
   searchedProductPiecePrice: number;
   searchedProductNumberOfUnits: number;
@@ -18,6 +19,8 @@ const initialState: PurchaseBillConfigInitialState = {
   //
   searchedProduct: {} as StockDoc,
   //
+  searchedProductName: "",
+  //
   searchedProductAmount: 1,
   //
   searchedProductPiecePrice: 0,
@@ -31,6 +34,12 @@ const reducerFn = (
   state: PurchaseBillConfigInitialState = initialState,
   action: PurchaseBillActionType
 ) => {
+  if (action.type === "CHANGE_PRODUCT_NAME") {
+    return {
+      ...state,
+      searchedProductName: action.payload.data,
+    };
+  }
   if (action.type === "SET_SEARCHED_PRODUCT") {
     return {
       ...state,
@@ -72,6 +81,23 @@ const usePurchaseBill = (
     reducerFn,
     initialState
   );
+
+  const onChangeProductNameHandler = (inputProductName: string) => {
+    // const updatedSearchedProductData: any = {
+    //   productName: inputProductName,
+    //   totalProductAmount: 1,
+    // };
+    console.log("NAME CHANGING", billProductsConfig.searchedProductName);
+
+    dispatchBillConfigActions({
+      type: "CHANGE_PRODUCT_NAME",
+      payload: { data: inputProductName  },
+    });
+
+    //prettier-ignore
+    // dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: updatedSearchedProductData} });
+  };
+
   const getSearchValue = (searchedProduct: StockDoc) => {
     const updatedSearchedProductData: any = {
       id: searchedProduct.id,
@@ -103,7 +129,8 @@ const usePurchaseBill = (
 
     const updatedSearchedProductData: any = {
       id: searchedProduct.id,
-      productName: searchedProduct.productName,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: targetValue,
       //prettier-ignore
@@ -138,7 +165,8 @@ const usePurchaseBill = (
     });
     const updatedSearchedProductData: any = {
       id: searchedProduct.id,
-      productName: searchedProduct.productName,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
@@ -168,7 +196,8 @@ const usePurchaseBill = (
 
     const updatedSearchedProductData: any = {
       id: searchedProduct.id,
-      productName: searchedProduct.productName,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       category: searchedProduct.category,
       //prettier-ignore
@@ -198,7 +227,8 @@ const usePurchaseBill = (
 
     const updatedSearchedProductData: any = {
       id: searchedProduct.id,
-      productName: searchedProduct.productName,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
@@ -223,7 +253,8 @@ const usePurchaseBill = (
       numberOfUnits: searchedProduct.numberOfUnits,
       priceOfPiece: searchedProduct.priceOfPiece,
       priceOfUnit: searchedProduct.priceOfUnit,
-      productName: searchedProduct.productName,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
     };
 
@@ -234,6 +265,7 @@ const usePurchaseBill = (
   return {
     billProductsConfig,
     getSearchValue,
+    onChangeProductNameHandler,
     onChangeProductAmountHandler,
     onChangePiecePriceHandler,
     onChangeNumberOfUnitsHandler,

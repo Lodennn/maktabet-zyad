@@ -43,7 +43,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
 
     console.log("billData: ", billData);
 

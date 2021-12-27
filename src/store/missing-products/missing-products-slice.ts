@@ -49,6 +49,7 @@ export const addMissingProductsDataToStore =
 
 export const insertMissingProduct =
   (insertData: MissingProductsDoc) => async (dispatch: AppDispatch) => {
+    console.log("insertMissingProduct NORMAL BILL", insertData);
     const data = {
       collectionName: COLLECTIONS.MISSING_PRODUCTS,
       data: insertData,
@@ -57,18 +58,21 @@ export const insertMissingProduct =
   };
 
 export const deleteMissingProduct =
-  (deleteData: MissingProductsDoc) =>
+  (missingProduct: MissingProductsDoc) =>
   async (dispatch: AppDispatch, getState: any) => {
+    console.log("deleteMissingProduct NORMAL BILL");
     const stateData = [...getState().missingProducts.data];
     //prettier-ignore
-    const onDeleteMissingProduct = stateData.find((state: MissingProductsDoc) => state.productName === deleteData.productName);
+    const onDeleteMissingProduct = await stateData.find((state: MissingProductsDoc) => state.productName === missingProduct.productName);
 
-    console.log("onDeleteMissingProduct: ", onDeleteMissingProduct);
-    // const data = {
-    //   collectionName: COLLECTIONS.MISSING_PRODUCTS,
-    //   docId: deleteData.id,
-    // };
-    // await deleteData(data);
+    if (!!onDeleteMissingProduct) {
+      const data = {
+        collectionName: COLLECTIONS.MISSING_PRODUCTS,
+        docId: onDeleteMissingProduct.id,
+      };
+
+      await deleteData(data);
+    }
   };
 
 export default missingProductsSlice.reducer;
