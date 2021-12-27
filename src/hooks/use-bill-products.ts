@@ -82,6 +82,7 @@ const useBillProducts = (
       category: searchedProduct.category,
       totalProductAmount: targetValue,
       priceOfUnit: searchedProduct.priceOfUnit,
+      totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
     };
 
     if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)

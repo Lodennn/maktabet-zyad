@@ -6,6 +6,7 @@ import useBillProducts from "../../../../hooks/use-bill-products";
 import { BillType } from "../../../../types/bills";
 import { CRUDRequest } from "../../../../constants";
 import usePurchaseBill from "../../../../hooks/use-purchase-bill";
+import { useAppSelector } from "../../../../hooks/use-app-selector";
 
 const AddNewProductToPurchaseBill: React.FC<{
   productIndex: number;
@@ -14,6 +15,8 @@ const AddNewProductToPurchaseBill: React.FC<{
   dispatchBillActions: Function;
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct } = props;
+
+  const { data: stockData } = useAppSelector((state) => state.stock);
 
   const {
     billProductsConfig,
@@ -43,6 +46,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           <SmartSearch
             getSearchValue={getSearchValue}
             onChangeProductNameHandler={onChangeProductNameHandler}
+            filteredStockData={stockData}
           />
         </div>
         {/** PRODUCT CATEGORY */}

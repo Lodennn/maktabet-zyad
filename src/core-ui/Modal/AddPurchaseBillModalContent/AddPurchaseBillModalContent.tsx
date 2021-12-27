@@ -43,21 +43,19 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
-
-    console.log("billData: ", billData);
+    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
 
     // INSERT BILL TO DATABASE
-    // insertBill({
-    //   collectionName: COLLECTIONS.PURCHASES,
-    //   data: billData,
-    // } as SendRequestData)
-    //   .then((_) => {
-    //     dispatch(addPurchasesDataToStore());
-    //   })
-    //   .then((_) => {
-    //     props.hideAddBillModal();
-    //   });
+    insertBill({
+      collectionName: COLLECTIONS.PURCHASES,
+      data: billData,
+    } as SendRequestData)
+      .then((_) => {
+        dispatch(addPurchasesDataToStore());
+      })
+      .then((_) => {
+        props.hideAddBillModal();
+      });
   };
 
   return (

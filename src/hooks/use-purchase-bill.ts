@@ -100,7 +100,7 @@ const usePurchaseBill = (
 
   const getSearchValue = (searchedProduct: StockDoc) => {
     const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
+      // id: searchedProduct.id,
       productName: searchedProduct.productName,
       category: searchedProduct.category,
       totalProductAmount: 1,
@@ -128,7 +128,7 @@ const usePurchaseBill = (
     const targetValue = +target.value;
 
     const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
+      // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,
@@ -164,7 +164,7 @@ const usePurchaseBill = (
       payload: { data: targetValue },
     });
     const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
+      // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,
@@ -195,7 +195,7 @@ const usePurchaseBill = (
     });
 
     const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
+      // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
@@ -226,7 +226,7 @@ const usePurchaseBill = (
     });
 
     const updatedSearchedProductData: any = {
-      id: searchedProduct.id,
+      // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       category: searchedProduct.category,

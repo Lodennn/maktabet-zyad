@@ -64,7 +64,7 @@ const FullInfoTable: React.FC<{
               {props.tableId === DBTables.PURCHASES_TABLE &&
                 props.data.map((product) => (
                   <PurchasesTableData
-                    key={product.id}
+                    key={product.productName}
                     product={product}
                     admin={props.admin}
                   />

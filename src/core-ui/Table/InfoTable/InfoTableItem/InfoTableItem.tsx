@@ -77,7 +77,7 @@ const InfoTableItem: React.FC<{
           {props.tableId === DBTables.PURCHASES_TABLE &&
             props.data.products.map((product: any) => {
               return (
-                <Fragment key={product.id}>
+                <Fragment key={product.productName}>
                   <li className={classes["info-table-item__products-item"]}>
                     <span
                       className={

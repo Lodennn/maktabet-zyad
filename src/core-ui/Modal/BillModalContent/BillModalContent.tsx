@@ -11,7 +11,6 @@ const BillModalContent: React.FC<{
   data: BillsDoc & PurchasesDoc;
   fullData: BillsDoc[];
 }> = (props) => {
-  
   const billTypeClasses =
     props.data.type === BillType.NORMAL_BILL
       ? `${classes[`bill-modal__body--type-normal`]}`

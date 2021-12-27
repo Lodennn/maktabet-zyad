@@ -9,13 +9,12 @@ const SmartSearch: React.FC<{
   getSearchValue: Function;
   onChangeProductNameHandler?: (inputProductName: string) => void;
   updateValue?: string;
+  filteredStockData: StockDoc[];
 }> = (props) => {
   //prettier-ignore
   const [searchValue, setSearchValue] = useState<string>(!!props.updateValue ? props.updateValue : '');
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
-
-  const { filteredStockData } = useAppSelector((state) => state.stock);
 
   const dispatch = useAppDispatch();
 
@@ -57,7 +56,7 @@ const SmartSearch: React.FC<{
       />
       {showSmartSearch && (
         <ul className={classes["smart-search__result"]}>
-          {filteredStockData.map((product: StockDoc) => {
+          {props.filteredStockData.map((product: StockDoc) => {
             return (
               <li
                 key={product.id}

@@ -32,7 +32,8 @@ const purchasesSlice = createSlice({
     updateBillProducts(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(
         (searchedProduct) =>
-          searchedProduct.id === action.payload.selectedProduct.id
+          searchedProduct.productName ===
+          action.payload.selectedProduct.productName
       );
 
       let updatedBillProducts: StockDoc[] = [];
@@ -73,7 +74,8 @@ const purchasesSlice = createSlice({
     addProductToBill(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(
         (searchedProduct) =>
-          searchedProduct.id === action.payload.selectedProduct.id
+          searchedProduct.productName ===
+          action.payload.selectedProduct.productName
       );
 
       let updatedBillProducts: StockDoc[] = [];
@@ -98,7 +100,8 @@ const purchasesSlice = createSlice({
     },
     removeProductFromBill(state, action) {
       state.billSelectedProducts = state.billSelectedProducts.filter(
-        (billProduct) => billProduct.id !== action.payload.selectedProduct.id
+        (billProduct) =>
+          billProduct.productName !== action.payload.selectedProduct.productName
       );
 
       state.total = state.billSelectedProducts.reduce((acc, cur) => {

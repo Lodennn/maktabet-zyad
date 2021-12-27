@@ -9,6 +9,7 @@ export interface PurchaseBillConfigInitialState {
   searchedProductOldAmount: number;
   searchedUpdatedProductAmount: number;
   initialProductAmount: number;
+  totalNumberOfUnits: number;
 }
 
 type PurchaseBillActionType = {
@@ -22,6 +23,7 @@ const initialState: PurchaseBillConfigInitialState = {
   searchedProductOldAmount: 0,
   searchedUpdatedProductAmount: 0,
   initialProductAmount: 0,
+  totalNumberOfUnits: 0,
 };
 
 const reducerFn = (
@@ -58,6 +60,7 @@ const useUpdateBill = (dispatchBillActions: Function, billData?: BillsDoc) => {
       category: searchedProduct.category,
       totalProductAmount: targetValue,
       oldProductAmount: searchedProduct.totalProductAmount,
+      totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
     };
 
     updatedSearchedProductData.priceOfUnit = searchedProduct.priceOfUnit;

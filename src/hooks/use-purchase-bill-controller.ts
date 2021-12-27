@@ -24,7 +24,8 @@ const usePurchaseBillController = (crudID?: CRUDRequest) => {
   ) => {
     if (action.type === "ADD_PRODUCT") {
       const searchedProductIndex = [...state.billSelectedProducts].findIndex(
-        (searchedProduct) => searchedProduct.id === action.payload.data.id
+        (searchedProduct) =>
+          searchedProduct.productName === action.payload.data.productName
       );
 
       let updatedBillProducts: StockDoc[] = [];

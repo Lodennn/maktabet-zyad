@@ -73,15 +73,19 @@ const UpdateBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
+    console.log("billData UPDATED: ", billData);
+
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
     //prettier-ignore
-    const newBillProducts = deleteBillProductsValue(billData.products, "initialProductAmount");
+    // const newBillProducts = deleteBillProductsValue(billData.products, "initialProductAmount");
     //prettier-ignore
-    const newerBillProducts = deleteBillProductsValue(newBillProducts, "oldProductAmount");
-    billData.products = newerBillProducts;
+    // const newerBillProducts = deleteBillProductsValue(newBillProducts, "oldProductAmount");
+    // billData.products = newerBillProducts;
+
+    // console.log("billData UPDATED: ", billData);
 
     // UPDATE BILL IN DATABASE
     updateBill({

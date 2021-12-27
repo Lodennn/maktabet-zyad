@@ -52,7 +52,7 @@ const stockSlice = createSlice({
     updateStockProductsFromBill(state, action) {
       action.payload.updatedStockProducts.forEach((billProduct: StockDoc) => {
         //prettier-ignore
-        const stockProductIndex = state.data.findIndex((stockProduct: StockDoc) => stockProduct.id === billProduct.id);
+        const stockProductIndex = state.data.findIndex((stockProduct: StockDoc) => stockProduct.productName === billProduct.productName);
         if (stockProductIndex >= 0) {
           state.data[stockProductIndex] = billProduct;
         }
@@ -79,10 +79,12 @@ export const transformDataFromNormalBillToStock =
 
     const updatedStockData = data.billData.products.map((billProduct: any) => {
       const stockProductInBillIndex = stockData.findIndex(
-        (stockProduct: StockDoc) => stockProduct.id === billProduct.id
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
       );
       const stockProductInBill = stockData.find(
-        (stockProduct: StockDoc) => stockProduct.id === billProduct.id
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
       );
 
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -100,7 +102,6 @@ export const transformDataFromNormalBillToStock =
 
         if (data.billData.type === BillType.NORMAL_BILL) {
           if (data.action === BillRequestAction.ADD_BILL) {
-            console.log("ON ADD NORMAL BILL");
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
             if (updatedProduct.totalNumberOfUnits <= 0) {
               //prettier-ignore
@@ -108,7 +109,7 @@ export const transformDataFromNormalBillToStock =
             }
           }
           if (data.action === BillRequestAction.UPDATE_BILL) {
-            if (billProduct.oldProductAmount) {
+            if (!!billProduct.oldProductAmount) {
               //prettier-ignore
               if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
                 //prettier-ignore
@@ -118,8 +119,12 @@ export const transformDataFromNormalBillToStock =
                   dispatch(insertMissingProduct(missingProduct));
                 }
               } else {
-                updatedProduct.totalNumberOfUnits +=
-                  billProduct.initialProductAmount;
+                //prettier-ignore
+                updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;      
+                if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
+                  //prettier-ignore
+                  dispatch(deleteMissingProduct(missingProduct));
+                }
               }
             }
           }
@@ -151,6 +156,7 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.priceOfUnit = billProduct.priceOfUnit;
             //prettier-ignore
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount * billProduct.numberOfUnits;
+            dispatch(deleteMissingProduct(missingProduct));
           }
         }
         //prettier-ignore

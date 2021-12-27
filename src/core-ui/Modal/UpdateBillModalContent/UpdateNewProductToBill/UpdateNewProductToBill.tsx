@@ -80,8 +80,8 @@ const UpdateNewProductToBill: React.FC<{
                   id={`bill-product-amount-${product.id}`}
                   className={classes["update-bill-product__info--input"]}
                   min={0}
+                  max={product.totalNumberOfUnits}
                   // max={billProductInStock.totalNumberOfUnits}
-                  max={billProductInStock.totalNumberOfUnits}
                   step="0.01"
                   name="bill-product-amount"
                   value={product.updatedProductAmount}

@@ -65,6 +65,8 @@ export const deleteMissingProduct =
     //prettier-ignore
     const onDeleteMissingProduct = await stateData.find((state: MissingProductsDoc) => state.productName === missingProduct.productName);
 
+    console.log("missingProduct: ", missingProduct, onDeleteMissingProduct);
+
     if (!!onDeleteMissingProduct) {
       const data = {
         collectionName: COLLECTIONS.MISSING_PRODUCTS,

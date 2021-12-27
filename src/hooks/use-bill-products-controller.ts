@@ -30,7 +30,6 @@ const useBillProductsController = () => {
 
       if (searchedProductIndex >= 0) {
         updatedBillProducts = [...state.billSelectedProducts];
-        //prettier-ignore
 
         //prettier-ignore
         updatedBillProducts[searchedProductIndex] = action.payload.data

@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CRUDRequest } from "../../../../constants";
+import { useAppSelector } from "../../../../hooks/use-app-selector";
 import useBillProducts from "../../../../hooks/use-bill-products";
 import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
@@ -13,7 +14,7 @@ const AddNewProductToBill: React.FC<{
   dispatchBillActions: Function;
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct } = props;
-
+  const { filteredStockData } = useAppSelector((state) => state.stock);
   const {
     billProductsConfig,
     getSearchValue,
@@ -35,7 +36,10 @@ const AddNewProductToBill: React.FC<{
           >
             اسم المنتج
           </label>
-          <SmartSearch getSearchValue={getSearchValue} />
+          <SmartSearch
+            getSearchValue={getSearchValue}
+            filteredStockData={filteredStockData}
+          />
         </div>
         {/** PRODUCT PRICE */}
         <div className={classes["add-bill-product__info"]}>

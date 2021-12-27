@@ -6,7 +6,7 @@ const PurchasesTableData: React.FC<{
   admin?: boolean;
 }> = (props) => {
   return (
-    <tr key={props.product.id}>
+    <tr key={props.product.productName}>
       <td>{props.product.productName}</td>
       <td>{props.product.category}</td>
       <td>{props.product.totalProductAmount}</td>
