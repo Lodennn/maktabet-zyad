@@ -33,7 +33,11 @@ export const readData = async (collectionName: COLLECTIONS) => {
 
 //{collectionName: COLLECTIONS, data: DatabaseCollectionsType}
 export const sendData = async (requestData: SendRequestData) => {
-  await addDoc(collection(db, requestData.collectionName), requestData.data);
+  try {
+    await addDoc(collection(db, requestData.collectionName), requestData.data);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 // Update

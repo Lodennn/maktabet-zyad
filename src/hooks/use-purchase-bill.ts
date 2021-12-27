@@ -5,6 +5,7 @@ export interface PurchaseBillConfigInitialState {
   searchedProduct: StockDoc;
   searchedProductName: string;
   searchedProductAmount: number;
+  searchedProductCategory: string;
   searchedProductPiecePrice: number;
   searchedProductNumberOfUnits: number;
   searchedProductUnitPrice: number;
@@ -22,6 +23,8 @@ const initialState: PurchaseBillConfigInitialState = {
   searchedProductName: "",
   //
   searchedProductAmount: 1,
+  //
+  searchedProductCategory: "",
   //
   searchedProductPiecePrice: 0,
   //
@@ -44,6 +47,12 @@ const reducerFn = (
     return {
       ...state,
       searchedProduct: action.payload.data,
+    };
+  }
+  if (action.type === "CHANGE_PRODUCT_CATEGORY") {
+    return {
+      ...state,
+      searchedProductCategory: action.payload.data,
     };
   }
   if (action.type === "CHANGE_PRODUCT_AMOUNT") {
@@ -102,7 +111,8 @@ const usePurchaseBill = (
     const updatedSearchedProductData: any = {
       // id: searchedProduct.id,
       productName: searchedProduct.productName,
-      category: searchedProduct.category,
+      //prettier-ignore
+      category: !!billProductsConfig.searchedProductCategory ? billProductsConfig.searchedProductCategory : searchedProduct.category,
       totalProductAmount: 1,
       totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
       //prettier-ignore
@@ -120,6 +130,39 @@ const usePurchaseBill = (
     dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: updatedSearchedProductData} });
   };
 
+  const onChangeProductCategoryHandler = (
+    searchedProduct: StockDoc,
+    event: React.FormEvent<HTMLSelectElement>
+  ): void => {
+    const target = event.target as HTMLSelectElement;
+    const targetValue = target.value;
+
+    const updatedSearchedProductData: any = {
+      // id: searchedProduct.id,
+      //prettier-ignore
+      productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
+      category: targetValue,
+      totalProductAmount: billProductsConfig.searchedProductAmount,
+      //prettier-ignore
+      numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
+      //prettier-ignore
+      priceOfUnit: billProductsConfig.searchedProductUnitPrice,
+      // priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+      //prettier-ignore
+      priceOfPiece: billProductsConfig.searchedProductPiecePrice,
+    };
+
+    dispatchBillConfigActions({
+      type: "CHANGE_PRODUCT_CATEGORY",
+      payload: { data: targetValue },
+    });
+
+    dispatchBillActions({
+      type: "ADD_PRODUCT",
+      payload: { data: updatedSearchedProductData },
+    });
+  };
+
   const onChangeProductAmountHandler = (
     searchedProduct: StockDoc,
     event: React.FormEvent<HTMLInputElement>
@@ -131,12 +174,14 @@ const usePurchaseBill = (
       // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
-      category: searchedProduct.category,
+      //prettier-ignore
+      category: !!billProductsConfig.searchedProductCategory ? billProductsConfig.searchedProductCategory : searchedProduct.category,
       totalProductAmount: targetValue,
       //prettier-ignore
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       //prettier-ignore
-      priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+      priceOfUnit: billProductsConfig.searchedProductUnitPrice,
+      // priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
       //prettier-ignore
       priceOfPiece: billProductsConfig.searchedProductPiecePrice,
     };
@@ -167,12 +212,14 @@ const usePurchaseBill = (
       // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
-      category: searchedProduct.category,
+      //prettier-ignore
+      category: !!billProductsConfig.searchedProductCategory ? billProductsConfig.searchedProductCategory : searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
       //prettier-ignore
-      priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
+      priceOfUnit: billProductsConfig.searchedProductUnitPrice,
+      // priceOfUnit: billProductsConfig.searchedProduct.priceOfUnit,
       priceOfPiece: targetValue,
     };
 
@@ -199,7 +246,8 @@ const usePurchaseBill = (
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
       totalProductAmount: billProductsConfig.searchedProductAmount,
-      category: searchedProduct.category,
+      //prettier-ignore
+      category: !!billProductsConfig.searchedProductCategory ? billProductsConfig.searchedProductCategory : searchedProduct.category,
       //prettier-ignore
       priceOfUnit: billProductsConfig.searchedProductUnitPrice,
       numberOfUnits: targetValue,
@@ -229,7 +277,8 @@ const usePurchaseBill = (
       // id: searchedProduct.id,
       //prettier-ignore
       productName: !!billProductsConfig.searchedProductName ? billProductsConfig.searchedProductName: searchedProduct.productName,
-      category: searchedProduct.category,
+      //prettier-ignore
+      category: !!billProductsConfig.searchedProductCategory ? billProductsConfig.searchedProductCategory : searchedProduct.category,
       totalProductAmount: billProductsConfig.searchedProductAmount,
       //prettier-ignore
       numberOfUnits: billProductsConfig.searchedProductNumberOfUnits,
@@ -249,7 +298,7 @@ const usePurchaseBill = (
 
     const updatedSearchedProductData = {
       id: searchedProduct.id,
-      category: searchedProduct.category,
+      category: billProductsConfig.searchedProductCategory,
       numberOfUnits: searchedProduct.numberOfUnits,
       priceOfPiece: searchedProduct.priceOfPiece,
       priceOfUnit: searchedProduct.priceOfUnit,
@@ -266,6 +315,7 @@ const usePurchaseBill = (
     billProductsConfig,
     getSearchValue,
     onChangeProductNameHandler,
+    onChangeProductCategoryHandler,
     onChangeProductAmountHandler,
     onChangePiecePriceHandler,
     onChangeNumberOfUnitsHandler,

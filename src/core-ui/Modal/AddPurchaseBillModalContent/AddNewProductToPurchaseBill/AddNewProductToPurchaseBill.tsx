@@ -16,12 +16,15 @@ const AddNewProductToPurchaseBill: React.FC<{
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct } = props;
 
-  const { data: stockData } = useAppSelector((state) => state.stock);
+  const { data: stockData, filteredStockData } = useAppSelector(
+    (state) => state.stock
+  );
 
   const {
     billProductsConfig,
     getSearchValue,
     onChangeProductNameHandler,
+    onChangeProductCategoryHandler,
     onChangeProductAmountHandler,
     onChangePiecePriceHandler,
     onChangeNumberOfUnitsHandler,
@@ -46,7 +49,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           <SmartSearch
             getSearchValue={getSearchValue}
             onChangeProductNameHandler={onChangeProductNameHandler}
-            filteredStockData={stockData}
+            filteredStockData={filteredStockData}
           />
         </div>
         {/** PRODUCT CATEGORY */}
@@ -54,7 +57,14 @@ const AddNewProductToPurchaseBill: React.FC<{
           <label className="form-label">نوع المنتج</label>
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
-            <select>
+            <select
+              defaultValue={""}
+              onChange={onChangeProductCategoryHandler.bind(
+                null,
+                billProductsConfig.searchedProduct
+              )}
+            >
+              <option></option>
               <option>كراس</option>
               <option>قلم</option>
               <option>برايه</option>
