@@ -1,13 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
-import { HttpInitialState } from "../../interfaces/index";
 import { readData } from "../../services/api";
 import { AppDispatch } from "../index";
-import { PurchasesDoc } from "../../interfaces/database";
-import { BillsInitialState } from "../../interfaces/redux-store";
+import { PurchasesInitialState } from "../../interfaces/redux-store";
 import { StockDoc } from "../../interfaces/database";
 
-const initialState: BillsInitialState = {
+const initialState: PurchasesInitialState = {
   isLoading: false,
   error: null,
   data: [],

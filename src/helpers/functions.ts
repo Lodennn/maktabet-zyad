@@ -40,13 +40,6 @@ export const deleteBillProductsValue = (billProducts: any[], value: string) => {
   return updatedBillProducts;
 };
 
-// export const addOldProductsAmount = (billProducts: any[]) => {
-//   const updatedBillProducts = [...billProducts];
-//   return updatedBillProducts.map((billProduct: any) => {
-//     return { ...billProduct, totalProductAmount: 0 };
-//   });
-// };
-
 export const formatDateByHours = (date: string | Date) => {
   return moment(new Date(date)).startOf("hour").fromNow();
 };
@@ -77,3 +70,12 @@ export const maxDate = () => {
 export const dateMe = (date: string) => new Date(date);
 
 export const resetDate = (date: Date) => date.setHours(0, 0, 0, 0);
+
+export const formatNumber = (price: number, style: string = "currency") => {
+  //prettier-ignore
+  const inStyle = style === 'd' ? 'decimal' : style === 'p' ? 'percent' : 'currency';
+  return new Intl.NumberFormat("ar-EG", {
+    style: inStyle,
+    currency: "EGP",
+  }).format(price);
+};

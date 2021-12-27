@@ -91,6 +91,7 @@ export const transformDataFromNormalBillToStock =
           if(data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
             if(updatedProduct.totalNumberOfUnits === 0) {
+              console.log('billProduct IN STOCK: ', billProduct, updatedProduct)
               dispatch(insertMissingProduct(missingProduct));
             }
           }

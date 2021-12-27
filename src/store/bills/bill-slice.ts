@@ -4,12 +4,14 @@ import { readData } from "../../services/api";
 import { AppDispatch } from "../index";
 import { BillsInitialState } from "../../interfaces/redux-store";
 import { StockDoc } from "../../interfaces";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const initialState: BillsInitialState = {
   isLoading: false,
   error: null,
   data: [],
   billSelectedProducts: [],
+  dailyBills: [],
   total: 0,
 };
 
@@ -28,6 +30,10 @@ const billsSlice = createSlice({
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
+      state.dailyBills = state.data.filter(
+        (billProduct) =>
+          resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
+      );
     },
     addProductToBill(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(

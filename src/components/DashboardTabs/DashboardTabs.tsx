@@ -7,7 +7,10 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
 
   const tabsActiveItemRef = useRef<HTMLLIElement>(null);
 
-  const { data: billsData } = useAppSelector((state) => state.bills);
+  const { dailyBills } = useAppSelector((state) => state.bills);
+  const { data: missingProducts } = useAppSelector(
+    (state) => state.missingProducts
+  );
 
   const moveTheTracer = (event: React.MouseEvent<HTMLLIElement>) => {
     const targetElement = event.target as HTMLLIElement;
@@ -61,7 +64,9 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
         data-content={DBTables.BILLS_TABLE}
       >
         <span>الفواتير</span>
-        <span className={classes["tabs__item--count"]}>{billsData.length}</span>
+        <span className={classes["tabs__item--count"]}>
+          {dailyBills.length}
+        </span>
       </li>
       <li
         className={classes["tabs__item"]}
@@ -69,7 +74,9 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
         data-content={DBTables.MISSING_PRODUCTS_TABLE}
       >
         <span>المنقوصات</span>
-        <span className={classes["tabs__item--count"]}>2</span>
+        <span className={classes["tabs__item--count"]}>
+          {missingProducts.length}
+        </span>
       </li>
       <li
         className={classes["tabs__item"]}

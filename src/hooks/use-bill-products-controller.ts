@@ -21,14 +21,6 @@ const useBillProductsController = () => {
     state: PurchaseBillInitialState = initialState,
     action: PurchaseBillActionType
   ) => {
-    // if (action.type === "UPDATE_PRODUCT") {
-    //   //prettier-ignore
-    //   return {
-    //     ...state,
-    //     billSelectedProducts: action.payload.data.products,
-    //     billTotal: action.payload.data.total,
-    //   };
-    // }
     if (action.type === "ADD_PRODUCT") {
       const searchedProductIndex = [...state.billSelectedProducts].findIndex(
         (searchedProduct) => searchedProduct.id === action.payload.data.id
@@ -56,7 +48,6 @@ const useBillProductsController = () => {
         billSelectedProducts: updatedBillProducts,
         billTotal: updatedBillTotal,
       };
-      // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
     }
     if (action.type === "REMOVE_PRODUCT") {
       let updatedBillProducts = state.billSelectedProducts.filter(

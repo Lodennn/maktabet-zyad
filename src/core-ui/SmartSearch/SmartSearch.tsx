@@ -7,7 +7,6 @@ import classes from "./SmartSearch.module.scss";
 
 const SmartSearch: React.FC<{
   getSearchValue: Function;
-  dispatchBillActions?: Function;
   updateValue?: string;
 }> = (props) => {
   //prettier-ignore

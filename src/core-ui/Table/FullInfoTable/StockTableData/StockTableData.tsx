@@ -1,4 +1,5 @@
 import React from "react";
+import { formatNumber } from "../../../../helpers/functions";
 import { StockDoc } from "../../../../interfaces";
 
 const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
@@ -8,14 +9,14 @@ const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.productName}</td>
       <td>{props.dataItem.category}</td>
-      <td>{props.dataItem.numberOfPieces}</td>
-      <td>{props.dataItem.priceOfPiece}</td>
-      <td>{props.dataItem.profitOfPiece}</td>
-      <td>{props.dataItem.numberOfUnits}</td>
-      <td>{props.dataItem.priceOfUnit}</td>
-      <td>{props.dataItem.purchasingCosts}</td>
-      <td>{props.dataItem.profitPercent}%</td>
-      <td>{props.dataItem.totalProfit}</td>
+      <td>{formatNumber(props.dataItem.numberOfPieces, "d")}</td>
+      <td>{formatNumber(props.dataItem.priceOfPiece)}</td>
+      <td>{formatNumber(props.dataItem.profitOfPiece)}</td>
+      <td>{formatNumber(props.dataItem.numberOfUnits, "d")}</td>
+      <td>{formatNumber(props.dataItem.priceOfUnit)}</td>
+      <td>{formatNumber(props.dataItem.purchasingCosts)}</td>
+      <td>{formatNumber(props.dataItem.profitPercent, "p")}</td>
+      <td>{formatNumber(props.dataItem.totalProfit)}</td>
       {props.admin && (
         <td className="table__actions">
           <button className="btn btn--warning ml-xs">تعديل</button>

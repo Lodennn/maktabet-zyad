@@ -51,7 +51,6 @@ const usePurchaseBillController = (crudID?: CRUDRequest) => {
         billSelectedProducts: updatedBillProducts,
         billTotal: updatedBillTotal,
       };
-      // const updatedState = { ...state, searchedProduct: action.payload.data, billProducts };
     }
     if (action.type === "REMOVE_PRODUCT") {
       let updatedBillProducts = [...state.billSelectedProducts];

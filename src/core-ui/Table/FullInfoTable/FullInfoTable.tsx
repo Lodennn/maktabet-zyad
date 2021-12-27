@@ -3,7 +3,7 @@ import { DBTables } from "../../../constants";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import BillsTableData from "./BillsTableData/BillsTableData";
 import classes from "./FullInfoTable.module.scss";
-import MissingProductsTableData from "./MissingProductsTableData/StockTableData";
+import MissingProductsTableData from "./MissingProductsTableData/MissingProductsTableData";
 import PurchasesTableData from "./PurchasingTableData/PurchasesTableData";
 import StockTableData from "./StockTableData/StockTableData";
 
