@@ -163,6 +163,21 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount * billProduct.numberOfUnits;
             dispatch(deleteMissingProduct(missingProduct));
           }
+
+          if (data.action === BillRequestAction.DELETE_BILL) {
+            const isProductFreshInStock =
+              billProduct.totalProductAmount * billProduct.numberOfUnits ===
+              updatedProduct.totalNumberOfUnits;
+            if (isProductFreshInStock) {
+              deleteData({
+                collectionName: COLLECTIONS.STOCK,
+                docId: updatedProduct.id!,
+              });
+            } else {
+              updatedProduct.totalNumberOfUnits -=
+                billProduct.totalProductAmount * billProduct.numberOfUnits;
+            }
+          }
         }
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -176,67 +191,69 @@ export const transformDataFromNormalBillToStock =
           newData: updatedProduct,
         });
       } else {
+        // NOT FOUNDED PRODUCT
         if (data.billData.type === BillType.PURCHASES_BILL) {
-          // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
-          console.log("PURCHASES BILL PRODUCT NOT FOUNDED");
-          console.log("ADD NEW ITEM TO STOCK");
-          console.log("data.billData: ", billProduct);
-          // category: "كراس"
-          // numberOfUnits: 5
-          // priceOfPiece: 5
-          // priceOfUnit: 5
-          // productName: "qwe"
-          // totalProductAmount: 1
-          const {
-            priceOfPiece,
-            priceOfUnit,
-            numberOfPieces,
-            numberOfUnits,
-            totalProductAmount,
-          } = billProduct;
-          //
-          const profitOfPieceEquation =
-            (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) / priceOfPiece;
-          //
-          const profitOfUnitEquation =
-            (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
-            (priceOfPiece / numberOfUnits);
-          //
-          const totalProfitEquation =
-            (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
-          //
-          const profitPercentEquation =
-            ((totalProfitEquation - data.billData.total) /
-              data.billData.total) *
-            100;
+          if (data.action === BillRequestAction.DELETE_BILL) {
+            console.log("DELETE NOT FOUNDED BILL");
+          }
+          if (data.action === BillRequestAction.ADD_BILL) {
+            // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
+            console.log("PURCHASES BILL PRODUCT NOT FOUNDED");
+            console.log("ADD NEW ITEM TO STOCK");
+            console.log("data.billData: ", billProduct);
+            // category: "كراس"
+            // numberOfUnits: 5
+            // priceOfPiece: 5
+            // priceOfUnit: 5
+            // productName: "qwe"
+            // totalProductAmount: 1
+            const {
+              priceOfPiece,
+              priceOfUnit,
+              numberOfPieces,
+              numberOfUnits,
+              totalProductAmount,
+            } = billProduct;
+            //
+            const profitOfPieceEquation =
+              (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) /
+              priceOfPiece;
+            //
+            const profitOfUnitEquation =
+              (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
+              (priceOfPiece / numberOfUnits);
+            //
+            const totalProfitEquation =
+              (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
+            //
+            const profitPercentEquation =
+              ((totalProfitEquation - data.billData.total) /
+                data.billData.total) *
+              100;
 
-          const newProduct: StockDoc = {
-            ...billProduct,
-            // MAYBE DELETE
-            numberOfPieces: totalProductAmount,
-            profitOfPiece: profitOfPieceEquation,
-            profitOfUnit: profitOfUnitEquation,
-            // MAYBE DELETE
-            profitPercent: profitPercentEquation,
-            // MAYBE DELETE
-            purchasingCosts: data.billData.total,
-            remainingAmountOfPieces: totalProductAmount,
-            remainingAmountOfUnits: 0,
-            totalNumberOfUnits: totalProductAmount * numberOfUnits,
-            totalProductAmount: 1,
-            totalProfit: totalProfitEquation,
-          };
-          console.log("new Product", newProduct);
-          // ADD TO STOCK
-          sendData({
-            collectionName: COLLECTIONS.STOCK,
-            data: newProduct,
-          });
-          // REMOVE FROM MISSING
-          // deleteData({
-          //   collectionName: COLLECTIONS.MISSING,
-          //   data: {},
-          // });
+            const newProduct: StockDoc = {
+              ...billProduct,
+              // MAYBE DELETE
+              numberOfPieces: totalProductAmount,
+              profitOfPiece: profitOfPieceEquation,
+              profitOfUnit: profitOfUnitEquation,
+              // MAYBE DELETE
+              profitPercent: profitPercentEquation,
+              // MAYBE DELETE
+              purchasingCosts: data.billData.total,
+              remainingAmountOfPieces: totalProductAmount,
+              remainingAmountOfUnits: 0,
+              totalNumberOfUnits: totalProductAmount * numberOfUnits,
+              totalProductAmount: 1,
+              totalProfit: totalProfitEquation,
+            };
+            console.log("new Product", newProduct);
+            // ADD TO STOCK
+            sendData({
+              collectionName: COLLECTIONS.STOCK,
+              data: newProduct,
+            });
+          }
         }
       }
 
