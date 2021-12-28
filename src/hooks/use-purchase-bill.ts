@@ -96,7 +96,6 @@ const usePurchaseBill = (
     //   productName: inputProductName,
     //   totalProductAmount: 1,
     // };
-    console.log("NAME CHANGING", billProductsConfig.searchedProductName);
 
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_NAME",

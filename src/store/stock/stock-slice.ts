@@ -180,11 +180,58 @@ export const transformDataFromNormalBillToStock =
           // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
           console.log("PURCHASES BILL PRODUCT NOT FOUNDED");
           console.log("ADD NEW ITEM TO STOCK");
+          console.log("data.billData: ", billProduct);
+          // category: "كراس"
+          // numberOfUnits: 5
+          // priceOfPiece: 5
+          // priceOfUnit: 5
+          // productName: "qwe"
+          // totalProductAmount: 1
+          const {
+            priceOfPiece,
+            priceOfUnit,
+            numberOfPieces,
+            numberOfUnits,
+            totalProductAmount,
+          } = billProduct;
+          //
+          const profitOfPieceEquation =
+            (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) / priceOfPiece;
+          //
+          const profitOfUnitEquation =
+            (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
+            (priceOfPiece / numberOfUnits);
+          //
+          const totalProfitEquation =
+            (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
+          //
+          const profitPercentEquation =
+            ((totalProfitEquation - data.billData.total) /
+              data.billData.total) *
+            100;
+
+          const newProduct: StockDoc = {
+            ...billProduct,
+            // MAYBE DELETE
+            numberOfPieces: totalProductAmount,
+            profitOfPiece: profitOfPieceEquation,
+            profitOfUnit: profitOfUnitEquation,
+            // MAYBE DELETE
+            profitPercent: profitPercentEquation,
+            // MAYBE DELETE
+            purchasingCosts: data.billData.total,
+            remainingAmountOfPieces: totalProductAmount,
+            remainingAmountOfUnits: 0,
+            totalNumberOfUnits: totalProductAmount * numberOfUnits,
+            totalProductAmount: 1,
+            totalProfit: totalProfitEquation,
+          };
+          console.log("new Product", newProduct);
           // ADD TO STOCK
-          // sendData({
-          //   collectionName: COLLECTIONS.STOCK,
-          //   data: {},
-          // });
+          sendData({
+            collectionName: COLLECTIONS.STOCK,
+            data: newProduct,
+          });
           // REMOVE FROM MISSING
           // deleteData({
           //   collectionName: COLLECTIONS.MISSING,

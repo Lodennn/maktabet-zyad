@@ -8,6 +8,7 @@ export interface StockInitialState extends HttpInitialState<StockDoc> {
 export interface BillsInitialState extends HttpInitialState<BillsDoc> {
   billSelectedProducts: StockDoc[];
   dailyBills: BillsDoc[];
+  dailyBillsTotal: number;
   total: number;
 }
 

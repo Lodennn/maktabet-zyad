@@ -9,7 +9,7 @@ const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.productName}</td>
       <td>{props.dataItem.category}</td>
-      <td>{formatNumber(props.dataItem.numberOfPieces, "d")}</td>
+      <td>{formatNumber(props.dataItem.remainingAmountOfPieces, "d")}</td>
       <td>{formatNumber(props.dataItem.priceOfPiece)}</td>
       <td>{formatNumber(props.dataItem.profitOfPiece)}</td>
       <td>{formatNumber(props.dataItem.numberOfUnits, "d")}</td>

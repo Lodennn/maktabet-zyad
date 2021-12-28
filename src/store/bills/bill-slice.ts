@@ -5,6 +5,7 @@ import { AppDispatch } from "../index";
 import { BillsInitialState } from "../../interfaces/redux-store";
 import { StockDoc } from "../../interfaces";
 import { dateMe, resetDate } from "../../helpers/functions";
+import { BillType } from "../../types/bills";
 
 const initialState: BillsInitialState = {
   isLoading: false,
@@ -12,6 +13,7 @@ const initialState: BillsInitialState = {
   data: [],
   billSelectedProducts: [],
   dailyBills: [],
+  dailyBillsTotal: 0,
   total: 0,
 };
 
@@ -34,6 +36,13 @@ const billsSlice = createSlice({
         (billProduct) =>
           resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
       );
+      state.dailyBillsTotal = state.dailyBills.reduce((acc, cur) => {
+        if (cur.type === BillType.NORMAL_BILL) {
+          return acc + cur.total;
+        } else {
+          return acc - cur.total;
+        }
+      }, 0);
     },
     addProductToBill(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(

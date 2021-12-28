@@ -49,7 +49,6 @@ export const addMissingProductsDataToStore =
 
 export const insertMissingProduct =
   (insertData: MissingProductsDoc) => async (dispatch: AppDispatch) => {
-    console.log("insertMissingProduct NORMAL BILL", insertData);
     const data = {
       collectionName: COLLECTIONS.MISSING_PRODUCTS,
       data: insertData,
@@ -60,12 +59,9 @@ export const insertMissingProduct =
 export const deleteMissingProduct =
   (missingProduct: MissingProductsDoc) =>
   async (dispatch: AppDispatch, getState: any) => {
-    console.log("deleteMissingProduct NORMAL BILL");
     const stateData = [...getState().missingProducts.data];
     //prettier-ignore
     const onDeleteMissingProduct = await stateData.find((state: MissingProductsDoc) => state.productName === missingProduct.productName);
-
-    console.log("missingProduct: ", missingProduct, onDeleteMissingProduct);
 
     if (!!onDeleteMissingProduct) {
       const data = {

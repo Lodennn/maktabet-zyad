@@ -19,8 +19,15 @@ import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import Button from "../../core-ui/Button/Button";
 import useDate from "../../hooks/use-date";
-import { dateMe, formatDateByDay, resetDate } from "../../helpers/functions";
+import {
+  dateMe,
+  formatDateByDay,
+  formatNumber,
+  resetDate,
+} from "../../helpers/functions";
 import moment from "moment";
+import { BillsDoc } from "../../interfaces";
+import { BillType } from "../../types/bills";
 
 const HomePage = () => {
   const {
@@ -29,7 +36,7 @@ const HomePage = () => {
     isLoading,
   } = useAppSelector((state) => state.stock);
   //prettier-ignore
-  const { data: billsData, isLoading: billsIsLoading } = useAppSelector((state) => state.bills);
+  const { data: billsData, isLoading: billsIsLoading, dailyBillsTotal } = useAppSelector((state) => state.bills);
 
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
     useAppSelector((state) => state.missingProducts);
@@ -73,7 +80,9 @@ const HomePage = () => {
                 onClick={triggerModalAction}
               />
             </div>
-            <div className={classes["home-page__income"]}>25 L.E</div>
+            <div className={classes["home-page__income"]}>
+              {formatNumber(dailyBillsTotal)}
+            </div>
           </div>
           <hr className="separator separator--soft" />
           <DashboardTabs getDisplayContentValue={getDisplayContentValue} />
