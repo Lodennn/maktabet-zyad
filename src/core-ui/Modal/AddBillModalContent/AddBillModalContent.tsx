@@ -127,6 +127,7 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                     )}
                     firstProductInBill={billProductsArray[0]}
                     dispatchBillActions={dispatchBillActions}
+                    billType={billType}
                   />
                 );
               })}

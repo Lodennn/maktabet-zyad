@@ -12,9 +12,12 @@ const AddNewProductToBill: React.FC<{
   removeNewBillProduct: Function;
   firstProductInBill: number;
   dispatchBillActions: Function;
+  billType: boolean;
 }> = (props) => {
   const { dispatchBillActions, removeNewBillProduct } = props;
-  const { filteredStockData } = useAppSelector((state) => state.stock);
+  const { filteredStockData, data: stockData } = useAppSelector(
+    (state) => state.stock
+  );
   const {
     billProductsConfig,
     getSearchValue,
@@ -38,7 +41,7 @@ const AddNewProductToBill: React.FC<{
           </label>
           <SmartSearch
             getSearchValue={getSearchValue}
-            filteredStockData={filteredStockData}
+            filteredStockData={props.billType ? filteredStockData : stockData}
           />
         </div>
         {/** PRODUCT PRICE */}
@@ -65,7 +68,7 @@ const AddNewProductToBill: React.FC<{
               id={`bill-product-amount-${props.productIndex}`}
               className={classes["add-bill-product__info--input"]}
               min={1}
-              max={billProductsConfig.searchedProduct.totalNumberOfUnits}
+              // max={billProductsConfig.searchedProduct.totalNumberOfUnits}
               name="bill-product-amount"
               value={billProductsConfig.searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(

@@ -136,14 +136,19 @@ export const transformDataFromNormalBillToStock =
         if (data.billData.type === BillType.RETURNED_BILL) {
           if (data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+            dispatch(deleteMissingProduct(missingProduct));
           }
           if (data.action === BillRequestAction.UPDATE_BILL) {
             updatedProduct.totalNumberOfUnits +=
               billProduct.initialProductAmount;
+            dispatch(deleteMissingProduct(missingProduct));
           }
           if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-            dispatch(deleteMissingProduct(missingProduct));
+            if (updatedProduct.totalNumberOfUnits <= 0) {
+              //prettier-ignore
+              dispatch(insertMissingProduct(missingProduct));
+            }
           }
         }
 
