@@ -16,6 +16,7 @@ import Modal from "../../core-ui/Modal/Modal";
 import AddPurchaseBillModalContent from "../../core-ui/Modal/AddPurchaseBillModalContent/AddPurchaseBillModalContent";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 import LoadingSpinner from "../../core-ui/LoadingSpinner/LoadingSpinner";
+import UpdatePurchaseBillModalContent from "../../core-ui/Modal/UpdatePurchaseBillModalContent/UpdatePurchaseBillModalContent";
 
 const PurchasesPage: React.FC = () => {
   const { data: purchasesData, isLoading } = useAppSelector(

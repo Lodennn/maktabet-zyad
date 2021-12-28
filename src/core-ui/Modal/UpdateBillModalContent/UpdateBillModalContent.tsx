@@ -101,7 +101,7 @@ const UpdateBillModalContent: React.FC<{
     <div className={classes["add-bill-modal"]}>
       <div className={classes["add-bill-modal__header"]}>
         <h2 className={classes["add-bill-modal__header--date"]}>
-          تعديل فاتوره بتاريخ - {formatFullDate(props.data.createdAt)}
+          تعديل فاتوره شراء بتاريخ - {formatFullDate(props.data.createdAt)}
         </h2>
         <div className="separator separator--soft"></div>
       </div>

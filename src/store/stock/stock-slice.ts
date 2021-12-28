@@ -198,15 +198,7 @@ export const transformDataFromNormalBillToStock =
           }
           if (data.action === BillRequestAction.ADD_BILL) {
             // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
-            console.log("PURCHASES BILL PRODUCT NOT FOUNDED");
-            console.log("ADD NEW ITEM TO STOCK");
-            console.log("data.billData: ", billProduct);
-            // category: "كراس"
-            // numberOfUnits: 5
-            // priceOfPiece: 5
-            // priceOfUnit: 5
-            // productName: "qwe"
-            // totalProductAmount: 1
+
             const {
               priceOfPiece,
               priceOfUnit,
