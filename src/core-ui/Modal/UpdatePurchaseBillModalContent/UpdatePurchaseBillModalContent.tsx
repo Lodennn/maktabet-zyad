@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FaEdit, FaPlus } from "react-icons/fa";
-import { PurchasesDoc, SendRequestData } from "../../../interfaces";
+import {
+  PurchasesDoc,
+  SendRequestData,
+  UpdateRequestData,
+} from "../../../interfaces";
 import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
-import { sendData } from "../../../services/api";
+import { updateData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
@@ -25,7 +29,7 @@ const UpdatePurchaseBillModalContent: React.FC<{
 
   const { productFormArray: billProducts } = useProduct();
 
-  const { sendHttpRequest: insertBill } = useHttp(sendData);
+  const { sendHttpRequest: updateBill } = useHttp(updateData);
 
   //prettier-ignore
   const [billDataConfig, setBillDataConfig] = useState<any>();
@@ -43,11 +47,13 @@ const UpdatePurchaseBillModalContent: React.FC<{
     event.preventDefault();
     // BILL DATA
     const billData: PurchasesDoc = {
+      id: props.data.id,
       merchantName: props.data.merchantName,
       total: props.updatedPurchaseBillData.billTotal,
       createdAt: new Date().toString(),
       products: [...props.updatedPurchaseBillData.billSelectedProducts],
       type: BillType.PURCHASES_BILL,
+      updatedAt: new Date().toString(),
     };
 
     console.log("final billData: ", billData, billDataConfig);
@@ -56,24 +62,25 @@ const UpdatePurchaseBillModalContent: React.FC<{
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, billDataConfig, action: BillRequestAction.UPDATE_BILL}));
 
-    // INSERT BILL TO DATABASE
-    // insertBill({
-    //   collectionName: COLLECTIONS.PURCHASES,
-    //   data: billData,
-    // } as SendRequestData)
-    //   .then((_) => {
-    //     dispatch(addPurchasesDataToStore());
-    //   })
-    //   .then((_) => {
-    //     props.hideUpdatePurchaseModal();
-    //   });
+    // UPDATE BILL TO DATABASE
+    updateBill({
+      collectionName: COLLECTIONS.PURCHASES,
+      docId: billData.id,
+      newData: billData,
+    } as UpdateRequestData)
+      .then((_) => {
+        dispatch(addPurchasesDataToStore());
+      })
+      .then((_) => {
+        props.hideUpdatePurchaseModal();
+      });
   };
 
   return (
     <div className={classes["add-bill-modal"]}>
       <div className={classes["add-bill-modal__header"]}>
         <h2 className={classes["add-bill-modal__header--date"]}>
-          أضافة فاتورة شراء
+          تعديل فاتورة شراء
         </h2>
         <div className="separator separator--soft"></div>
       </div>

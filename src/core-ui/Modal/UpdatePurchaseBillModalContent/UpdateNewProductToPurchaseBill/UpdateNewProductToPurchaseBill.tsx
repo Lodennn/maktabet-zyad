@@ -36,6 +36,7 @@ const UpdateNewProductToPurchaseBill: React.FC<{
       {props.billFallbackData.billSelectedProducts.map((product: any) => {
         //prettier-ignore
         const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
+
         return (
           <div
             className={classes["add-bill-product"]}

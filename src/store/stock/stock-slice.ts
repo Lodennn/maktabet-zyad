@@ -180,25 +180,55 @@ export const transformDataFromNormalBillToStock =
               const newProduct: StockDoc = {
                 ...updatedProduct,
               };
+
+              console.log("billProduct: ", billProduct);
+              console.log("updatedProduct: ", updatedProduct);
+
+              //prettier-ignore
+              if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
+                console.log('TEST.')
+                newProduct.numberOfPieces += billProduct.totalProductAmount;
+                //prettier-ignore
+                newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+              }
+
+              //prettier-ignore
+              if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
+                newProduct.numberOfPieces -= billProduct.totalProductAmount;
+                console.log('ELSE TEST.')
+                //prettier-ignore
+                newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+              }
+
               if (billProduct.category !== updatedProduct.category) {
+                console.log("1.");
                 newProduct.category = billProduct.category;
               }
               //prettier-ignore
-              if((billProduct.totalProductAmount*billProduct.numberOfUnits) !== updatedProduct.totalNumberOfUnits) {
-                  newProduct.numberOfPieces = billProduct.totalProductAmount;
-                  //prettier-ignore
-                  newProduct.totalNumberOfUnits = Math.abs(updatedProduct.totalNumberOfUnits + (billProduct.totalProductAmount - updatedProduct.numberOfPieces) * billProduct.numberOfUnits);
-                }
+              // if(billProduct.numberOfPieces !== updatedProduct.numberOfPieces) {
+              //   console.log('2.')
+              //   newProduct.numberOfPieces += billProduct.totalProductAmount;
+              // }
+              //prettier-ignore
+              // if((billProduct.totalProductAmount*billProduct.numberOfUnits) !== updatedProduct.totalNumberOfUnits) {
+              //   console.log('2.')
+              //     newProduct.numberOfPieces += billProduct.totalProductAmount;
+              //     //prettier-ignore
+              //     newProduct.totalNumberOfUnits = Math.abs(updatedProduct.totalNumberOfUnits + (billProduct.totalProductAmount - updatedProduct.numberOfPieces) * billProduct.numberOfUnits);
+              //   }
               //prettier-ignore
               if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
+                console.log('3.')
                   newProduct.priceOfPiece = billProduct.priceOfPiece;
                 }
               //prettier-ignore
               if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
+                console.log('4.')
                   newProduct.numberOfUnits = billProduct.numberOfUnits;
                 }
               //prettier-ignore
               if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
+                console.log('5.')
                   newProduct.priceOfUnit = billProduct.priceOfUnit;
                 }
               //
@@ -223,21 +253,19 @@ export const transformDataFromNormalBillToStock =
               newProduct.totalProfit = totalProfitEquation;
               newProduct.profitPercent = profitPercentEquation;
               //prettier-ignore
-              console.log('newProduct: ', newProduct.totalNumberOfUnits, newProduct.numberOfUnits, newProduct.totalNumberOfUnits/newProduct.numberOfUnits)
-              //prettier-ignore
-              console.log('newProduct: ', newProduct.totalNumberOfUnits%newProduct.numberOfUnits)
-              //prettier-ignore
               newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
               //prettier-ignore
               newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
 
-              console.log('newProduct: ', newProduct)
+              console.log("newProduct: ", newProduct);
+
               //prettier-ignore
               // if(billProduct.totalProductAmount * billProduct.numberOfUnits > updatedProduct.totalNumberOfUnits) {
               //   console.log('THIS BULL HAS MORE THAN BEFORE')
               // } else {
               //   console.log('THIS BULL HAS LESS THAN BEFORE')
               // }
+              updatedProduct = newProduct;
             }
           }
           if (data.action === BillRequestAction.DELETE_BILL) {

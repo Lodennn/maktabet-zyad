@@ -65,6 +65,11 @@ const InfoTableItem: React.FC<{
     } as DeleteRequestData);
   };
 
+  const onDeleteBill =
+    props.data.type !== BillType.PURCHASES_BILL
+      ? onDeleteBasicBill
+      : onDeletePurchaseBill;
+
   const billTypeClasses =
     props.data.type === BillType.NORMAL_BILL
       ? `${classes[`info-table-item__bill-type--normal`]}`
@@ -192,7 +197,7 @@ const InfoTableItem: React.FC<{
           </li>
           <li
             className={classes["info-table-item__controls-control"]}
-            onClick={onDeleteBasicBill.bind(null, props.data)}
+            onClick={onDeleteBill.bind(null, props.data)}
           >
             مسح
           </li>

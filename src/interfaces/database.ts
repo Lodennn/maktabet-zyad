@@ -40,6 +40,7 @@ export interface PurchasesDoc {
   type: BillType;
   total: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface MissingProductsDoc {
