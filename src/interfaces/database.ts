@@ -12,6 +12,7 @@ export interface StockDoc {
   priceOfUnit: number;
   purchasingCosts: number;
   profitOfPiece: number;
+  profitOfUnit: number;
   totalProfit: number;
   profitPercent: number;
   totalProductAmount?: number;

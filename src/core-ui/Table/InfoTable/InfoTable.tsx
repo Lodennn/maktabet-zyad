@@ -36,7 +36,7 @@ const InfoTable: React.FC<{
   const dispatchUpdateBill = (updateData: any) => {
     dispatchBillActions({
       type: "UPDATE_BILL",
-      payload: { data: updateBillData },
+      payload: { data: updateData },
     });
   };
 
@@ -55,8 +55,8 @@ const InfoTable: React.FC<{
 
   const dispatchUpdatePurchaseBill = (updateData: any) => {
     dispatchPurchaseBillActions({
-      type: "UPDATE_PURCHASE_BILL",
-      payload: { data: updatePurchaseBillData },
+      type: "UPDATE_BILL",
+      payload: { data: updateData },
     });
   };
 
@@ -90,9 +90,9 @@ const InfoTable: React.FC<{
           {updatePurchaseBillData && (
             <UpdatePurchaseBillModalContent
               data={updatePurchaseBillData}
-              hideUpdateModal={hideUpdatePurchaseBillModal}
-              updatedBillData={purchaseBillProductsData}
-              dispatchBillActions={dispatchPurchaseBillActions}
+              hideUpdatePurchaseModal={hideUpdatePurchaseBillModal}
+              updatedPurchaseBillData={purchaseBillProductsData}
+              dispatchPurchaseBillActions={dispatchPurchaseBillActions}
             />
           )}
         </Modal>
@@ -111,7 +111,7 @@ const InfoTable: React.FC<{
         </div>
         {props.data.length > 0 ? (
           props.data.map((data) => {
-            const isNormalBill = data.type === BillType.NORMAL_BILL;
+            const isNormalBill = data.type !== BillType.PURCHASES_BILL;
             return (
               <InfoTableItem
                 tableId={props.tableId}

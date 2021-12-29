@@ -1,41 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaEdit } from "react-icons/fa";
 import classes from "./UpdateBillModalContent.module.scss";
 import UpdateNewProductToBill from "./UpdateNewProductToBill/UpdateNewProductToBill";
-import {
-  BillsDoc,
-  SendRequestData,
-  UpdateRequestData,
-} from "../../../interfaces";
+import { BillsDoc, UpdateRequestData } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import useHttp from "../../../hooks/use-http";
-import { sendData, updateData } from "../../../services/api";
-import {
-  BillRequestAction,
-  COLLECTIONS,
-  CRUDRequest,
-} from "../../../constants";
+import { updateData } from "../../../services/api";
+import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData } from "../../../store/bills/bill-slice";
-import useBillProductsController from "../../../hooks/use-bill-products-controller";
-import {
-  stockActions,
-  transformDataFromNormalBillToStock,
-} from "../../../store/stock/stock-slice";
-import { useAppSelector } from "../../../hooks/use-app-selector";
-import {
-  changeBillProductsTotalAmount,
-  deleteBillProductsValue,
-  formatFullDate,
-  resetBillProductsValue,
-  trimBillDataBeforeAction,
-} from "../../../helpers/functions";
-import moment from "moment";
-import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
-import useUpdateBillController from "../../../hooks/use-update-bill-controller";
-import { AppDispatch } from "../../../store";
+import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
+import { formatFullDate } from "../../../helpers/functions";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
@@ -48,10 +25,6 @@ const UpdateBillModalContent: React.FC<{
   const [billType, setBillType] = useState<boolean>(billDataType);
 
   const dispatch = useAppDispatch();
-
-  const { data: stockData } = useAppSelector((state) => state.stock);
-
-  const { billProductsData, dispatchBillActions } = useUpdateBillController();
 
   const { productFormArray: billProducts } = useProduct();
 

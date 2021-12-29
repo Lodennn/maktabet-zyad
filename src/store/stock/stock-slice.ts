@@ -163,7 +163,83 @@ export const transformDataFromNormalBillToStock =
             updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount * billProduct.numberOfUnits;
             dispatch(deleteMissingProduct(missingProduct));
           }
+          if (data.action === BillRequestAction.UPDATE_BILL) {
+            if (!!billProduct.oldProductAmount) {
+              const {
+                priceOfPiece,
+                priceOfUnit,
+                numberOfUnits,
+                totalProductAmount,
+              } = billProduct;
 
+              let profitOfPieceEquation,
+                profitOfUnitEquation,
+                totalProfitEquation,
+                profitPercentEquation;
+              //
+              const newProduct: StockDoc = {
+                ...updatedProduct,
+              };
+              if (billProduct.category !== updatedProduct.category) {
+                newProduct.category = billProduct.category;
+              }
+              //prettier-ignore
+              if((billProduct.totalProductAmount*billProduct.numberOfUnits) !== updatedProduct.totalNumberOfUnits) {
+                  newProduct.numberOfPieces = billProduct.totalProductAmount;
+                  //prettier-ignore
+                  newProduct.totalNumberOfUnits = Math.abs(updatedProduct.totalNumberOfUnits + (billProduct.totalProductAmount - updatedProduct.numberOfPieces) * billProduct.numberOfUnits);
+                }
+              //prettier-ignore
+              if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
+                  newProduct.priceOfPiece = billProduct.priceOfPiece;
+                }
+              //prettier-ignore
+              if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
+                  newProduct.numberOfUnits = billProduct.numberOfUnits;
+                }
+              //prettier-ignore
+              if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
+                  newProduct.priceOfUnit = billProduct.priceOfUnit;
+                }
+              //
+              profitOfPieceEquation =
+                (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) /
+                priceOfPiece;
+              //
+              profitOfUnitEquation =
+                (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
+                (priceOfPiece / numberOfUnits);
+              //
+              totalProfitEquation =
+                (priceOfUnit * numberOfUnits - priceOfPiece) *
+                totalProductAmount;
+              //
+              profitPercentEquation =
+                ((totalProfitEquation - data.billData.total) /
+                  data.billData.total) *
+                100;
+              newProduct.profitOfPiece = profitOfPieceEquation;
+              newProduct.profitOfUnit = profitOfUnitEquation;
+              newProduct.totalProfit = totalProfitEquation;
+              newProduct.profitPercent = profitPercentEquation;
+              //prettier-ignore
+              console.log('newProduct: ', newProduct.totalNumberOfUnits, newProduct.numberOfUnits, newProduct.totalNumberOfUnits/newProduct.numberOfUnits)
+              //prettier-ignore
+              console.log('newProduct: ', newProduct.totalNumberOfUnits%newProduct.numberOfUnits)
+              //prettier-ignore
+              newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
+              //prettier-ignore
+              newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
+
+              console.log('newProduct: ', newProduct)
+              //prettier-ignore
+              // if(billProduct.totalProductAmount * billProduct.numberOfUnits > updatedProduct.totalNumberOfUnits) {
+              //   console.log('THIS BULL HAS MORE THAN BEFORE')
+              // } else {
+              //   console.log('THIS BULL HAS LESS THAN BEFORE')
+              // }
+            }
+          }
           if (data.action === BillRequestAction.DELETE_BILL) {
             const isProductFreshInStock =
               billProduct.totalProductAmount * billProduct.numberOfUnits ===

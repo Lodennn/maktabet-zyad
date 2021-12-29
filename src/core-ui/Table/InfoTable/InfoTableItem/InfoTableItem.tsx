@@ -54,7 +54,6 @@ const InfoTableItem: React.FC<{
     bill: BillsDoc,
     event: React.MouseEvent<HTMLLIElement>
   ) => {
-    console.log("DELETE PURCHASE BILL: ", bill);
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
@@ -182,45 +181,21 @@ const InfoTableItem: React.FC<{
           >
             فحص
           </li>
-
-          {props.admin && props.data.type !== BillType.PURCHASES_BILL && (
-            <Fragment>
-              <li
-                className={classes["info-table-item__controls-control"]}
-                onClick={() => {
-                  props.triggerUpdateModalAction(props.data);
-                  props.dispatchUpdateBill(props.data);
-                }}
-              >
-                تعديل
-              </li>
-              <li
-                className={classes["info-table-item__controls-control"]}
-                onClick={onDeleteBasicBill.bind(null, props.data)}
-              >
-                مسح
-              </li>
-            </Fragment>
-          )}
-          {props.admin && props.data.type === BillType.PURCHASES_BILL && (
-            <Fragment>
-              <li
-                className={classes["info-table-item__controls-control"]}
-                onClick={() => {
-                  props.triggerUpdateModalAction(props.data);
-                  props.dispatchUpdateBill(props.data);
-                }}
-              >
-                تعديل
-              </li>
-              <li
-                className={classes["info-table-item__controls-control"]}
-                onClick={onDeletePurchaseBill.bind(null, props.data)}
-              >
-                مسح
-              </li>
-            </Fragment>
-          )}
+          <li
+            className={classes["info-table-item__controls-control"]}
+            onClick={() => {
+              props.triggerUpdateModalAction(props.data);
+              props.dispatchUpdateBill(props.data);
+            }}
+          >
+            تعديل
+          </li>
+          <li
+            className={classes["info-table-item__controls-control"]}
+            onClick={onDeleteBasicBill.bind(null, props.data)}
+          >
+            مسح
+          </li>
         </ul>
       </div>
     </div>
