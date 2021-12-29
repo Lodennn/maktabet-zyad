@@ -204,18 +204,7 @@ export const transformDataFromNormalBillToStock =
                 console.log("1.");
                 newProduct.category = billProduct.category;
               }
-              //prettier-ignore
-              // if(billProduct.numberOfPieces !== updatedProduct.numberOfPieces) {
-              //   console.log('2.')
-              //   newProduct.numberOfPieces += billProduct.totalProductAmount;
-              // }
-              //prettier-ignore
-              // if((billProduct.totalProductAmount*billProduct.numberOfUnits) !== updatedProduct.totalNumberOfUnits) {
-              //   console.log('2.')
-              //     newProduct.numberOfPieces += billProduct.totalProductAmount;
-              //     //prettier-ignore
-              //     newProduct.totalNumberOfUnits = Math.abs(updatedProduct.totalNumberOfUnits + (billProduct.totalProductAmount - updatedProduct.numberOfPieces) * billProduct.numberOfUnits);
-              //   }
+
               //prettier-ignore
               if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
                 console.log('3.')
@@ -259,12 +248,6 @@ export const transformDataFromNormalBillToStock =
 
               console.log("newProduct: ", newProduct);
 
-              //prettier-ignore
-              // if(billProduct.totalProductAmount * billProduct.numberOfUnits > updatedProduct.totalNumberOfUnits) {
-              //   console.log('THIS BULL HAS MORE THAN BEFORE')
-              // } else {
-              //   console.log('THIS BULL HAS LESS THAN BEFORE')
-              // }
               updatedProduct = newProduct;
             }
           }
