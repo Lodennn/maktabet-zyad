@@ -28,6 +28,7 @@ import {
 import moment from "moment";
 import { BillsDoc } from "../../interfaces";
 import { BillType } from "../../types/bills";
+import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
 
 const HomePage = () => {
   const {
@@ -48,7 +49,14 @@ const HomePage = () => {
     setDisplayContent(content);
   };
 
+  console.log("displayContent: ", displayContent);
+
   const { showModal, triggerModalAction, hideModal } = useReadData();
+  const {
+    showModal: outsModal,
+    triggerModalAction: triggerOutsModal,
+    hideModal: hideOutsModal,
+  } = useReadData();
 
   const { dateValue, onChangeDateHandler } = useDate();
 
@@ -61,6 +69,11 @@ const HomePage = () => {
       {showModal && (
         <Modal onHide={hideModal}>
           <AddBillModalContent hideAddBillModal={hideModal} />
+        </Modal>
+      )}
+      {outsModal && (
+        <Modal onHide={hideOutsModal}>
+          <AddOutlayModalContent hideAddOutlayModal={hideOutsModal} />
         </Modal>
       )}
       <Navigation title="المتجر" />
@@ -102,8 +115,6 @@ const HomePage = () => {
           {/** FAWATER TAB */}
           {displayContent === DBTables.BILLS_TABLE && (
             <Fragment>
-              <StoreSearchForm />
-
               <InfoTable
                 tableId={DBTables.BILLS_TABLE}
                 className="mt-md"
@@ -118,8 +129,6 @@ const HomePage = () => {
           {/** MANKOSAT TAB */}
           {displayContent === DBTables.MISSING_PRODUCTS_TABLE && (
             <Fragment>
-              <StoreSearchForm />
-
               <FullInfoTable
                 tableId={DBTables.MISSING_PRODUCTS_TABLE}
                 headData={missingProductsTableHeadData}
@@ -130,6 +139,26 @@ const HomePage = () => {
             </Fragment>
           )}
           {/** MANKOSAT TAB */}
+          {/** OUTS TAB */}
+          {displayContent === DBTables.OUTS_TABLE && (
+            <Fragment>
+              <Button
+                className={"btn btn--default btn--add mt-sm mb-md"}
+                icon={<FaPlus />}
+                text={"أضف خوارج"}
+                onClick={triggerOutsModal}
+              />
+              <InfoTable
+                tableId={DBTables.OUTS_TABLE}
+                className="mt-md"
+                admin={true}
+                data={filteredByDateBillsData}
+                onChangeDateHandler={onChangeDateHandler}
+                dateValue={dateValue}
+              />
+            </Fragment>
+          )}
+          {/** OUTS TAB */}
         </Wrapper>
       </div>
     </div>

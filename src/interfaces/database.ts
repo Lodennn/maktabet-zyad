@@ -33,6 +33,14 @@ export interface BillsDoc {
   updatedAt?: string;
 }
 
+export interface OutlaysDoc {
+  id?: string;
+  title: string;
+  amount: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface PurchasesDoc {
   id?: string;
   merchantName?: string;

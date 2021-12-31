@@ -81,7 +81,7 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
       <li
         className={classes["tabs__item"]}
         onClick={moveTheTracer}
-        data-content={DBTables.MISSING_PRODUCTS_TABLE}
+        data-content={DBTables.OUTS_TABLE}
       >
         <span>الخوارج</span>
         <span className={classes["tabs__item--count"]}>2</span>

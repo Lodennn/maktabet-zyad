@@ -15,6 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import outlaysReducer from "./outlays/outlays-slice";
 
 const persistConfig = {
   key: "root",
@@ -30,6 +31,7 @@ const store = configureStore({
     missingProducts: missingProductsReducer,
     purchases: purchasesReducer,
     bills: billReducer,
+    outlays: outlaysReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

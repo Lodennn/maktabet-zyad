@@ -3,6 +3,7 @@ export enum COLLECTIONS {
   MISSING_PRODUCTS = "missingProducts",
   PURCHASES = "purchases",
   BILLS = "bills",
+  OUTLAYS = "outlays",
 }
 
 export enum DBTables {
@@ -10,6 +11,7 @@ export enum DBTables {
   MISSING_PRODUCTS_TABLE = "المنقوصات",
   PURCHASES_TABLE = "المشتريات",
   BILLS_TABLE = "الفواتير",
+  OUTS_TABLE = "الخوارج",
 }
 
 export enum TableFields {
