@@ -1,6 +1,9 @@
 import React, { Fragment } from "react";
 import { DBTables } from "../../../constants";
+import useReadData from "../../../hooks/use-read-data";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import Modal from "../../Modal/Modal";
+import UpdateStockModalContent from "../../Modal/UpdateStockModalContent/UpdateStockModalContent";
 import BillsTableData from "./BillsTableData/BillsTableData";
 import classes from "./FullInfoTable.module.scss";
 import MissingProductsTableData from "./MissingProductsTableData/MissingProductsTableData";
@@ -16,8 +19,19 @@ const FullInfoTable: React.FC<{
   className?: string;
   admin?: boolean;
 }> = (props) => {
+  const {
+    hideModal,
+    readData,
+    showModal,
+    triggerModalAction: updateStockTrigger,
+  } = useReadData();
   return (
     <Fragment>
+      {showModal && (
+        <Modal onHide={hideModal}>
+          <UpdateStockModalContent data={readData} hideModal={hideModal} />
+        </Modal>
+      )}
       {props.isLoading ? (
         <LoadingSpinner />
       ) : (
@@ -49,6 +63,7 @@ const FullInfoTable: React.FC<{
                     key={dataItem.id}
                     dataItem={dataItem}
                     admin={props.admin}
+                    updateStockTrigger={updateStockTrigger}
                   />
                 ))}
               {props.tableId === DBTables.BILLS_TABLE &&

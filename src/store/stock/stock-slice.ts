@@ -62,6 +62,12 @@ const stockSlice = createSlice({
         }
       });
     },
+    updateStockProduct(state, action) {
+      const updatedProductIndex = state.data.findIndex(
+        (stockProduct: StockDoc) => stockProduct.id === action.payload.data.id
+      );
+      state.data[updatedProductIndex] = action.payload.data;
+    },
     deleteStockProduct(state, action) {
       state.data = state.data.filter(
         (stockProduct: StockDoc) => stockProduct.id !== action.payload.data.id
@@ -81,6 +87,21 @@ export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
     dispatch(stockActions.errorStockData({}));
   }
 };
+
+export const updateStockDataToStore =
+  (stockProduct: StockDoc) => async (dispatch: AppDispatch) => {
+    try {
+      await updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: stockProduct.id,
+        newData: stockProduct,
+      }).then((_) => {
+        dispatch(stockActions.updateStockProduct({ data: stockProduct }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 export const deleteStockDataFromStore =
   (stockProduct: StockDoc) => async (dispatch: AppDispatch) => {

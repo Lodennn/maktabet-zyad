@@ -4,10 +4,23 @@ import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
 import { deleteStockDataFromStore } from "../../../../store/stock/stock-slice";
 
-const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
-  props
-) => {
+const StockTableData: React.FC<{
+  dataItem: StockDoc;
+  admin?: boolean;
+  updateStockTrigger: (
+    data: any,
+    event?: React.MouseEvent<Element, MouseEvent> | undefined
+  ) => void;
+}> = (props) => {
   const dispatch = useAppDispatch();
+
+  const onUpdateStockProduct = (
+    stockProduct: StockDoc,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    console.log("update: ", stockProduct);
+    props.updateStockTrigger(stockProduct);
+  };
 
   const onDeleteStockProduct = (
     stockProduct: StockDoc,
@@ -29,7 +42,12 @@ const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
       <td>{formatNumber(props.dataItem.totalProfit)}</td>
       {props.admin && (
         <td className="table__actions">
-          <button className="btn btn--warning ml-xs">تعديل</button>
+          <button
+            className="btn btn--warning ml-xs"
+            onClick={onUpdateStockProduct.bind(null, props.dataItem)}
+          >
+            تعديل
+          </button>
           <button
             className="btn btn--danger"
             onClick={onDeleteStockProduct.bind(null, props.dataItem)}
