@@ -8,13 +8,12 @@ import { useAppSelector } from "../../hooks/use-app-selector";
 import { DBTables } from "../../constants";
 import Button from "../../core-ui/Button/Button";
 import { FaPlus } from "react-icons/fa";
-import classes from "../StockPage/StockPage.module.scss";
 import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import useDate from "../../hooks/use-date";
-import { BillType } from "../../types/bills";
 import { dateMe, resetDate } from "../../helpers/functions";
+import classes from "../StockPage/StockPage.module.scss";
 
 const BillsPage: React.FC = () => {
   const { data: billsData, isLoading } = useAppSelector((state) => state.bills);
@@ -22,8 +21,7 @@ const BillsPage: React.FC = () => {
   const { showModal, hideModal, triggerModalAction } = useReadData();
   const { dateValue, onChangeDateHandler } = useDate();
   const filteredBillsData = billsData.filter(
-    (billProduct) =>
-      resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+    (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(dateValue)
   );
   return (
     <Fragment>

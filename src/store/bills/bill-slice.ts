@@ -1,11 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
-import { readData } from "../../services/api";
+import { deleteData, readData, sendData, updateData } from "../../services/api";
 import { AppDispatch } from "../index";
 import { BillsInitialState } from "../../interfaces/redux-store";
-import { StockDoc } from "../../interfaces";
+import {
+  BillsDoc,
+  DeleteRequestData,
+  SendRequestData,
+  StockDoc,
+  UpdateRequestData,
+} from "../../interfaces";
 import { dateMe, resetDate } from "../../helpers/functions";
 import { BillType } from "../../types/bills";
+import { addStockDataToStore } from "../stock/stock-slice";
 
 const initialState: BillsInitialState = {
   isLoading: false,
@@ -76,6 +83,32 @@ const billsSlice = createSlice({
         return acc + cur.priceOfUnit * cur.totalProductAmount!;
       }, 0);
     },
+    addBill(state, action) {
+      state.data = state.data.concat(action.payload.data);
+      state.dailyBills = state.data.filter(
+        (billProduct) =>
+          resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
+      );
+    },
+    deleteBill(state, action) {
+      state.data = state.data.filter(
+        (bill: BillsDoc) => bill.id !== action.payload.data.id
+      );
+      state.dailyBills = state.data.filter(
+        (billProduct) =>
+          resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
+      );
+    },
+    updateBill(state, action) {
+      const updatedBillIndex = state.data.findIndex(
+        (bill: BillsDoc) => bill.id === action.payload.data.id
+      );
+      state.data[updatedBillIndex] = action.payload.data;
+      state.dailyBills = state.data.filter(
+        (billProduct) =>
+          resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
+      );
+    },
   },
 });
 
@@ -90,5 +123,54 @@ export const addBillsData = () => async (dispatch: AppDispatch) => {
     dispatch(billsActions.errorBillsData({}));
   }
 };
+
+export const insertBill =
+  (billData: BillsDoc) => async (dispatch: AppDispatch) => {
+    try {
+      // INSERT BILL TO DATABASE
+      await sendData({
+        collectionName: COLLECTIONS.BILLS,
+        data: billData,
+      } as SendRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(billsActions.addBill({ data: billData }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+export const updateBill =
+  (billData: BillsDoc) => async (dispatch: AppDispatch) => {
+    try {
+      // INSERT BILL TO DATABASE
+      await updateData({
+        collectionName: COLLECTIONS.BILLS,
+        docId: billData.id,
+        newData: billData,
+      } as UpdateRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(billsActions.updateBill({ data: billData }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+export const deleteBill =
+  (billData: BillsDoc) => async (dispatch: AppDispatch) => {
+    try {
+      // INSERT BILL TO DATABASE
+      await deleteData({
+        collectionName: COLLECTIONS.BILLS,
+        docId: billData.id,
+      } as DeleteRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(billsActions.deleteBill({ data: billData }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 export default billsSlice.reducer;

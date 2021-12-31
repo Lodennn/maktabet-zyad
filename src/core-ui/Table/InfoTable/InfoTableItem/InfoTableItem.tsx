@@ -15,11 +15,12 @@ import moment from "moment";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import useHttp from "../../../../hooks/use-http";
 import { deleteData } from "../../../../services/api";
-import { addBillsData } from "../../../../store/bills/bill-slice";
+import { addBillsData, deleteBill } from "../../../../store/bills/bill-slice";
 import { transformDataFromNormalBillToStock } from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
-import { formatDateByHours } from "../../../../helpers/functions";
+import { formatDateByHours, formatNumber } from "../../../../helpers/functions";
+import { deletePurchaseBillFromStore } from "../../../../store/purchases/purchases-slice";
 
 const InfoTableItem: React.FC<{
   tableId?: string;
@@ -32,7 +33,7 @@ const InfoTableItem: React.FC<{
 }> = (props) => {
   const dispatch = useAppDispatch();
 
-  const { sendHttpRequest: deleteBill } = useHttp(deleteData);
+  // const { sendHttpRequest: deleteBill } = useHttp(deleteData);
 
   const onDeleteBasicBill = (
     bill: BillsDoc,
@@ -43,12 +44,13 @@ const InfoTableItem: React.FC<{
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
     // DELETE BILL TO DATABASE
-    deleteBill({
-      collectionName: COLLECTIONS.BILLS,
-      docId: bill.id,
-    } as DeleteRequestData).then((_) => {
-      dispatch(addBillsData());
-    });
+    // deleteBill({
+    //   collectionName: COLLECTIONS.BILLS,
+    //   docId: bill.id,
+    // } as DeleteRequestData).then((_) => {
+    //   dispatch(addBillsData());
+    // });
+    dispatch(deleteBill(bill));
   };
   const onDeletePurchaseBill = (
     bill: BillsDoc,
@@ -59,10 +61,11 @@ const InfoTableItem: React.FC<{
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
     // DELETE BILL TO DATABASE
-    deleteBill({
-      collectionName: COLLECTIONS.PURCHASES,
-      docId: bill.id,
-    } as DeleteRequestData);
+    // deleteBill({
+    //   collectionName: COLLECTIONS.PURCHASES,
+    //   docId: bill.id,
+    // } as DeleteRequestData);
+    dispatch(deletePurchaseBillFromStore(bill));
   };
 
   const onDeleteBill =
@@ -155,7 +158,7 @@ const InfoTableItem: React.FC<{
                           classes["info-table-item__products-item--count"]
                         }
                       >
-                        {product.totalProductAmount}
+                        {formatNumber(product.totalProductAmount, "d")}
                       </span>
                       <span
                         className={
@@ -171,7 +174,7 @@ const InfoTableItem: React.FC<{
             })}
 
           <div className={classes["info-table-item__bill-price"]}>
-            {props.data.total} L.E
+            {formatNumber(props.data.total)}
           </div>
           <p className={classes["info-table-item__bill-date"]}>
             {formatDateByHours(props.data.createdAt)}
@@ -186,21 +189,25 @@ const InfoTableItem: React.FC<{
           >
             فحص
           </li>
-          <li
-            className={classes["info-table-item__controls-control"]}
-            onClick={() => {
-              props.triggerUpdateModalAction(props.data);
-              props.dispatchUpdateBill(props.data);
-            }}
-          >
-            تعديل
-          </li>
-          <li
-            className={classes["info-table-item__controls-control"]}
-            onClick={onDeleteBill.bind(null, props.data)}
-          >
-            مسح
-          </li>
+          {props.admin && (
+            <Fragment>
+              <li
+                className={classes["info-table-item__controls-control"]}
+                onClick={() => {
+                  props.triggerUpdateModalAction(props.data);
+                  props.dispatchUpdateBill(props.data);
+                }}
+              >
+                تعديل
+              </li>
+              <li
+                className={classes["info-table-item__controls-control"]}
+                onClick={onDeleteBill.bind(null, props.data)}
+              >
+                مسح
+              </li>
+            </Fragment>
+          )}
         </ul>
       </div>
     </div>

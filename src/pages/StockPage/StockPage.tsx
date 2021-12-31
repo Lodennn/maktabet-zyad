@@ -45,19 +45,25 @@ const StockPage = () => {
     .filter(
       (billProduct) =>
         resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
-    );
+    )
+    .slice(0, 4);
+
   const returnedBillsData = billsData
     .filter((billData) => billData.type === BillType.RETURNED_BILL)
     .filter(
       (billProduct) =>
         resetDate(dateMe(billProduct.createdAt)) ===
         resetDate(returnedBillDateValue)
-    );
-  const purchaseBillsData = purchasesData.filter(
-    (billProduct) =>
-      resetDate(dateMe(billProduct.createdAt)) ===
-      resetDate(purchaseBillsDateValue)
-  );
+    )
+    .slice(0, 4);
+
+  const purchaseBillsData = purchasesData
+    .filter(
+      (billProduct) =>
+        resetDate(dateMe(billProduct.createdAt)) ===
+        resetDate(purchaseBillsDateValue)
+    )
+    .slice(0, 4);
 
   return (
     <div className={classes["page"]}>

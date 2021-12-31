@@ -14,7 +14,7 @@ import {
 } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addBillsData } from "../../../store/bills/bill-slice";
+import { addBillsData, insertBill } from "../../../store/bills/bill-slice";
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
 import {
   addStockDataToStore,
@@ -38,8 +38,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  const { sendHttpRequest: insertBill } = useHttp(sendData);
-
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
   }
@@ -59,17 +57,9 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL,}));
 
     // INSERT BILL TO DATABASE
-    insertBill({
-      collectionName: COLLECTIONS.BILLS,
-      data: billData,
-    } as SendRequestData)
-      .then((_) => {
-        dispatch(addBillsData());
-        dispatch(addStockDataToStore());
-      })
-      .then((_) => {
-        props.hideAddBillModal();
-      });
+    dispatch(insertBill(billData)).then((_) => {
+      props.hideAddBillModal();
+    });
   };
 
   return (

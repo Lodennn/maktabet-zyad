@@ -60,14 +60,10 @@ const UpdateStockModalContent: React.FC<{
       priceOfUnit: productUnitPrice,
     };
 
-    console.log("newStockProduct: ", newStockProduct);
-
     dispatch(updateStockDataToStore(newStockProduct)).then((_) =>
       props.hideModal()
     );
   };
-
-  console.log("props.data: ", props.data);
 
   return (
     <div className={classes["add-bill-modal"]}>

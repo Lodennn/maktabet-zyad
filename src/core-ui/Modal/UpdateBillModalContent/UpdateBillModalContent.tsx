@@ -10,7 +10,7 @@ import { updateData } from "../../../services/api";
 import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addBillsData } from "../../../store/bills/bill-slice";
+import { addBillsData, updateBill } from "../../../store/bills/bill-slice";
 import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
 import { formatFullDate } from "../../../helpers/functions";
 
@@ -28,7 +28,7 @@ const UpdateBillModalContent: React.FC<{
 
   const { productFormArray: billProducts } = useProduct();
 
-  const { sendHttpRequest: updateBill } = useHttp(updateData);
+  // const { sendHttpRequest: updateBill } = useHttp(updateData);
 
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
@@ -50,24 +50,10 @@ const UpdateBillModalContent: React.FC<{
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    //prettier-ignore
-    // const newBillProducts = deleteBillProductsValue(billData.products, "initialProductAmount");
-    //prettier-ignore
-    // const newerBillProducts = deleteBillProductsValue(newBillProducts, "oldProductAmount");
-    // billData.products = newerBillProducts;
-
     // UPDATE BILL IN DATABASE
-    updateBill({
-      collectionName: COLLECTIONS.BILLS,
-      docId: billData.id,
-      newData: billData,
-    } as UpdateRequestData)
-      .then((_) => {
-        dispatch(addBillsData());
-      })
-      .then((_) => {
-        props.hideUpdateModal();
-      });
+    dispatch(updateBill(billData)).then((_) => {
+      props.hideUpdateModal();
+    });
   };
 
   return (

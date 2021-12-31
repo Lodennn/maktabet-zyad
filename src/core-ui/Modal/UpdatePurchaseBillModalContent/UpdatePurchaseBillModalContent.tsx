@@ -11,7 +11,10 @@ import useHttp from "../../../hooks/use-http";
 import { updateData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
+import {
+  addPurchasesDataToStore,
+  updatePurchaseBillToStore,
+} from "../../../store/purchases/purchases-slice";
 import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
 import UpdateNewProductToPurchaseBill from "./UpdateNewProductToPurchaseBill/UpdateNewProductToPurchaseBill";
 import classes from "./UpdatePurchaseBillModalContent.module.scss";
@@ -39,10 +42,6 @@ const UpdatePurchaseBillModalContent: React.FC<{
     setBillDataConfig(billConfigData)
   }, [])
 
-  // useEffect(() => {
-  //   console.log("billDataConfig: ", billDataConfig);
-  // }, [billDataConfig]);
-
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // BILL DATA
@@ -56,24 +55,14 @@ const UpdatePurchaseBillModalContent: React.FC<{
       updatedAt: new Date().toString(),
     };
 
-    console.log("final billData: ", billData, billDataConfig);
-
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({ billData, billDataConfig, action: BillRequestAction.UPDATE_BILL}));
 
     // UPDATE BILL TO DATABASE
-    updateBill({
-      collectionName: COLLECTIONS.PURCHASES,
-      docId: billData.id,
-      newData: billData,
-    } as UpdateRequestData)
-      .then((_) => {
-        dispatch(addPurchasesDataToStore());
-      })
-      .then((_) => {
-        props.hideUpdatePurchaseModal();
-      });
+    dispatch(updatePurchaseBillToStore(billData)).then((_) => {
+      props.hideUpdatePurchaseModal();
+    });
   };
 
   return (

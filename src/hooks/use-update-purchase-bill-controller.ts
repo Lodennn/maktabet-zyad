@@ -50,8 +50,6 @@ const useUpdatePurchaseBillController = () => {
         );
       }
 
-      console.log("updatedBillProducts: ", updatedBillProducts);
-
       const updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);

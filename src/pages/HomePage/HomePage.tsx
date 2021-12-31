@@ -53,8 +53,7 @@ const HomePage = () => {
   const { dateValue, onChangeDateHandler } = useDate();
 
   const filteredByDateBillsData = billsData.filter(
-    (billProduct) =>
-      resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+    (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(dateValue)
   );
 
   return (

@@ -18,7 +18,6 @@ const StockTableData: React.FC<{
     stockProduct: StockDoc,
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    console.log("update: ", stockProduct);
     props.updateStockTrigger(stockProduct);
   };
 

@@ -1,9 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
-import { readData } from "../../services/api";
+import { deleteData, readData, sendData, updateData } from "../../services/api";
 import { AppDispatch } from "../index";
 import { PurchasesInitialState } from "../../interfaces/redux-store";
 import { StockDoc } from "../../interfaces/database";
+import { addStockDataToStore } from "../stock/stock-slice";
+import {
+  SendRequestData,
+  PurchasesDoc,
+  UpdateRequestData,
+  DeleteRequestData,
+} from "../../interfaces";
 
 const initialState: PurchasesInitialState = {
   isLoading: false,
@@ -108,6 +115,22 @@ const purchasesSlice = createSlice({
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
     },
+    addPurchaseBill(state, action) {
+      state.data = state.data.concat(action.payload.data);
+    },
+    deletePurchaseBill(state, action) {
+      console.log("deletePurchaseBill: ");
+      state.data = state.data.filter((bill: PurchasesDoc) => {
+        console.log(bill.id, action.payload.data.id);
+        return bill.id !== action.payload.data.id;
+      });
+    },
+    updatePurchaseBill(state, action) {
+      const updatedBillIndex = state.data.findIndex(
+        (bill: PurchasesDoc) => bill.id === action.payload.data.id
+      );
+      state.data[updatedBillIndex] = action.payload.data;
+    },
   },
 });
 
@@ -122,5 +145,57 @@ export const addPurchasesDataToStore = () => async (dispatch: AppDispatch) => {
     dispatch(purchasesActions.errorPurchasesData({}));
   }
 };
+
+export const updatePurchaseBillToStore =
+  (purchaseBillData: PurchasesDoc) => async (dispatch: AppDispatch) => {
+    try {
+      await updateData({
+        collectionName: COLLECTIONS.PURCHASES,
+        docId: purchaseBillData.id,
+        newData: purchaseBillData,
+      } as UpdateRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(
+          purchasesActions.updatePurchaseBill({ data: purchaseBillData })
+        );
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+export const deletePurchaseBillFromStore =
+  (purchaseBillData: PurchasesDoc) => async (dispatch: AppDispatch) => {
+    try {
+      // INSERT BILL TO DATABASE
+      await deleteData({
+        collectionName: COLLECTIONS.PURCHASES,
+        docId: purchaseBillData.id,
+      } as DeleteRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(
+          purchasesActions.deletePurchaseBill({ data: purchaseBillData })
+        );
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+export const insertPurchaseBill =
+  (purchaseBillData: PurchasesDoc) => async (dispatch: AppDispatch) => {
+    try {
+      // INSERT BILL TO DATABASE
+      await sendData({
+        collectionName: COLLECTIONS.PURCHASES,
+        data: purchaseBillData,
+      } as SendRequestData).then((_) => {
+        dispatch(addStockDataToStore());
+        dispatch(purchasesActions.addPurchaseBill({ data: purchaseBillData }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 export default purchasesSlice.reducer;

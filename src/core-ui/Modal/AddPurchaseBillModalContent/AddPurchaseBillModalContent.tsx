@@ -8,7 +8,10 @@ import { sendData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
+import {
+  addPurchasesDataToStore,
+  insertPurchaseBill,
+} from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
@@ -46,16 +49,9 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
 
     // INSERT BILL TO DATABASE
-    insertBill({
-      collectionName: COLLECTIONS.PURCHASES,
-      data: billData,
-    } as SendRequestData)
-      .then((_) => {
-        dispatch(addPurchasesDataToStore());
-      })
-      .then((_) => {
-        props.hideAddBillModal();
-      });
+    dispatch(insertPurchaseBill(billData)).then((_) => {
+      props.hideAddBillModal();
+    });
   };
 
   return (

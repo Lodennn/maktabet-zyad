@@ -27,7 +27,6 @@ const UpdateNewProductToPurchaseBill: React.FC<{
   } = useUpdatePurchaseBill(dispatchPurchaseBillActions);
 
   useEffect(() => {
-    // console.log("useEffect");
     getBillConfigData(billProductsConfig);
   }, [getBillConfigData, billProductsConfig]);
 

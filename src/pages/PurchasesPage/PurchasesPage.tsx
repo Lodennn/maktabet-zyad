@@ -38,9 +38,9 @@ const PurchasesPage: React.FC = () => {
         resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
     );
 
-  useEffect(() => {
-    dispatch(addPurchasesDataToStore());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(addPurchasesDataToStore());
+  // }, [dispatch]);
   return (
     <Fragment>
       <div className={classes.page}>

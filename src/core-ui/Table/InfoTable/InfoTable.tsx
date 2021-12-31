@@ -114,8 +114,8 @@ const InfoTable: React.FC<{
             const isNormalBill = data.type !== BillType.PURCHASES_BILL;
             return (
               <InfoTableItem
-                tableId={props.tableId}
                 key={data.id}
+                tableId={props.tableId}
                 admin={props.admin}
                 data={data}
                 hideModal={hideModal}

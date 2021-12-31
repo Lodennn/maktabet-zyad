@@ -106,7 +106,6 @@ export const updateStockDataToStore =
 export const deleteStockDataFromStore =
   (stockProduct: StockDoc) => async (dispatch: AppDispatch) => {
     try {
-      console.log("stockProduct: ", stockProduct);
       await deleteData({
         collectionName: COLLECTIONS.STOCK,
         docId: stockProduct.id,
@@ -199,7 +198,6 @@ export const transformDataFromNormalBillToStock =
 
         // THE PRODUCT IS ALREADY FOUNDED
         if (data.billData.type === BillType.PURCHASES_BILL) {
-          console.log("PURCHASES BILL PRODUCT FOUNDED");
           if (data.action === BillRequestAction.ADD_BILL) {
             updatedProduct.numberOfUnits = billProduct.numberOfUnits;
             updatedProduct.priceOfPiece = billProduct.priceOfPiece;
@@ -324,9 +322,9 @@ export const transformDataFromNormalBillToStock =
       } else {
         // NOT FOUNDED PRODUCT
         if (data.billData.type === BillType.PURCHASES_BILL) {
-          if (data.action === BillRequestAction.DELETE_BILL) {
-            console.log("DELETE NOT FOUNDED BILL");
-          }
+          // if (data.action === BillRequestAction.DELETE_BILL) {
+          //   console.log("DELETE NOT FOUNDED BILL");
+          // }
           if (data.action === BillRequestAction.ADD_BILL) {
             // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
 
@@ -370,7 +368,7 @@ export const transformDataFromNormalBillToStock =
               totalProductAmount: 1,
               totalProfit: totalProfitEquation,
             };
-            console.log("new Product", newProduct);
+
             // ADD TO STOCK
             sendData({
               collectionName: COLLECTIONS.STOCK,
