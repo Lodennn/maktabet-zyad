@@ -1,10 +1,20 @@
 import React from "react";
 import { formatNumber } from "../../../../helpers/functions";
+import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
+import { deleteStockDataFromStore } from "../../../../store/stock/stock-slice";
 
 const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
   props
 ) => {
+  const dispatch = useAppDispatch();
+
+  const onDeleteStockProduct = (
+    stockProduct: StockDoc,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    dispatch(deleteStockDataFromStore(stockProduct));
+  };
   return (
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.productName}</td>
@@ -20,7 +30,12 @@ const StockTableData: React.FC<{ dataItem: StockDoc; admin?: boolean }> = (
       {props.admin && (
         <td className="table__actions">
           <button className="btn btn--warning ml-xs">تعديل</button>
-          <button className="btn btn--danger">مسح</button>
+          <button
+            className="btn btn--danger"
+            onClick={onDeleteStockProduct.bind(null, props.dataItem)}
+          >
+            مسح
+          </button>
         </td>
       )}
     </tr>

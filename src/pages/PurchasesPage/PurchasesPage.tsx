@@ -17,6 +17,9 @@ import AddPurchaseBillModalContent from "../../core-ui/Modal/AddPurchaseBillModa
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 import LoadingSpinner from "../../core-ui/LoadingSpinner/LoadingSpinner";
 import UpdatePurchaseBillModalContent from "../../core-ui/Modal/UpdatePurchaseBillModalContent/UpdatePurchaseBillModalContent";
+import useDate from "../../hooks/use-date";
+import { BillType } from "../../types/bills";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const PurchasesPage: React.FC = () => {
   const { data: purchasesData, isLoading } = useAppSelector(
@@ -26,6 +29,14 @@ const PurchasesPage: React.FC = () => {
   const { showModal, hideModal, triggerModalAction } = useReadData();
 
   const dispatch = useAppDispatch();
+
+  const { dateValue, onChangeDateHandler } = useDate();
+  const purchaseBillsData = purchasesData
+    .filter((billData) => billData.type === BillType.PURCHASES_BILL)
+    .filter(
+      (billProduct) =>
+        resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+    );
 
   useEffect(() => {
     dispatch(addPurchasesDataToStore());
@@ -54,7 +65,9 @@ const PurchasesPage: React.FC = () => {
                   tableId={DBTables.PURCHASES_TABLE}
                   title="فواتير الشراء"
                   admin={true}
-                  data={purchasesData}
+                  data={purchaseBillsData}
+                  dateValue={dateValue}
+                  onChangeDateHandler={onChangeDateHandler}
                 />
               ) : (
                 <LoadingSpinner />

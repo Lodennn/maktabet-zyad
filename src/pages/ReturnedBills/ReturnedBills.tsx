@@ -8,12 +8,19 @@ import { DBTables } from "../../constants";
 import classes from "../StockPage/StockPage.module.scss";
 import { BillType } from "../../types/bills";
 import { BillsDoc } from "../../interfaces";
+import { dateMe, resetDate } from "../../helpers/functions";
+import useDate from "../../hooks/use-date";
 
 const ReturnedBillsPage: React.FC = () => {
   const { data: billsData } = useAppSelector((state) => state.bills);
-  const returnedBillsData = billsData.filter(
-    (bill: BillsDoc) => bill.type === BillType.RETURNED_BILL
-  );
+
+  const { dateValue, onChangeDateHandler } = useDate();
+  const returnedBillsData = billsData
+    .filter((billData) => billData.type === BillType.RETURNED_BILL)
+    .filter(
+      (billProduct) =>
+        resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+    );
   return (
     <Fragment>
       <div className={classes.page}>
@@ -26,6 +33,8 @@ const ReturnedBillsPage: React.FC = () => {
               title="المرتجع"
               admin={true}
               data={returnedBillsData}
+              dateValue={dateValue}
+              onChangeDateHandler={onChangeDateHandler}
             />
           </Wrapper>
         </div>

@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BillRequestAction, COLLECTIONS, CRUDRequest } from "../../constants";
-import { MissingProductsDoc, StockDoc } from "../../interfaces";
+import {
+  DeleteRequestData,
+  MissingProductsDoc,
+  StockDoc,
+} from "../../interfaces";
 import { StockInitialState } from "../../interfaces/redux-store";
 import { deleteData, readData, sendData, updateData } from "../../services/api";
 import { BillType } from "../../types/bills";
@@ -58,6 +62,11 @@ const stockSlice = createSlice({
         }
       });
     },
+    deleteStockProduct(state, action) {
+      state.data = state.data.filter(
+        (stockProduct: StockDoc) => stockProduct.id !== action.payload.data.id
+      );
+    },
   },
 });
 
@@ -72,6 +81,21 @@ export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
     dispatch(stockActions.errorStockData({}));
   }
 };
+
+export const deleteStockDataFromStore =
+  (stockProduct: StockDoc) => async (dispatch: AppDispatch) => {
+    try {
+      console.log("stockProduct: ", stockProduct);
+      await deleteData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: stockProduct.id,
+      } as DeleteRequestData).then((_) => {
+        dispatch(stockActions.deleteStockProduct({ data: stockProduct }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 export const transformDataFromNormalBillToStock =
   (data: any) => async (dispatch: AppDispatch, getState: any) => {
@@ -181,12 +205,8 @@ export const transformDataFromNormalBillToStock =
                 ...updatedProduct,
               };
 
-              console.log("billProduct: ", billProduct);
-              console.log("updatedProduct: ", updatedProduct);
-
               //prettier-ignore
               if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
-                console.log('TEST.')
                 newProduct.numberOfPieces += billProduct.totalProductAmount;
                 //prettier-ignore
                 newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
@@ -195,47 +215,52 @@ export const transformDataFromNormalBillToStock =
               //prettier-ignore
               if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
                 newProduct.numberOfPieces -= billProduct.totalProductAmount;
-                console.log('ELSE TEST.')
                 //prettier-ignore
                 newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
               }
 
               if (billProduct.category !== updatedProduct.category) {
-                console.log("1.");
                 newProduct.category = billProduct.category;
               }
 
               //prettier-ignore
               if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
-                console.log('3.')
                   newProduct.priceOfPiece = billProduct.priceOfPiece;
                 }
               //prettier-ignore
               if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
-                console.log('4.')
                   newProduct.numberOfUnits = billProduct.numberOfUnits;
                 }
               //prettier-ignore
               if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
-                console.log('5.')
                   newProduct.priceOfUnit = billProduct.priceOfUnit;
                 }
               //
               profitOfPieceEquation =
-                (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) /
-                priceOfPiece;
+                ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) *
+                100;
               //
+              // profitOfUnitEquation =
+              //   (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
+              //   (priceOfPiece / numberOfUnits);
               profitOfUnitEquation =
-                (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
-                (priceOfPiece / numberOfUnits);
+                ((priceOfUnit * numberOfUnits) / numberOfUnits -
+                  priceOfPiece / numberOfUnits) *
+                100;
+
               //
               totalProfitEquation =
-                (priceOfUnit * numberOfUnits - priceOfPiece) *
-                totalProductAmount;
+                priceOfUnit * numberOfUnits * totalProductAmount -
+                priceOfPiece * totalProductAmount;
               //
+              // profitPercentEquation =
+              //   ((totalProfitEquation - data.billData.total) /
+              //     data.billData.total) *
+              //   100;
               profitPercentEquation =
-                ((totalProfitEquation - data.billData.total) /
-                  data.billData.total) *
+                ((priceOfPiece * totalProductAmount) / priceOfUnit) *
+                numberOfUnits *
+                totalProductAmount *
                 100;
               newProduct.profitOfPiece = profitOfPieceEquation;
               newProduct.profitOfUnit = profitOfUnitEquation;
@@ -245,8 +270,6 @@ export const transformDataFromNormalBillToStock =
               newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
               //prettier-ignore
               newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
-
-              console.log("newProduct: ", newProduct);
 
               updatedProduct = newProduct;
             }

@@ -35,6 +35,10 @@ const StockPage = () => {
     dateValue: returnedBillDateValue,
     onChangeDateHandler: returnedBillsChangeDateHandler,
   } = useDate();
+  const {
+    dateValue: purchaseBillsDateValue,
+    onChangeDateHandler: purchaseBillssChangeDateHandler,
+  } = useDate();
 
   const normalBillsData = billsData
     .filter((billData) => billData.type === BillType.NORMAL_BILL)
@@ -49,6 +53,11 @@ const StockPage = () => {
         resetDate(dateMe(billProduct.createdAt)) ===
         resetDate(returnedBillDateValue)
     );
+  const purchaseBillsData = purchasesData.filter(
+    (billProduct) =>
+      resetDate(dateMe(billProduct.createdAt)) ===
+      resetDate(purchaseBillsDateValue)
+  );
 
   return (
     <div className={classes["page"]}>
@@ -84,20 +93,25 @@ const StockPage = () => {
           />
         </div>
         {/** MOSHTRYAT TABLE */}
-        <FullInfoTable
-          tableId={DBTables.MISSING_PRODUCTS_TABLE}
-          title={DBTables.MISSING_PRODUCTS_TABLE}
-          headData={missingProductsTableHeadData}
-          data={missingProductsData}
-          isLoading={missingProductsDataLoading}
-        />
+        {missingProductsData.length > 0 ? (
+          <FullInfoTable
+            tableId={DBTables.MISSING_PRODUCTS_TABLE}
+            title={DBTables.MISSING_PRODUCTS_TABLE}
+            headData={missingProductsTableHeadData}
+            data={missingProductsData}
+            isLoading={missingProductsDataLoading}
+          />
+        ) : (
+          <h2 className="not-founded">لا يوجد منقوصات</h2>
+        )}
         <div className="grid-3fr-container mt-xg mb-xg">
           {/** MANKOSAT TABLE */}
           <InfoTable
             tableId={DBTables.PURCHASES_TABLE}
             title="أخر المشتريات"
-            data={purchasesData}
-            dateValue={dateValue}
+            data={purchaseBillsData}
+            dateValue={purchaseBillsDateValue}
+            onChangeDateHandler={purchaseBillssChangeDateHandler}
           />
           <IncomeTable />
         </div>

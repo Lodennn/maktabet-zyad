@@ -27,14 +27,18 @@ const MissingProductsPage: React.FC = () => {
         <div className={classes["page__content"]}>
           <Wrapper>
             {/** MANKOSAT TABLE */}
-            <FullInfoTable
-              tableId={DBTables.MISSING_PRODUCTS_TABLE}
-              title={DBTables.MISSING_PRODUCTS_TABLE}
-              headData={missingProductsTableHeadData}
-              data={missingProductsData}
-              isLoading={missingProductsDataLoading}
-              admin={true}
-            />
+            {missingProductsData.length > 0 ? (
+              <FullInfoTable
+                tableId={DBTables.MISSING_PRODUCTS_TABLE}
+                title={DBTables.MISSING_PRODUCTS_TABLE}
+                headData={missingProductsTableHeadData}
+                data={missingProductsData}
+                isLoading={missingProductsDataLoading}
+                admin={true}
+              />
+            ) : (
+              <h2 className="not-founded">لا يوجد منقوصات</h2>
+            )}
           </Wrapper>
         </div>
       </div>

@@ -13,13 +13,18 @@ import useReadData from "../../hooks/use-read-data";
 import Modal from "../../core-ui/Modal/Modal";
 import AddBillModalContent from "../../core-ui/Modal/AddBillModalContent/AddBillModalContent";
 import useDate from "../../hooks/use-date";
+import { BillType } from "../../types/bills";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const BillsPage: React.FC = () => {
   const { data: billsData, isLoading } = useAppSelector((state) => state.bills);
 
   const { showModal, hideModal, triggerModalAction } = useReadData();
   const { dateValue, onChangeDateHandler } = useDate();
-
+  const filteredBillsData = billsData.filter(
+    (billProduct) =>
+      resetDate(dateMe(billProduct.createdAt)) === resetDate(dateValue)
+  );
   return (
     <Fragment>
       {showModal && (
@@ -43,7 +48,7 @@ const BillsPage: React.FC = () => {
                 tableId={DBTables.BILLS_TABLE}
                 title="الفواتير"
                 admin={true}
-                data={billsData}
+                data={filteredBillsData}
                 dateValue={dateValue}
                 onChangeDateHandler={onChangeDateHandler}
               />

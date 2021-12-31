@@ -226,6 +226,9 @@ ul {
   color: $color-gray-dark-3;
   margin: 2rem 0;
   text-align: center;
+  background: $color-white;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
 
 .label {
@@ -237,4 +240,7 @@ ul {
   color: $color-gray-dark-2;
   font-size: 1.8rem;
   font-weight: bold;
+}
+.text-center {
+  text-align: center;
 }
