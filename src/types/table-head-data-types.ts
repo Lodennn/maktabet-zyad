@@ -35,3 +35,9 @@ export type MissingProductsTableHeadData = [
   TableFields.PRICE_OF_UNIT,
   TableFields.DATE
 ];
+
+export type OutlaysTableHeadData = [
+  TableFields.OUTLAY_TITLE,
+  TableFields.OUTLAY_AMOUNT,
+  TableFields.DATE
+];

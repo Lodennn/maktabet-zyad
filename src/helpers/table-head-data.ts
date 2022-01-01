@@ -4,6 +4,7 @@ import {
   PurchasesTableHeadData,
   MissingProductsTableHeadData,
   BillsTableHeadData,
+  OutlaysTableHeadData,
 } from "../types";
 
 export const stockTableHeadData: StockTableHeadData = [
@@ -39,5 +40,11 @@ export const missingProductsTableHeadData: MissingProductsTableHeadData = [
   TableFields.PRODUCT_NAME,
   TableFields.PRODUCT_CATEGORY,
   TableFields.PRICE_OF_UNIT,
+  TableFields.DATE,
+];
+
+export const outlaysTableHeadData: OutlaysTableHeadData = [
+  TableFields.OUTLAY_TITLE,
+  TableFields.OUTLAY_AMOUNT,
   TableFields.DATE,
 ];

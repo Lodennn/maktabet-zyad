@@ -1,14 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
 import { HttpInitialState } from "../../interfaces/index";
-import { readData, sendData, deleteData } from "../../services/api";
+import { readData, sendData, deleteData, updateData } from "../../services/api";
 import { AppDispatch } from "../index";
-import { OutlaysDoc } from "../../interfaces/database";
+import {
+  DeleteRequestData,
+  OutlaysDoc,
+  UpdateRequestData,
+} from "../../interfaces/database";
+import { OutlaysInitialState } from "../../interfaces/redux-store";
+import { dateMe, resetDate } from "../../helpers/functions";
 
-const initialState: HttpInitialState<OutlaysDoc> = {
+const initialState: OutlaysInitialState = {
   isLoading: false,
   error: null,
   data: [],
+  dailtyOutlaysTotal: 0,
 };
 
 const outlaysSlice = createSlice({
@@ -26,9 +33,44 @@ const outlaysSlice = createSlice({
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
+      state.dailtyOutlaysTotal = state.data
+        .filter(
+          (outlay) =>
+            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
     },
     addOutlay(state, action) {
       state.data = state.data.concat(action.payload.data);
+      state.dailtyOutlaysTotal = state.data
+        .filter(
+          (outlay) =>
+            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    },
+    deleteOutlay(state, action) {
+      state.data = state.data.filter(
+        (outlay: OutlaysDoc) => outlay.id !== action.payload.data.id
+      );
+      state.dailtyOutlaysTotal = state.data
+        .filter(
+          (outlay) =>
+            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    },
+    updateOutlay(state, action) {
+      const outlayIndex = state.data.findIndex((outlay: OutlaysDoc) => {
+        return outlay.id === action.payload.data.id;
+      });
+      state.data[outlayIndex] = action.payload.data;
+      state.dailtyOutlaysTotal = state.data
+        .filter(
+          (outlay) =>
+            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
     },
   },
 });
@@ -51,20 +93,46 @@ export const addOutlays = () => async (dispatch: AppDispatch) => {
 
 export const insertOutlay =
   (insertData: OutlaysDoc) => async (dispatch: AppDispatch) => {
-    const data = {
-      collectionName: COLLECTIONS.OUTLAYS,
-      data: insertData,
-    };
-    await sendData(data).then((_) =>
-      dispatch(outlaysActions.addOutlay(insertData))
-    );
+    try {
+      const data = {
+        collectionName: COLLECTIONS.OUTLAYS,
+        data: insertData,
+      };
+      await sendData(data).then((data) => {
+        dispatch(outlaysActions.addOutlay({ data: data }));
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-export const deleteOutlay =
-  (missingProduct: OutlaysDoc) =>
-  async (dispatch: AppDispatch, getState: any) => {
-    const stateData = [...getState().missingProducts.data];
-    //prettier-ignore
+export const updateOutlayAction =
+  (outlay: OutlaysDoc) => async (dispatch: AppDispatch) => {
+    try {
+      await updateData({
+        collectionName: COLLECTIONS.OUTLAYS,
+        docId: outlay.id,
+        newData: outlay,
+      } as UpdateRequestData).then((_) =>
+        dispatch(outlaysActions.updateOutlay({ data: outlay }))
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+export const deleteOutlayAction =
+  (outlay: OutlaysDoc) => async (dispatch: AppDispatch) => {
+    try {
+      await deleteData({
+        collectionName: COLLECTIONS.OUTLAYS,
+        docId: outlay.id,
+      } as DeleteRequestData).then((_) =>
+        dispatch(outlaysActions.deleteOutlay({ data: outlay }))
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
 export default outlaysSlice.reducer;

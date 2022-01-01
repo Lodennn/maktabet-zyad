@@ -7,6 +7,7 @@ import { DBTables } from "../../constants";
 import {
   stockTableHeadData,
   missingProductsTableHeadData,
+  outlaysTableHeadData,
 } from "../../helpers";
 
 import { useAppSelector } from "../../hooks/use-app-selector";
@@ -26,8 +27,6 @@ import {
   resetDate,
 } from "../../helpers/functions";
 import moment from "moment";
-import { BillsDoc } from "../../interfaces";
-import { BillType } from "../../types/bills";
 import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
 
 const HomePage = () => {
@@ -38,6 +37,8 @@ const HomePage = () => {
   } = useAppSelector((state) => state.stock);
   //prettier-ignore
   const { data: billsData, isLoading: billsIsLoading, dailyBillsTotal } = useAppSelector((state) => state.bills);
+  //prettier-ignore
+  const { data: outlaysData, isLoading: outlaysIsLoading, dailtyOutlaysTotal } = useAppSelector((state) => state.outlays);
 
   const { data: missingProductsData, isLoading: missingProductsDataLoading } =
     useAppSelector((state) => state.missingProducts);
@@ -48,8 +49,6 @@ const HomePage = () => {
   const getDisplayContentValue = (content: DBTables) => {
     setDisplayContent(content);
   };
-
-  console.log("displayContent: ", displayContent);
 
   const { showModal, triggerModalAction, hideModal } = useReadData();
   const {
@@ -76,6 +75,7 @@ const HomePage = () => {
           <AddOutlayModalContent hideAddOutlayModal={hideOutsModal} />
         </Modal>
       )}
+
       <Navigation title="المتجر" />
       <div className={classes["home-page__content"]}>
         <Wrapper>
@@ -93,7 +93,7 @@ const HomePage = () => {
               />
             </div>
             <div className={classes["home-page__income"]}>
-              {formatNumber(dailyBillsTotal)}
+              {formatNumber(dailyBillsTotal - dailtyOutlaysTotal)}
             </div>
           </div>
           <hr className="separator separator--soft" />
@@ -140,21 +140,21 @@ const HomePage = () => {
           )}
           {/** MANKOSAT TAB */}
           {/** OUTS TAB */}
-          {displayContent === DBTables.OUTS_TABLE && (
+          {displayContent === DBTables.OUTLAYS_TABLE && (
             <Fragment>
               <Button
                 className={"btn btn--default btn--add mt-sm mb-md"}
                 icon={<FaPlus />}
-                text={"أضف خوارج"}
+                text={"أضف مصروفات"}
                 onClick={triggerOutsModal}
               />
-              <InfoTable
-                tableId={DBTables.OUTS_TABLE}
+              <FullInfoTable
+                tableId={DBTables.OUTLAYS_TABLE}
+                headData={outlaysTableHeadData}
+                data={outlaysData}
+                isLoading={outlaysIsLoading}
                 className="mt-md"
                 admin={true}
-                data={filteredByDateBillsData}
-                onChangeDateHandler={onChangeDateHandler}
-                dateValue={dateValue}
               />
             </Fragment>
           )}

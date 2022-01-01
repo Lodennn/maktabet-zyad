@@ -119,9 +119,7 @@ const purchasesSlice = createSlice({
       state.data = state.data.concat(action.payload.data);
     },
     deletePurchaseBill(state, action) {
-      console.log("deletePurchaseBill: ");
       state.data = state.data.filter((bill: PurchasesDoc) => {
-        console.log(bill.id, action.payload.data.id);
         return bill.id !== action.payload.data.id;
       });
     },
@@ -189,7 +187,7 @@ export const insertPurchaseBill =
       await sendData({
         collectionName: COLLECTIONS.PURCHASES,
         data: purchaseBillData,
-      } as SendRequestData).then((_) => {
+      } as SendRequestData).then((purchaseBillData) => {
         dispatch(addStockDataToStore());
         dispatch(purchasesActions.addPurchaseBill({ data: purchaseBillData }));
       });

@@ -13,6 +13,7 @@ import {
 import { dateMe, resetDate } from "../../helpers/functions";
 import { BillType } from "../../types/bills";
 import { addStockDataToStore } from "../stock/stock-slice";
+import { missingProductsActions } from "../missing-products/missing-products-slice";
 
 const initialState: BillsInitialState = {
   isLoading: false,
@@ -89,6 +90,13 @@ const billsSlice = createSlice({
         (billProduct) =>
           resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
       );
+      state.dailyBillsTotal = state.dailyBills.reduce((acc, cur) => {
+        if (cur.type === BillType.NORMAL_BILL) {
+          return acc + cur.total;
+        } else {
+          return acc - cur.total;
+        }
+      }, 0);
     },
     deleteBill(state, action) {
       state.data = state.data.filter(
@@ -98,6 +106,13 @@ const billsSlice = createSlice({
         (billProduct) =>
           resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
       );
+      state.dailyBillsTotal = state.dailyBills.reduce((acc, cur) => {
+        if (cur.type === BillType.NORMAL_BILL) {
+          return acc + cur.total;
+        } else {
+          return acc - cur.total;
+        }
+      }, 0);
     },
     updateBill(state, action) {
       const updatedBillIndex = state.data.findIndex(
@@ -108,6 +123,13 @@ const billsSlice = createSlice({
         (billProduct) =>
           resetDate(dateMe(billProduct.createdAt)) === resetDate(new Date())
       );
+      state.dailyBillsTotal = state.dailyBills.reduce((acc, cur) => {
+        if (cur.type === BillType.NORMAL_BILL) {
+          return acc + cur.total;
+        } else {
+          return acc - cur.total;
+        }
+      }, 0);
     },
   },
 });
@@ -131,7 +153,7 @@ export const insertBill =
       await sendData({
         collectionName: COLLECTIONS.BILLS,
         data: billData,
-      } as SendRequestData).then((_) => {
+      } as SendRequestData).then((billData) => {
         dispatch(addStockDataToStore());
         dispatch(billsActions.addBill({ data: billData }));
       });
@@ -164,9 +186,14 @@ export const deleteBill =
       await deleteData({
         collectionName: COLLECTIONS.BILLS,
         docId: billData.id,
-      } as DeleteRequestData).then((_) => {
+      } as DeleteRequestData).then((billId) => {
         dispatch(addStockDataToStore());
         dispatch(billsActions.deleteBill({ data: billData }));
+        dispatch(
+          missingProductsActions.deleteMissingProduct({
+            data: { ...billData, id: billId },
+          })
+        );
       });
     } catch (err) {
       console.error(err);

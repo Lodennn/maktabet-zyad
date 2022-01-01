@@ -34,7 +34,11 @@ export const readData = async (collectionName: COLLECTIONS) => {
 //{collectionName: COLLECTIONS, data: DatabaseCollectionsType}
 export const sendData = async (requestData: SendRequestData) => {
   try {
-    await addDoc(collection(db, requestData.collectionName), requestData.data);
+    const docRef = await addDoc(
+      collection(db, requestData.collectionName),
+      requestData.data
+    );
+    return { id: docRef.id, ...requestData.data };
   } catch (err) {
     console.error(err);
   }
@@ -55,4 +59,5 @@ export const updateData = async (requestData: UpdateRequestData) => {
 export const deleteData = async (requestData: DeleteRequestData) => {
   const { collectionName, docId } = requestData;
   await deleteDoc(doc(db, collectionName, docId));
+  return docId;
 };

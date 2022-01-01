@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { OutlaysDoc } from "../../../interfaces";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import classes from "../AddBillModalContent/AddBillModalContent.module.scss";
-import outlayClasses from "./AddNewOutlay.module.scss";
-import { insertOutlay } from "../../../store/outlays/outlays-slice";
+import outlayClasses from "../AddOutlayModalContent/AddNewOutlay.module.scss";
+import { updateOutlayAction } from "../../../store/outlays/outlays-slice";
 
-const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
-  props
-) => {
+const UpdateOutlayModalContent: React.FC<{
+  hideUpdateOutlayModal: Function;
+  data: any;
+}> = (props) => {
   const dispatch = useAppDispatch();
 
-  const [outlayTitle, setOutlayTitle] = useState<string>("");
-  const [outlayAmount, setOutlayAmount] = useState<number>(0);
+  const [outlayTitle, setOutlayTitle] = useState<string>(props.data.title);
+  const [outlayAmount, setOutlayAmount] = useState<number>(props.data.amount);
 
   const onChangeOutlayTitle = (event: React.FormEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
@@ -27,14 +28,16 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
     event.preventDefault();
 
     const outlayData: OutlaysDoc = {
+      id: props.data.id,
       title: outlayTitle,
       amount: outlayAmount,
-      createdAt: new Date().toString(),
+      createdAt: props.data.createdAt,
+      updatedAt: new Date().toString(),
     };
 
     // INSERT OUTLAY TO DATABASE
-    dispatch(insertOutlay(outlayData)).then((_) => {
-      props.hideAddOutlayModal();
+    dispatch(updateOutlayAction(outlayData)).then((_) => {
+      props.hideUpdateOutlayModal();
     });
   };
 
@@ -42,7 +45,7 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
     <div className={classes["add-bill-modal"]}>
       <div className={classes["add-bill-modal__header"]}>
         <h2 className={classes["add-bill-modal__header--date"]}>
-          أضافة المصاريف الخارجيه
+          تعديل المصاريف الخارجيه
         </h2>
         <div className="separator separator--soft"></div>
       </div>
@@ -90,9 +93,9 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
             <div className={classes["add-bill-form__actions--ctas"]}>
               <button type="submit" className="btn btn--primary btn--add">
                 <span className={`fix-icon`}>
-                  <FaPlus />
+                  <FaEdit />
                 </span>
-                أضف
+                تعديل
               </button>
             </div>
           </div>
@@ -102,4 +105,4 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
   );
 };
 
-export default AddOutlayModalContent;
+export default UpdateOutlayModalContent;

@@ -27,6 +27,14 @@ const missingProductsSlice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
+    addMissingProduct(state, action) {
+      state.data = state.data.concat(action.payload.data);
+    },
+    deleteMissingProduct(state, action) {
+      state.data = state.data.filter(
+        (product: MissingProductsDoc) => product.id === action.payload.data.id
+      );
+    },
   },
 });
 
@@ -53,7 +61,9 @@ export const insertMissingProduct =
       collectionName: COLLECTIONS.MISSING_PRODUCTS,
       data: insertData,
     };
-    await sendData(data);
+    await sendData(data).then((data) =>
+      dispatch(missingProductsActions.addMissingProduct({ data }))
+    );
   };
 
 export const deleteMissingProduct =

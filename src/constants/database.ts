@@ -11,7 +11,7 @@ export enum DBTables {
   MISSING_PRODUCTS_TABLE = "المنقوصات",
   PURCHASES_TABLE = "المشتريات",
   BILLS_TABLE = "الفواتير",
-  OUTS_TABLE = "الخوارج",
+  OUTLAYS_TABLE = "الخوارج",
 }
 
 export enum TableFields {
@@ -27,6 +27,8 @@ export enum TableFields {
   PERCENTAGE_OF_PROFIT = "نسبة الربح",
   TOTAL_PROFIT = "الربح الكلي",
   DATE = "التاريخ",
+  OUTLAY_TITLE = "العنوان",
+  OUTLAY_AMOUNT = "الكميه",
 }
 
 export enum CRUDRequest {

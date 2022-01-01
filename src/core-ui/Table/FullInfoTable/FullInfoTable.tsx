@@ -6,9 +6,11 @@ import Modal from "../../Modal/Modal";
 import UpdateStockModalContent from "../../Modal/UpdateStockModalContent/UpdateStockModalContent";
 import BillsTableData from "./BillsTableData/BillsTableData";
 import classes from "./FullInfoTable.module.scss";
+import OutlaysTableData from "./OutlaysTableData/OutlaysTableData";
 import MissingProductsTableData from "./MissingProductsTableData/MissingProductsTableData";
 import PurchasesTableData from "./PurchasingTableData/PurchasesTableData";
 import StockTableData from "./StockTableData/StockTableData";
+import UpdateOutlayModalContent from "../../Modal/UpdateOutlayModalContent/UpdateOutlayModalContent";
 
 const FullInfoTable: React.FC<{
   tableId?: DBTables;
@@ -25,11 +27,26 @@ const FullInfoTable: React.FC<{
     showModal,
     triggerModalAction: updateStockTrigger,
   } = useReadData();
+
+  const {
+    showModal: outsUpdateModal,
+    triggerModalAction: triggerUpdateOutsModal,
+    hideModal: hideUpdateOutsModal,
+    readData: outlayUpdateData,
+  } = useReadData();
   return (
     <Fragment>
       {showModal && (
         <Modal onHide={hideModal}>
           <UpdateStockModalContent data={readData} hideModal={hideModal} />
+        </Modal>
+      )}
+      {outsUpdateModal && (
+        <Modal onHide={hideUpdateOutsModal}>
+          <UpdateOutlayModalContent
+            data={outlayUpdateData}
+            hideUpdateOutlayModal={hideUpdateOutsModal}
+          />
         </Modal>
       )}
       {props.isLoading ? (
@@ -50,7 +67,7 @@ const FullInfoTable: React.FC<{
                   <th key={headData}>{headData}</th>
                 ))}
                 {props.admin && (
-                  <Fragment>
+                  <Fragment key={props.title}>
                     <th>Actions</th>
                   </Fragment>
                 )}
@@ -92,6 +109,17 @@ const FullInfoTable: React.FC<{
                     admin={props.admin}
                   />
                 ))}
+              {props.tableId === DBTables.OUTLAYS_TABLE &&
+                props.data.map((dataItem) => {
+                  return (
+                    <OutlaysTableData
+                      key={dataItem.id}
+                      dataItem={dataItem}
+                      admin={props.admin}
+                      onUpdate={triggerUpdateOutsModal}
+                    />
+                  );
+                })}
             </tbody>
           </table>
         </div>
