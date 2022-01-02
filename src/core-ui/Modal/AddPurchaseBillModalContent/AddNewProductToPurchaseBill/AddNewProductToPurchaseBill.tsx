@@ -48,6 +48,7 @@ const AddNewProductToPurchaseBill: React.FC<{
             getSearchValue={getSearchValue}
             onChangeProductNameHandler={onChangeProductNameHandler}
             filteredStockData={stockData}
+            productIndex={props.productIndex}
           />
         </div>
         {/** PRODUCT CATEGORY */}

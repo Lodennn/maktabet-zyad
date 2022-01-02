@@ -8,10 +8,7 @@ import { sendData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import {
-  addPurchasesDataToStore,
-  insertPurchaseBill,
-} from "../../../store/purchases/purchases-slice";
+import { insertPurchaseBill } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { useAppSelector } from "../../hooks/use-app-selector";
 import { StockDoc } from "../../interfaces";
@@ -9,12 +9,22 @@ const SmartSearch: React.FC<{
   getSearchValue: Function;
   onChangeProductNameHandler?: (inputProductName: string) => void;
   updateValue?: string;
+  productIndex?: number;
   filteredStockData: StockDoc[];
 }> = (props) => {
   //prettier-ignore
   const [searchValue, setSearchValue] = useState<string>(!!props.updateValue ? props.updateValue : '');
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
+
+  const { productIndex } = props;
+
+  useEffect(() => {
+    console.log("productIndex: ", productIndex, showSmartSearch);
+    if (showSmartSearch) {
+      setShowSmartSearch(false);
+    }
+  }, [productIndex]);
 
   const dispatch = useAppDispatch();
 
