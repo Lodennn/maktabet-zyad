@@ -43,13 +43,6 @@ const InfoTableItem: React.FC<{
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
-    // DELETE BILL TO DATABASE
-    // deleteBill({
-    //   collectionName: COLLECTIONS.BILLS,
-    //   docId: bill.id,
-    // } as DeleteRequestData).then((_) => {
-    //   dispatch(addBillsData());
-    // });
     dispatch(deleteBill(bill));
   };
   const onDeletePurchaseBill = (
@@ -60,11 +53,6 @@ const InfoTableItem: React.FC<{
     //prettier-ignore
     dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
-    // DELETE BILL TO DATABASE
-    // deleteBill({
-    //   collectionName: COLLECTIONS.PURCHASES,
-    //   docId: bill.id,
-    // } as DeleteRequestData);
     dispatch(deletePurchaseBillFromStore(bill));
   };
 
@@ -131,7 +119,7 @@ const InfoTableItem: React.FC<{
                           classes["info-table-item__products-item--count"]
                         }
                       >
-                        {product.totalProductAmount}
+                        {formatNumber(product.totalProductAmount, "d")}
                       </span>
                       <span
                         className={

@@ -1,6 +1,8 @@
 import moment from "moment";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { COLLECTIONS } from "./constants";
+import { resetDate } from "./helpers/functions";
 import { useAppDispatch } from "./hooks/use-app-dispatch";
 import BillsPage from "./pages/BillsPage/BillsPage";
 import HomePage from "./pages/HomePage/HomePage";
@@ -9,6 +11,7 @@ import PurchasesPage from "./pages/PurchasesPage/PurchasesPage";
 import ReturnedBillsPage from "./pages/ReturnedBills/ReturnedBills";
 import StockPage from "./pages/StockPage/StockPage";
 import StorePage from "./pages/StorePage/StorePage";
+import { sendData } from "./services/api";
 import { addBillsData } from "./store/bills/bill-slice";
 import { addMissingProductsDataToStore } from "./store/missing-products/missing-products-slice";
 import { addOutlays } from "./store/outlays/outlays-slice";
