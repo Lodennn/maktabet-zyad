@@ -261,6 +261,46 @@ export const updatePurchaseBill =
     });
   };
 
+export const deletePurchaseBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const isProductFreshInStock =
+        billProduct.totalProductAmount * billProduct.numberOfUnits ===
+        updatedProduct.totalNumberOfUnits;
+
+      if (isProductFreshInStock) {
+        deleteData({
+          collectionName: COLLECTIONS.STOCK,
+          docId: updatedProduct.id!,
+        });
+      } else {
+        updatedProduct.totalNumberOfUnits -=
+          billProduct.totalProductAmount * billProduct.numberOfUnits;
+        //prettier-ignore
+        updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+        //prettier-ignore
+        updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+        // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+        updateData({
+          collectionName: COLLECTIONS.STOCK,
+          docId: updatedProduct.id,
+          newData: updatedProduct,
+        });
+      }
+    });
+  };
+
 export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
   dispatch(stockActions.fetchingStockData({}));
   try {
@@ -375,96 +415,6 @@ export const transformDataFromNormalBillToStock =
           }
         }
 
-        // THE PRODUCT IS ALREADY FOUNDED
-        if (data.billData.type === BillType.PURCHASES_BILL) {
-          if (data.action === BillRequestAction.UPDATE_BILL) {
-            // if (!!billProduct.oldProductAmount) {
-            //   const {
-            //     priceOfPiece,
-            //     priceOfUnit,
-            //     numberOfUnits,
-            //     totalProductAmount,
-            //   } = billProduct;
-            //   let profitOfPieceEquation,
-            //     profitOfUnitEquation,
-            //     totalProfitEquation,
-            //     profitPercentEquation;
-            //   //
-            //   const newProduct: StockDoc = {
-            //     ...updatedProduct,
-            //   };
-            //   //prettier-ignore
-            //   if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
-            //     newProduct.numberOfPieces += billProduct.totalProductAmount;
-            //     //prettier-ignore
-            //     newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
-            //   }
-            //   //prettier-ignore
-            //   if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
-            //     newProduct.numberOfPieces -= billProduct.totalProductAmount;
-            //     //prettier-ignore
-            //     newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
-            //   }
-            //   if (billProduct.category !== updatedProduct.category) {
-            //     newProduct.category = billProduct.category;
-            //   }
-            //   //prettier-ignore
-            //   if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
-            //       newProduct.priceOfPiece = billProduct.priceOfPiece;
-            //     }
-            //   //prettier-ignore
-            //   if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
-            //       newProduct.numberOfUnits = billProduct.numberOfUnits;
-            //     }
-            //   //prettier-ignore
-            //   if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
-            //       newProduct.priceOfUnit = billProduct.priceOfUnit;
-            //     }
-            //   //
-            //   profitOfPieceEquation =
-            //     ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) *
-            //     100;
-            //   //
-            //   profitOfUnitEquation =
-            //     ((priceOfUnit * numberOfUnits) / numberOfUnits -
-            //       priceOfPiece / numberOfUnits) *
-            //     100;
-            //   //
-            //   totalProfitEquation =
-            //     priceOfUnit * numberOfUnits * totalProductAmount -
-            //     priceOfPiece * totalProductAmount;
-            //   //
-            //   profitPercentEquation =
-            //     ((priceOfPiece * totalProductAmount) / priceOfUnit) *
-            //     numberOfUnits *
-            //     totalProductAmount *
-            //     100;
-            //   newProduct.profitOfPiece = profitOfPieceEquation;
-            //   newProduct.profitOfUnit = profitOfUnitEquation;
-            //   newProduct.totalProfit = totalProfitEquation;
-            //   newProduct.profitPercent = profitPercentEquation;
-            //   //prettier-ignore
-            //   newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
-            //   //prettier-ignore
-            //   newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
-            //   updatedProduct = newProduct;
-            // }
-          }
-          if (data.action === BillRequestAction.DELETE_BILL) {
-            const isProductFreshInStock =
-              billProduct.totalProductAmount * billProduct.numberOfUnits ===
-              updatedProduct.totalNumberOfUnits;
-            if (isProductFreshInStock) {
-              deleteData({
-                collectionName: COLLECTIONS.STOCK,
-                docId: updatedProduct.id!,
-              });
-            } else {
-              updatedProduct.totalNumberOfUnits -=
-                billProduct.totalProductAmount * billProduct.numberOfUnits;
-            }
-          }
-        }
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
         //prettier-ignore
@@ -476,13 +426,6 @@ export const transformDataFromNormalBillToStock =
           docId: updatedProduct.id,
           newData: updatedProduct,
         });
-      } else {
-        // NOT FOUNDED PRODUCT
-        if (data.billData.type === BillType.PURCHASES_BILL) {
-          // if (data.action === BillRequestAction.DELETE_BILL) {
-          //   console.log("DELETE NOT FOUNDED BILL");
-          // }
-        }
       }
 
       return updatedProduct;

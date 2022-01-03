@@ -16,7 +16,10 @@ import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import useHttp from "../../../../hooks/use-http";
 import { deleteData } from "../../../../services/api";
 import { addBillsData, deleteBill } from "../../../../store/bills/bill-slice";
-import { transformDataFromNormalBillToStock } from "../../../../store/stock/stock-slice";
+import {
+  deletePurchaseBill,
+  transformDataFromNormalBillToStock,
+} from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
 import { formatDateByHours, formatNumber } from "../../../../helpers/functions";
@@ -51,8 +54,8 @@ const InfoTableItem: React.FC<{
   ) => {
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
-
+    // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
+    dispatch(deletePurchaseBill(bill));
     dispatch(deletePurchaseBillFromStore(bill));
   };
 
