@@ -15,7 +15,10 @@ import {
   addPurchasesDataToStore,
   updatePurchaseBillToStore,
 } from "../../../store/purchases/purchases-slice";
-import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
+import {
+  transformDataFromNormalBillToStock,
+  updatePurchaseBill,
+} from "../../../store/stock/stock-slice";
 import UpdateNewProductToPurchaseBill from "./UpdateNewProductToPurchaseBill/UpdateNewProductToPurchaseBill";
 import classes from "./UpdatePurchaseBillModalContent.module.scss";
 import { PurchaseBillConfigInitialState } from "../../../hooks/use-update-bill";
@@ -57,7 +60,8 @@ const UpdatePurchaseBillModalContent: React.FC<{
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({ billData, billDataConfig, action: BillRequestAction.UPDATE_BILL}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, billDataConfig, action: BillRequestAction.UPDATE_BILL}));
+    dispatch(updatePurchaseBill(billData));
 
     // UPDATE BILL TO DATABASE
     dispatch(updatePurchaseBillToStore(billData)).then((_) => {

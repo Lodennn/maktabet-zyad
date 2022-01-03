@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BillRequestAction, COLLECTIONS, CRUDRequest } from "../../constants";
 import {
+  BillsDoc,
   DeleteRequestData,
   MissingProductsDoc,
   StockDoc,
@@ -78,6 +79,188 @@ const stockSlice = createSlice({
 
 export const stockActions = stockSlice.actions;
 
+const isProductInStock = (productIndex: number) => productIndex >= 0;
+
+export const addPurchaseBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+      if (isProductInStock(stockProductInBillIndex)) {
+        updatedProduct = { ...stockData[stockProductInBillIndex] };
+        dispatch(addPurchaseBillOfExistingProduct(updatedProduct, billProduct));
+      } else {
+        dispatch(addPurchaseBillOfNotExistingProduct(billData, billProduct));
+      }
+    });
+  };
+export const addPurchaseBillOfExistingProduct =
+  (updatedProduct: StockDoc, billProductInStock: StockDoc) =>
+  (dispatch: AppDispatch) => {
+    const missingProduct: MissingProductsDoc = {
+      productName: updatedProduct.productName,
+      createdAt: new Date().toString(),
+      category: updatedProduct.category,
+      priceOfPiece: updatedProduct.priceOfPiece,
+    };
+
+    updatedProduct.numberOfUnits = billProductInStock.numberOfUnits;
+    updatedProduct.priceOfPiece = billProductInStock.priceOfPiece;
+    updatedProduct.priceOfUnit = billProductInStock.priceOfUnit;
+    //prettier-ignore
+    updatedProduct.totalNumberOfUnits += billProductInStock.totalProductAmount! * billProductInStock.numberOfUnits;
+    dispatch(deleteMissingProduct(missingProduct));
+    // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+    //prettier-ignore
+    updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+    //prettier-ignore
+    updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+    updateData({
+      collectionName: COLLECTIONS.STOCK,
+      docId: updatedProduct.id,
+      newData: updatedProduct,
+    });
+  };
+
+export const addPurchaseBillOfNotExistingProduct =
+  (billData: BillsDoc, billProduct: any) => (dispatch: AppDispatch) => {
+    // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
+
+    const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
+      billProduct;
+    //
+    const profitOfPieceEquation =
+      (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) / priceOfPiece;
+    //
+    const profitOfUnitEquation =
+      (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
+      (priceOfPiece / numberOfUnits);
+    //
+    const totalProfitEquation =
+      (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
+    //
+    const profitPercentEquation =
+      ((totalProfitEquation - billData.total) / billData.total) * 100;
+
+    const newProduct: StockDoc = {
+      ...billProduct,
+      // MAYBE DELETE
+      numberOfPieces: totalProductAmount,
+      profitOfPiece: profitOfPieceEquation,
+      profitOfUnit: profitOfUnitEquation,
+      // MAYBE DELETE
+      profitPercent: profitPercentEquation,
+      // MAYBE DELETE
+      purchasingCosts: billData.total,
+      remainingAmountOfPieces: totalProductAmount,
+      remainingAmountOfUnits: 0,
+      totalNumberOfUnits: totalProductAmount * numberOfUnits,
+      totalProductAmount: 1,
+      totalProfit: totalProfitEquation,
+    };
+
+    // ADD TO STOCK
+    sendData({
+      collectionName: COLLECTIONS.STOCK,
+      data: newProduct,
+    });
+  };
+
+export const updatePurchaseBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+      if (!!billProduct.oldProductAmount) {
+        const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
+          billProduct;
+
+        let profitOfPieceEquation,
+          profitOfUnitEquation,
+          totalProfitEquation,
+          profitPercentEquation;
+        //
+        const newProduct: StockDoc = {
+          ...updatedProduct,
+        };
+
+        //prettier-ignore
+        if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
+          newProduct.numberOfPieces += billProduct.totalProductAmount;
+          //prettier-ignore
+          newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+        }
+
+        //prettier-ignore
+        if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
+          newProduct.numberOfPieces -= billProduct.totalProductAmount;
+          //prettier-ignore
+          newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+        }
+
+        if (billProduct.category !== updatedProduct.category) {
+          newProduct.category = billProduct.category;
+        }
+
+        //prettier-ignore
+        if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
+            newProduct.priceOfPiece = billProduct.priceOfPiece;
+          }
+        //prettier-ignore
+        if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
+            newProduct.numberOfUnits = billProduct.numberOfUnits;
+          }
+        //prettier-ignore
+        if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
+            newProduct.priceOfUnit = billProduct.priceOfUnit;
+          }
+        //
+        profitOfPieceEquation =
+          ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) * 100;
+        //
+        profitOfUnitEquation =
+          ((priceOfUnit * numberOfUnits) / numberOfUnits -
+            priceOfPiece / numberOfUnits) *
+          100;
+
+        //
+        totalProfitEquation =
+          priceOfUnit * numberOfUnits * totalProductAmount -
+          priceOfPiece * totalProductAmount;
+        //
+        profitPercentEquation =
+          ((priceOfPiece * totalProductAmount) / priceOfUnit) *
+          numberOfUnits *
+          totalProductAmount *
+          100;
+        newProduct.profitOfPiece = profitOfPieceEquation;
+        newProduct.profitOfUnit = profitOfUnitEquation;
+        newProduct.totalProfit = totalProfitEquation;
+        newProduct.profitPercent = profitPercentEquation;
+        //prettier-ignore
+        newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
+        //prettier-ignore
+        newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
+
+        updatedProduct = newProduct;
+      }
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
 export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
   dispatch(stockActions.fetchingStockData({}));
   try {
@@ -123,10 +306,6 @@ export const transformDataFromNormalBillToStock =
 
     const updatedStockData = data.billData.products.map((billProduct: any) => {
       const stockProductInBillIndex = stockData.findIndex(
-        (stockProduct: StockDoc) =>
-          stockProduct.productName === billProduct.productName
-      );
-      const stockProductInBill = stockData.find(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
@@ -198,100 +377,78 @@ export const transformDataFromNormalBillToStock =
 
         // THE PRODUCT IS ALREADY FOUNDED
         if (data.billData.type === BillType.PURCHASES_BILL) {
-          if (data.action === BillRequestAction.ADD_BILL) {
-            updatedProduct.numberOfUnits = billProduct.numberOfUnits;
-            updatedProduct.priceOfPiece = billProduct.priceOfPiece;
-            updatedProduct.priceOfUnit = billProduct.priceOfUnit;
-            //prettier-ignore
-            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount * billProduct.numberOfUnits;
-            dispatch(deleteMissingProduct(missingProduct));
-          }
           if (data.action === BillRequestAction.UPDATE_BILL) {
-            if (!!billProduct.oldProductAmount) {
-              const {
-                priceOfPiece,
-                priceOfUnit,
-                numberOfUnits,
-                totalProductAmount,
-              } = billProduct;
-
-              let profitOfPieceEquation,
-                profitOfUnitEquation,
-                totalProfitEquation,
-                profitPercentEquation;
-              //
-              const newProduct: StockDoc = {
-                ...updatedProduct,
-              };
-
-              //prettier-ignore
-              if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
-                newProduct.numberOfPieces += billProduct.totalProductAmount;
-                //prettier-ignore
-                newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
-              }
-
-              //prettier-ignore
-              if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
-                newProduct.numberOfPieces -= billProduct.totalProductAmount;
-                //prettier-ignore
-                newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
-              }
-
-              if (billProduct.category !== updatedProduct.category) {
-                newProduct.category = billProduct.category;
-              }
-
-              //prettier-ignore
-              if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
-                  newProduct.priceOfPiece = billProduct.priceOfPiece;
-                }
-              //prettier-ignore
-              if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
-                  newProduct.numberOfUnits = billProduct.numberOfUnits;
-                }
-              //prettier-ignore
-              if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
-                  newProduct.priceOfUnit = billProduct.priceOfUnit;
-                }
-              //
-              profitOfPieceEquation =
-                ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) *
-                100;
-              //
-              // profitOfUnitEquation =
-              //   (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
-              //   (priceOfPiece / numberOfUnits);
-              profitOfUnitEquation =
-                ((priceOfUnit * numberOfUnits) / numberOfUnits -
-                  priceOfPiece / numberOfUnits) *
-                100;
-
-              //
-              totalProfitEquation =
-                priceOfUnit * numberOfUnits * totalProductAmount -
-                priceOfPiece * totalProductAmount;
-              //
-              // profitPercentEquation =
-              //   ((totalProfitEquation - data.billData.total) /
-              //     data.billData.total) *
-              //   100;
-              profitPercentEquation =
-                ((priceOfPiece * totalProductAmount) / priceOfUnit) *
-                numberOfUnits *
-                totalProductAmount *
-                100;
-              newProduct.profitOfPiece = profitOfPieceEquation;
-              newProduct.profitOfUnit = profitOfUnitEquation;
-              newProduct.totalProfit = totalProfitEquation;
-              newProduct.profitPercent = profitPercentEquation;
-              //prettier-ignore
-              newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
-              //prettier-ignore
-              newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
-
-              updatedProduct = newProduct;
-            }
+            // if (!!billProduct.oldProductAmount) {
+            //   const {
+            //     priceOfPiece,
+            //     priceOfUnit,
+            //     numberOfUnits,
+            //     totalProductAmount,
+            //   } = billProduct;
+            //   let profitOfPieceEquation,
+            //     profitOfUnitEquation,
+            //     totalProfitEquation,
+            //     profitPercentEquation;
+            //   //
+            //   const newProduct: StockDoc = {
+            //     ...updatedProduct,
+            //   };
+            //   //prettier-ignore
+            //   if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
+            //     newProduct.numberOfPieces += billProduct.totalProductAmount;
+            //     //prettier-ignore
+            //     newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+            //   }
+            //   //prettier-ignore
+            //   if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
+            //     newProduct.numberOfPieces -= billProduct.totalProductAmount;
+            //     //prettier-ignore
+            //     newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+            //   }
+            //   if (billProduct.category !== updatedProduct.category) {
+            //     newProduct.category = billProduct.category;
+            //   }
+            //   //prettier-ignore
+            //   if(billProduct.priceOfPiece !== updatedProduct.priceOfPiece) {
+            //       newProduct.priceOfPiece = billProduct.priceOfPiece;
+            //     }
+            //   //prettier-ignore
+            //   if(billProduct.numberOfUnits !== updatedProduct.numberOfUnits) {
+            //       newProduct.numberOfUnits = billProduct.numberOfUnits;
+            //     }
+            //   //prettier-ignore
+            //   if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
+            //       newProduct.priceOfUnit = billProduct.priceOfUnit;
+            //     }
+            //   //
+            //   profitOfPieceEquation =
+            //     ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) *
+            //     100;
+            //   //
+            //   profitOfUnitEquation =
+            //     ((priceOfUnit * numberOfUnits) / numberOfUnits -
+            //       priceOfPiece / numberOfUnits) *
+            //     100;
+            //   //
+            //   totalProfitEquation =
+            //     priceOfUnit * numberOfUnits * totalProductAmount -
+            //     priceOfPiece * totalProductAmount;
+            //   //
+            //   profitPercentEquation =
+            //     ((priceOfPiece * totalProductAmount) / priceOfUnit) *
+            //     numberOfUnits *
+            //     totalProductAmount *
+            //     100;
+            //   newProduct.profitOfPiece = profitOfPieceEquation;
+            //   newProduct.profitOfUnit = profitOfUnitEquation;
+            //   newProduct.totalProfit = totalProfitEquation;
+            //   newProduct.profitPercent = profitPercentEquation;
+            //   //prettier-ignore
+            //   newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
+            //   //prettier-ignore
+            //   newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
+            //   updatedProduct = newProduct;
+            // }
           }
           if (data.action === BillRequestAction.DELETE_BILL) {
             const isProductFreshInStock =
@@ -325,56 +482,6 @@ export const transformDataFromNormalBillToStock =
           // if (data.action === BillRequestAction.DELETE_BILL) {
           //   console.log("DELETE NOT FOUNDED BILL");
           // }
-          if (data.action === BillRequestAction.ADD_BILL) {
-            // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
-
-            const {
-              priceOfPiece,
-              priceOfUnit,
-              numberOfPieces,
-              numberOfUnits,
-              totalProductAmount,
-            } = billProduct;
-            //
-            const profitOfPieceEquation =
-              (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) /
-              priceOfPiece;
-            //
-            const profitOfUnitEquation =
-              (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
-              (priceOfPiece / numberOfUnits);
-            //
-            const totalProfitEquation =
-              (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
-            //
-            const profitPercentEquation =
-              ((totalProfitEquation - data.billData.total) /
-                data.billData.total) *
-              100;
-
-            const newProduct: StockDoc = {
-              ...billProduct,
-              // MAYBE DELETE
-              numberOfPieces: totalProductAmount,
-              profitOfPiece: profitOfPieceEquation,
-              profitOfUnit: profitOfUnitEquation,
-              // MAYBE DELETE
-              profitPercent: profitPercentEquation,
-              // MAYBE DELETE
-              purchasingCosts: data.billData.total,
-              remainingAmountOfPieces: totalProductAmount,
-              remainingAmountOfUnits: 0,
-              totalNumberOfUnits: totalProductAmount * numberOfUnits,
-              totalProductAmount: 1,
-              totalProfit: totalProfitEquation,
-            };
-
-            // ADD TO STOCK
-            sendData({
-              collectionName: COLLECTIONS.STOCK,
-              data: newProduct,
-            });
-          }
         }
       }
 

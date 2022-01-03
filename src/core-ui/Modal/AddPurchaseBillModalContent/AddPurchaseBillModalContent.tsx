@@ -11,7 +11,10 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { insertPurchaseBill } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
-import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
+import {
+  addPurchaseBill,
+  transformDataFromNormalBillToStock,
+} from "../../../store/stock/stock-slice";
 
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
@@ -43,8 +46,9 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
 
+    dispatch(addPurchaseBill(billData));
     // INSERT BILL TO DATABASE
     dispatch(insertPurchaseBill(billData)).then((_) => {
       props.hideAddBillModal();
