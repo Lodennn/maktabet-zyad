@@ -7,7 +7,6 @@ import { useAppSelector } from "../../hooks/use-app-selector";
 import { DBTables } from "../../constants";
 import classes from "../StockPage/StockPage.module.scss";
 import { BillType } from "../../types/bills";
-import { BillsDoc } from "../../interfaces";
 import { dateMe, resetDate } from "../../helpers/functions";
 import useDate from "../../hooks/use-date";
 

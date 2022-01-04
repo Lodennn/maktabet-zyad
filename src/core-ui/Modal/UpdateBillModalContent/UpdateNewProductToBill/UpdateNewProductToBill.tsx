@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 import { CRUDRequest } from "../../../../constants";
-import { useAppSelector } from "../../../../hooks/use-app-selector";
 import useUpdateBill from "../../../../hooks/use-update-bill";
-import { BillsDoc, StockDoc } from "../../../../interfaces";
+import { BillsDoc } from "../../../../interfaces";
 import classes from "./UpdateNewProductToBill.module.scss";
 
 const UpdateNewProductToBill: React.FC<{
@@ -12,8 +11,6 @@ const UpdateNewProductToBill: React.FC<{
   billFallbackData: any;
 }> = (props) => {
   const { dispatchBillActions } = props;
-
-  const { data: stockData } = useAppSelector((state) => state.stock);
 
   const { onChangeProductAmountHandler } = useUpdateBill(
     dispatchBillActions,
@@ -25,8 +22,7 @@ const UpdateNewProductToBill: React.FC<{
       {props.billFallbackData.billSelectedProducts.map((product: any) => {
         //prettier-ignore
         const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
-        //prettier-ignore
-        const billProductInStock = stockData.find((stockProduct: StockDoc) => stockProduct.id === product.id)!;
+        //prettier-ignore=
 
         return (
           <Fragment key={product.id}>

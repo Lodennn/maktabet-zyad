@@ -491,20 +491,16 @@ export const updateReturnedBill =
       if (!!billProduct.oldProductAmount) {
         //prettier-ignore
         if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
-          console.log('1.')
           //prettier-ignore
           updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
-            console.log('2.')
             //prettier-ignore
             dispatch(deleteMissingProduct(missingProduct));
           }
         } else {
-          console.log('3.')
           //prettier-ignore    
           updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;      
-          if (updatedProduct.totalNumberOfUnits <= 0) {
-            console.log('4.')
+          if (updatedProduct.totalNumberOfUnits <= 0) { 
             //prettier-ignore
             dispatch(insertMissingProduct(missingProduct));
           }
@@ -603,48 +599,5 @@ export const deleteStockDataFromStore =
       console.error(err);
     }
   };
-
-// export const transformDataFromNormalBillToStock =
-//   (data: any) => async (dispatch: AppDispatch, getState: any) => {
-//     const stockData = [...getState().stock.data];
-
-//     const updatedStockData = data.billData.products.map((billProduct: any) => {
-//       const stockProductInBillIndex = stockData.findIndex(
-//         (stockProduct: StockDoc) =>
-//           stockProduct.productName === billProduct.productName
-//       );
-
-//       let updatedProduct: StockDoc = {} as StockDoc;
-
-//       // IF BILL PRODUCT IS FOUND IN STOCK !!!
-//       if (stockProductInBillIndex >= 0) {
-//         updatedProduct = { ...stockData[stockProductInBillIndex] };
-
-//         const missingProduct: MissingProductsDoc = {
-//           productName: updatedProduct.productName,
-//           createdAt: new Date().toString(),
-//           category: updatedProduct.category,
-//           priceOfPiece: updatedProduct.priceOfPiece,
-//         };
-
-//         //prettier-ignore
-//         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
-//         //prettier-ignore
-//         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
-
-//         // UPDATE STOCK WHEN THE PRODUCT IS FOUND
-//         updateData({
-//           collectionName: COLLECTIONS.STOCK,
-//           docId: updatedProduct.id,
-//           newData: updatedProduct,
-//         });
-//       }
-
-//       return updatedProduct;
-//     });
-
-//     //prettier-ignore
-//     dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: updatedStockData}));
-//   };
 
 export default stockSlice.reducer;

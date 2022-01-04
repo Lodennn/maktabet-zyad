@@ -30,13 +30,9 @@ import moment from "moment";
 import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
 
 const HomePage = () => {
-  const {
-    data: stockData,
-    productsInStore,
-    isLoading,
-  } = useAppSelector((state) => state.stock);
+  const { productsInStore, isLoading } = useAppSelector((state) => state.stock);
   //prettier-ignore
-  const { data: billsData, isLoading: billsIsLoading, dailyBillsTotal } = useAppSelector((state) => state.bills);
+  const { data: billsData, dailyBillsTotal } = useAppSelector((state) => state.bills);
   //prettier-ignore
   const { data: outlaysData, isLoading: outlaysIsLoading, dailtyOutlaysTotal } = useAppSelector((state) => state.outlays);
 

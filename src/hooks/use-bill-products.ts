@@ -85,9 +85,6 @@ const useBillProducts = (
       totalNumberOfUnits: searchedProduct.totalNumberOfUnits,
     };
 
-    // if (targetValue > billProductsConfig.searchedProduct.totalNumberOfUnits)
-    //   return;
-
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_AMOUNT",
       payload: { data: targetValue },

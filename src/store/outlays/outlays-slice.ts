@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
-import { HttpInitialState } from "../../interfaces/index";
 import { readData, sendData, deleteData, updateData } from "../../services/api";
 import { AppDispatch } from "../index";
 import {

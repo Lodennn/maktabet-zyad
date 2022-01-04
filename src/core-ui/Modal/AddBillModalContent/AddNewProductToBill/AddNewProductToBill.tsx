@@ -1,9 +1,7 @@
 import React, { Fragment } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { CRUDRequest } from "../../../../constants";
 import { useAppSelector } from "../../../../hooks/use-app-selector";
 import useBillProducts from "../../../../hooks/use-bill-products";
-import { BillType } from "../../../../types/bills";
 import SmartSearch from "../../../SmartSearch/SmartSearch";
 import classes from "./AddNewProductToBill.module.scss";
 

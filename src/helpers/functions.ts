@@ -1,11 +1,4 @@
 import moment from "moment";
-import { StockDoc } from "../interfaces";
-
-// export const trimStockProductsData = (productsArray: StockDoc[]) => {
-//   productsArray.forEach((product: StockDoc) => {
-//     delete product.totalProductAmount;
-//   });
-// };
 
 export const trimBillDataBeforeAction = (productsArray: any[]) => {
   const trimmedProductsArray = productsArray.map(

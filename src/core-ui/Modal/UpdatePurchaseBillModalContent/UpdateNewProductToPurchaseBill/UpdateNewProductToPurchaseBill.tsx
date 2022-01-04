@@ -10,7 +10,6 @@ const UpdateNewProductToPurchaseBill: React.FC<{
   getBillConfigData: (billConfigData: any) => void;
 }> = (props) => {
   const { dispatchPurchaseBillActions, getBillConfigData } = props;
-  // const { dispatchPurchaseBillActions } = props;
 
   const {
     billProductsConfig,

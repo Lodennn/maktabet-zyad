@@ -69,16 +69,6 @@ const UpdatePurchaseBillModalContent: React.FC<{
             <h4 className="form-title">أسم التاجر</h4>
             <div>
               <div>{props.data.merchantName}</div>
-              {/* <input
-                type="text"
-                id="bill-type"
-                name="bill-merchant-name"
-                className={classes["add-bill-form__input"]}
-                placeholder="أسم التاجر"
-                value={props.data.merchantName}
-                onChange={() => {}}
-                ref={purchaseBillMerchantNameRef}
-              /> */}
             </div>
           </div>
           <div className="form-control mt-md">

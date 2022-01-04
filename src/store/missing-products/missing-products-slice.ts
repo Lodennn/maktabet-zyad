@@ -3,7 +3,7 @@ import { COLLECTIONS } from "../../constants";
 import { HttpInitialState } from "../../interfaces/index";
 import { readData, sendData, deleteData } from "../../services/api";
 import { AppDispatch } from "../index";
-import { MissingProductsDoc, StockDoc } from "../../interfaces/database";
+import { MissingProductsDoc } from "../../interfaces/database";
 
 const initialState: HttpInitialState<MissingProductsDoc> = {
   isLoading: false,

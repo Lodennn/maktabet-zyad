@@ -1,8 +1,6 @@
 import db from "../db/database-config";
 import {
   collection,
-  query,
-  where,
   addDoc,
   getDocs,
   updateDoc,

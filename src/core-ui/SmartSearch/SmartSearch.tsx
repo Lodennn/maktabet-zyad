@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { StockDoc } from "../../interfaces";
 import { stockActions } from "../../store/stock/stock-slice";
@@ -15,15 +15,6 @@ const SmartSearch: React.FC<{
   const [searchValue, setSearchValue] = useState<string>(!!props.updateValue ? props.updateValue : '');
 
   const [showSmartSearch, setShowSmartSearch] = useState<boolean>(false);
-
-  const { productIndex } = props;
-
-  useEffect(() => {
-    console.log("productIndex: ", productIndex, showSmartSearch);
-    if (showSmartSearch) {
-      setShowSmartSearch(false);
-    }
-  }, [productIndex]);
 
   const dispatch = useAppDispatch();
 

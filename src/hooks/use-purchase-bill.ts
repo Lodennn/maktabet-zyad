@@ -92,18 +92,10 @@ const usePurchaseBill = (
   );
 
   const onChangeProductNameHandler = (inputProductName: string) => {
-    // const updatedSearchedProductData: any = {
-    //   productName: inputProductName,
-    //   totalProductAmount: 1,
-    // };
-
     dispatchBillConfigActions({
       type: "CHANGE_PRODUCT_NAME",
-      payload: { data: inputProductName  },
+      payload: { data: inputProductName },
     });
-
-    //prettier-ignore
-    // dispatchBillActions({ type: "ADD_PRODUCT", payload: {data: updatedSearchedProductData} });
   };
 
   const getSearchValue = (searchedProduct: StockDoc) => {
