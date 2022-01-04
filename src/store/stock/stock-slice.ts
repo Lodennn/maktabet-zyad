@@ -301,6 +301,235 @@ export const deletePurchaseBill =
     });
   };
 
+export const addNormalBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+
+      if (updatedProduct.totalNumberOfUnits <= 0) {
+        //prettier-ignore
+        dispatch(insertMissingProduct(missingProduct));
+      }
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
+export const updateNormalBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      if (!!billProduct.oldProductAmount) {
+        //prettier-ignore
+        if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+          if (updatedProduct.totalNumberOfUnits <= 0) {
+            //prettier-ignore
+            dispatch(insertMissingProduct(missingProduct));
+          }
+        } else {
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;      
+          if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
+            //prettier-ignore
+            dispatch(deleteMissingProduct(missingProduct));
+          }
+        }
+      }
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
+export const deleteNormalBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+      dispatch(deleteMissingProduct(missingProduct));
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
+export const addReturnedBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+      dispatch(deleteMissingProduct(missingProduct));
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
+export const updateReturnedBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      // updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+      // dispatch(deleteMissingProduct(missingProduct));
+
+      if (!!billProduct.oldProductAmount) {
+        //prettier-ignore
+        if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
+          // 3 - 10 - +10 - 3 - 
+          console.log('1.')
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits += Math.abs((billProduct.oldProductAmount - billProduct.initialProductAmount));
+          if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
+            console.log('2.')
+            //prettier-ignore
+            dispatch(deleteMissingProduct(missingProduct));
+          }
+        } else {
+          console.log('3.')
+          //prettier-ignore
+          updatedProduct.totalNumberOfUnits -= Math.abs((billProduct.oldProductAmount - billProduct.initialProductAmount));      
+          if (updatedProduct.totalNumberOfUnits <= 0) {
+            console.log('4.')
+            //prettier-ignore
+            dispatch(insertMissingProduct(missingProduct));
+          }
+        }
+      }
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
 export const addStockDataToStore = () => async (dispatch: AppDispatch) => {
   dispatch(stockActions.fetchingStockData({}));
   try {
@@ -363,49 +592,7 @@ export const transformDataFromNormalBillToStock =
           priceOfPiece: updatedProduct.priceOfPiece,
         };
 
-        if (data.billData.type === BillType.NORMAL_BILL) {
-          if (data.action === BillRequestAction.ADD_BILL) {
-            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-            if (updatedProduct.totalNumberOfUnits <= 0) {
-              //prettier-ignore
-              dispatch(insertMissingProduct(missingProduct));
-            }
-          }
-          if (data.action === BillRequestAction.UPDATE_BILL) {
-            if (!!billProduct.oldProductAmount) {
-              //prettier-ignore
-              if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
-                //prettier-ignore
-                updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
-                if (updatedProduct.totalNumberOfUnits <= 0) {
-                  //prettier-ignore
-                  dispatch(insertMissingProduct(missingProduct));
-                }
-              } else {
-                //prettier-ignore
-                updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;      
-                if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
-                  //prettier-ignore
-                  dispatch(deleteMissingProduct(missingProduct));
-                }
-              }
-            }
-          }
-          if (data.action === BillRequestAction.DELETE_BILL) {
-            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-            dispatch(deleteMissingProduct(missingProduct));
-          }
-        }
         if (data.billData.type === BillType.RETURNED_BILL) {
-          if (data.action === BillRequestAction.ADD_BILL) {
-            updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-            dispatch(deleteMissingProduct(missingProduct));
-          }
-          if (data.action === BillRequestAction.UPDATE_BILL) {
-            updatedProduct.totalNumberOfUnits +=
-              billProduct.initialProductAmount;
-            dispatch(deleteMissingProduct(missingProduct));
-          }
           if (data.action === BillRequestAction.DELETE_BILL) {
             updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
             if (updatedProduct.totalNumberOfUnits <= 0) {

@@ -11,7 +11,11 @@ import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData, updateBill } from "../../../store/bills/bill-slice";
-import { transformDataFromNormalBillToStock } from "../../../store/stock/stock-slice";
+import {
+  transformDataFromNormalBillToStock,
+  updateNormalBill,
+  updateReturnedBill,
+} from "../../../store/stock/stock-slice";
 import { formatFullDate } from "../../../helpers/functions";
 
 const UpdateBillModalContent: React.FC<{
@@ -48,7 +52,13 @@ const UpdateBillModalContent: React.FC<{
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
+
+    if(billData.type === BillType.NORMAL_BILL) {
+      dispatch(updateNormalBill(billData))
+    } else if(billData.type === BillType.RETURNED_BILL) {
+      dispatch(updateReturnedBill(billData))
+    }
 
     // UPDATE BILL IN DATABASE
     dispatch(updateBill(billData)).then((_) => {

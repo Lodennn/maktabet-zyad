@@ -17,6 +17,8 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { addBillsData, insertBill } from "../../../store/bills/bill-slice";
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
 import {
+  addNormalBill,
+  addReturnedBill,
   addStockDataToStore,
   transformDataFromNormalBillToStock,
 } from "../../../store/stock/stock-slice";
@@ -54,7 +56,12 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL,}));
+    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL,}));
+    if(billData.type === BillType.NORMAL_BILL) {
+      dispatch(addNormalBill(billData))
+    } else if(billData.type === BillType.RETURNED_BILL) {
+      dispatch(addReturnedBill(billData))
+    }
 
     // INSERT BILL TO DATABASE
     dispatch(insertBill(billData)).then((_) => {

@@ -17,6 +17,7 @@ import useHttp from "../../../../hooks/use-http";
 import { deleteData } from "../../../../services/api";
 import { addBillsData, deleteBill } from "../../../../store/bills/bill-slice";
 import {
+  deleteNormalBill,
   deletePurchaseBill,
   transformDataFromNormalBillToStock,
 } from "../../../../store/stock/stock-slice";
@@ -44,7 +45,11 @@ const InfoTableItem: React.FC<{
   ) => {
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
+    // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
+
+    if(bill.type === BillType.NORMAL_BILL) {
+      dispatch(deleteNormalBill(bill));
+    }
 
     dispatch(deleteBill(bill));
   };
