@@ -19,6 +19,7 @@ import { addBillsData, deleteBill } from "../../../../store/bills/bill-slice";
 import {
   deleteNormalBill,
   deletePurchaseBill,
+  deleteReturnedBill,
   transformDataFromNormalBillToStock,
 } from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
@@ -49,6 +50,8 @@ const InfoTableItem: React.FC<{
 
     if(bill.type === BillType.NORMAL_BILL) {
       dispatch(deleteNormalBill(bill));
+    } else {
+      dispatch(deleteReturnedBill(bill));
     }
 
     dispatch(deleteBill(bill));

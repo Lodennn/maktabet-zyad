@@ -489,16 +489,12 @@ export const updateReturnedBill =
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
 
-      // updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
-      // dispatch(deleteMissingProduct(missingProduct));
-
       if (!!billProduct.oldProductAmount) {
         //prettier-ignore
         if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
-          // 3 - 10 - +10 - 3 - 
           console.log('1.')
           //prettier-ignore
-          updatedProduct.totalNumberOfUnits += Math.abs((billProduct.oldProductAmount - billProduct.initialProductAmount));
+          updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
             console.log('2.')
             //prettier-ignore
@@ -506,14 +502,54 @@ export const updateReturnedBill =
           }
         } else {
           console.log('3.')
-          //prettier-ignore
-          updatedProduct.totalNumberOfUnits -= Math.abs((billProduct.oldProductAmount - billProduct.initialProductAmount));      
+          //prettier-ignore    
+          updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;      
           if (updatedProduct.totalNumberOfUnits <= 0) {
             console.log('4.')
             //prettier-ignore
             dispatch(insertMissingProduct(missingProduct));
           }
         }
+      }
+
+      //prettier-ignore
+      updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+      //prettier-ignore
+      updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+      updateData({
+        collectionName: COLLECTIONS.STOCK,
+        docId: updatedProduct.id,
+        newData: updatedProduct,
+      });
+    });
+  };
+
+export const deleteReturnedBill =
+  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+    const stockData = [...getState().stock.data];
+    billData.products.forEach((billProduct: any) => {
+      let updatedProduct: StockDoc = {} as StockDoc;
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
+
+      const stockProductInBillIndex = stockData.findIndex(
+        (stockProduct: StockDoc) =>
+          stockProduct.productName === billProduct.productName
+      );
+
+      updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+      if (updatedProduct.totalNumberOfUnits <= 0) {
+        //prettier-ignore
+        dispatch(insertMissingProduct(missingProduct));
       }
 
       //prettier-ignore
@@ -594,11 +630,11 @@ export const transformDataFromNormalBillToStock =
 
         if (data.billData.type === BillType.RETURNED_BILL) {
           if (data.action === BillRequestAction.DELETE_BILL) {
-            updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-            if (updatedProduct.totalNumberOfUnits <= 0) {
-              //prettier-ignore
-              dispatch(insertMissingProduct(missingProduct));
-            }
+            // updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+            // if (updatedProduct.totalNumberOfUnits <= 0) {
+            //   //prettier-ignore
+            //   dispatch(insertMissingProduct(missingProduct));
+            // }
           }
         }
 
