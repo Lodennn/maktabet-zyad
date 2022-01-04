@@ -1,11 +1,5 @@
-import { useState } from "react";
 import { AiTwotoneCalendar } from "react-icons/ai";
-import {
-  dateMe,
-  formatDateByDay,
-  maxDate,
-  resetDate,
-} from "../../helpers/functions";
+import { formatDateByDay, maxDate, resetDate } from "../../helpers/functions";
 
 import classes from "./FilterByDate.module.scss";
 const FilterByDate: React.FC<{

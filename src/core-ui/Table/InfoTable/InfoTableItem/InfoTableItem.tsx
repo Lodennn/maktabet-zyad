@@ -1,26 +1,13 @@
 import React, { Fragment, MouseEvent } from "react";
 
-import {
-  BillRequestAction,
-  COLLECTIONS,
-  DBTables,
-} from "../../../../constants";
-
-import {
-  BillsDoc,
-  DeleteRequestData,
-  PurchasesDoc,
-} from "../../../../interfaces";
-import moment from "moment";
+import { DBTables } from "../../../../constants";
+import { BillsDoc, PurchasesDoc } from "../../../../interfaces";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
-import useHttp from "../../../../hooks/use-http";
-import { deleteData } from "../../../../services/api";
-import { addBillsData, deleteBill } from "../../../../store/bills/bill-slice";
+import { deleteBill } from "../../../../store/bills/bill-slice";
 import {
   deleteNormalBill,
   deletePurchaseBill,
   deleteReturnedBill,
-  transformDataFromNormalBillToStock,
 } from "../../../../store/stock/stock-slice";
 import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
@@ -38,15 +25,12 @@ const InfoTableItem: React.FC<{
 }> = (props) => {
   const dispatch = useAppDispatch();
 
-  // const { sendHttpRequest: deleteBill } = useHttp(deleteData);
-
   const onDeleteBasicBill = (
     bill: BillsDoc,
     event: React.MouseEvent<HTMLLIElement>
   ) => {
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
 
     if(bill.type === BillType.NORMAL_BILL) {
       dispatch(deleteNormalBill(bill));
@@ -62,8 +46,8 @@ const InfoTableItem: React.FC<{
   ) => {
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({billData: bill, action: BillRequestAction.DELETE_BILL}));
     dispatch(deletePurchaseBill(bill));
+
     dispatch(deletePurchaseBillFromStore(bill));
   };
 

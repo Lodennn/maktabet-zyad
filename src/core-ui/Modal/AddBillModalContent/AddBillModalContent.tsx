@@ -1,36 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
 import classes from "./AddBillModalContent.module.scss";
 import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
-import { BillsDoc, SendRequestData } from "../../../interfaces";
+import { BillsDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
-import useHttp from "../../../hooks/use-http";
-import { sendData } from "../../../services/api";
-import {
-  BillRequestAction,
-  COLLECTIONS,
-  CRUDRequest,
-} from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addBillsData, insertBill } from "../../../store/bills/bill-slice";
+import { insertBill } from "../../../store/bills/bill-slice";
 import useBillProductsController from "../../../hooks/use-bill-products-controller";
 import {
   addNormalBill,
   addReturnedBill,
-  addStockDataToStore,
-  transformDataFromNormalBillToStock,
 } from "../../../store/stock/stock-slice";
-import { useAppSelector } from "../../../hooks/use-app-selector";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
 ) => {
   const [billType, setBillType] = useState<boolean>(true);
   const dispatch = useAppDispatch();
-
-  const { data: stockData } = useAppSelector((state) => state.stock);
 
   const { billProductsData, dispatchBillActions } = useBillProductsController();
 
@@ -56,7 +44,6 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL,}));
     if(billData.type === BillType.NORMAL_BILL) {
       dispatch(addNormalBill(billData))
     } else if(billData.type === BillType.RETURNED_BILL) {

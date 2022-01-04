@@ -1,23 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaEdit, FaPlus } from "react-icons/fa";
-import {
-  PurchasesDoc,
-  SendRequestData,
-  UpdateRequestData,
-} from "../../../interfaces";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
-import { BillType } from "../../../types/bills";
-import useHttp from "../../../hooks/use-http";
-import { updateData } from "../../../services/api";
-import useProduct from "../../../hooks/use-product";
+import React, { useState } from "react";
+import { FaEdit } from "react-icons/fa";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addPurchasesDataToStore } from "../../../store/purchases/purchases-slice";
-import {
-  transformDataFromNormalBillToStock,
-  updateStockDataToStore,
-} from "../../../store/stock/stock-slice";
+import { updateStockDataToStore } from "../../../store/stock/stock-slice";
 import classes from "./UpdateStockModalContent.module.scss";
-import { PurchaseBillConfigInitialState } from "../../../hooks/use-update-bill";
 import stockProductClasses from "./UpdatedStockProduct/UpdatedStockProduct.module.scss";
 
 const UpdateStockModalContent: React.FC<{

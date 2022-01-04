@@ -3,16 +3,12 @@ import Switch from "../../Switch/Switch";
 import { FaEdit } from "react-icons/fa";
 import classes from "./UpdateBillModalContent.module.scss";
 import UpdateNewProductToBill from "./UpdateNewProductToBill/UpdateNewProductToBill";
-import { BillsDoc, UpdateRequestData } from "../../../interfaces";
+import { BillsDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
-import useHttp from "../../../hooks/use-http";
-import { updateData } from "../../../services/api";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import { addBillsData, updateBill } from "../../../store/bills/bill-slice";
+import { updateBill } from "../../../store/bills/bill-slice";
 import {
-  transformDataFromNormalBillToStock,
   updateNormalBill,
   updateReturnedBill,
 } from "../../../store/stock/stock-slice";
@@ -32,8 +28,6 @@ const UpdateBillModalContent: React.FC<{
 
   const { productFormArray: billProducts } = useProduct();
 
-  // const { sendHttpRequest: updateBill } = useHttp(updateData);
-
   function changeBillType<T>(event: React.FormEvent<T>) {
     setBillType((prevState) => !prevState);
   }
@@ -51,13 +45,11 @@ const UpdateBillModalContent: React.FC<{
     };
 
     // UPDATE STOCK IN DATABASE
-    //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.UPDATE_BILL,}));
 
-    if(billData.type === BillType.NORMAL_BILL) {
-      dispatch(updateNormalBill(billData))
-    } else if(billData.type === BillType.RETURNED_BILL) {
-      dispatch(updateReturnedBill(billData))
+    if (billData.type === BillType.NORMAL_BILL) {
+      dispatch(updateNormalBill(billData));
+    } else if (billData.type === BillType.RETURNED_BILL) {
+      dispatch(updateReturnedBill(billData));
     }
 
     // UPDATE BILL IN DATABASE

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BillRequestAction, COLLECTIONS, CRUDRequest } from "../../constants";
+import { COLLECTIONS } from "../../constants";
 import {
   BillsDoc,
   DeleteRequestData,
@@ -8,7 +8,6 @@ import {
 } from "../../interfaces";
 import { StockInitialState } from "../../interfaces/redux-store";
 import { deleteData, readData, sendData, updateData } from "../../services/api";
-import { BillType } from "../../types/bills";
 import { AppDispatch } from "../index";
 import {
   deleteMissingProduct,
@@ -605,57 +604,47 @@ export const deleteStockDataFromStore =
     }
   };
 
-export const transformDataFromNormalBillToStock =
-  (data: any) => async (dispatch: AppDispatch, getState: any) => {
-    const stockData = [...getState().stock.data];
+// export const transformDataFromNormalBillToStock =
+//   (data: any) => async (dispatch: AppDispatch, getState: any) => {
+//     const stockData = [...getState().stock.data];
 
-    const updatedStockData = data.billData.products.map((billProduct: any) => {
-      const stockProductInBillIndex = stockData.findIndex(
-        (stockProduct: StockDoc) =>
-          stockProduct.productName === billProduct.productName
-      );
+//     const updatedStockData = data.billData.products.map((billProduct: any) => {
+//       const stockProductInBillIndex = stockData.findIndex(
+//         (stockProduct: StockDoc) =>
+//           stockProduct.productName === billProduct.productName
+//       );
 
-      let updatedProduct: StockDoc = {} as StockDoc;
+//       let updatedProduct: StockDoc = {} as StockDoc;
 
-      // IF BILL PRODUCT IS FOUND IN STOCK !!!
-      if (stockProductInBillIndex >= 0) {
-        updatedProduct = { ...stockData[stockProductInBillIndex] };
+//       // IF BILL PRODUCT IS FOUND IN STOCK !!!
+//       if (stockProductInBillIndex >= 0) {
+//         updatedProduct = { ...stockData[stockProductInBillIndex] };
 
-        const missingProduct: MissingProductsDoc = {
-          productName: updatedProduct.productName,
-          createdAt: new Date().toString(),
-          category: updatedProduct.category,
-          priceOfPiece: updatedProduct.priceOfPiece,
-        };
+//         const missingProduct: MissingProductsDoc = {
+//           productName: updatedProduct.productName,
+//           createdAt: new Date().toString(),
+//           category: updatedProduct.category,
+//           priceOfPiece: updatedProduct.priceOfPiece,
+//         };
 
-        if (data.billData.type === BillType.RETURNED_BILL) {
-          if (data.action === BillRequestAction.DELETE_BILL) {
-            // updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
-            // if (updatedProduct.totalNumberOfUnits <= 0) {
-            //   //prettier-ignore
-            //   dispatch(insertMissingProduct(missingProduct));
-            // }
-          }
-        }
+//         //prettier-ignore
+//         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
+//         //prettier-ignore
+//         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
-        //prettier-ignore
-        updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
-        //prettier-ignore
-        updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+//         // UPDATE STOCK WHEN THE PRODUCT IS FOUND
+//         updateData({
+//           collectionName: COLLECTIONS.STOCK,
+//           docId: updatedProduct.id,
+//           newData: updatedProduct,
+//         });
+//       }
 
-        // UPDATE STOCK WHEN THE PRODUCT IS FOUND
-        updateData({
-          collectionName: COLLECTIONS.STOCK,
-          docId: updatedProduct.id,
-          newData: updatedProduct,
-        });
-      }
+//       return updatedProduct;
+//     });
 
-      return updatedProduct;
-    });
-
-    //prettier-ignore
-    dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: updatedStockData}));
-  };
+//     //prettier-ignore
+//     dispatch(stockActions.updateStockProductsFromBill({updatedStockProducts: updatedStockData}));
+//   };
 
 export default stockSlice.reducer;

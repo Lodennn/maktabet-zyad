@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
-import { useAppSelector } from "../../hooks/use-app-selector";
 import { StockDoc } from "../../interfaces";
 import { stockActions } from "../../store/stock/stock-slice";
 import classes from "./SmartSearch.module.scss";

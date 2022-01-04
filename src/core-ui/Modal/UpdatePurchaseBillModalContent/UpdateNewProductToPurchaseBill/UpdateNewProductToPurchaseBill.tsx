@@ -1,12 +1,7 @@
 import React, { Fragment, useEffect } from "react";
-import { RiCloseCircleFill } from "react-icons/ri";
-import SmartSearch from "../../../SmartSearch/SmartSearch";
-import usePurchaseBill from "../../../../hooks/use-purchase-bill";
-import { useAppSelector } from "../../../../hooks/use-app-selector";
 import classes from "./UpdateNewProductToPurchaseBill.module.scss";
 import useUpdatePurchaseBill from "../../../../hooks/use-update-purchase-bill";
 import { PurchasesDoc } from "../../../../interfaces";
-import { PurchaseBillConfigInitialState } from "../../../../hooks/use-update-bill";
 
 const UpdateNewProductToPurchaseBill: React.FC<{
   dispatchPurchaseBillActions: Function;

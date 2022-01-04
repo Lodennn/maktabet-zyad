@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import { DBTables } from "../../../constants";
 import useReadData from "../../../hooks/use-read-data";
 import useUpdateBillController from "../../../hooks/use-update-bill-controller";

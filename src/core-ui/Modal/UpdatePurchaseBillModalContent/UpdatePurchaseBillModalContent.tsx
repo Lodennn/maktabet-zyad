@@ -1,24 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaEdit, FaPlus } from "react-icons/fa";
-import {
-  PurchasesDoc,
-  SendRequestData,
-  UpdateRequestData,
-} from "../../../interfaces";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
+import React, { useCallback, useState } from "react";
+import { FaEdit } from "react-icons/fa";
+import { PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
-import useHttp from "../../../hooks/use-http";
-import { updateData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
-import {
-  addPurchasesDataToStore,
-  updatePurchaseBillToStore,
-} from "../../../store/purchases/purchases-slice";
-import {
-  transformDataFromNormalBillToStock,
-  updatePurchaseBill,
-} from "../../../store/stock/stock-slice";
+import { updatePurchaseBillToStore } from "../../../store/purchases/purchases-slice";
+import { updatePurchaseBill } from "../../../store/stock/stock-slice";
 import UpdateNewProductToPurchaseBill from "./UpdateNewProductToPurchaseBill/UpdateNewProductToPurchaseBill";
 import classes from "./UpdatePurchaseBillModalContent.module.scss";
 import { PurchaseBillConfigInitialState } from "../../../hooks/use-update-bill";
@@ -31,14 +18,10 @@ const UpdatePurchaseBillModalContent: React.FC<{
 }> = (props) => {
   const dispatch = useAppDispatch();
 
-  const purchaseBillMerchantNameRef = useRef<HTMLInputElement>(null);
-
   const { productFormArray: billProducts } = useProduct();
 
-  const { sendHttpRequest: updateBill } = useHttp(updateData);
-
   //prettier-ignore
-  const [billDataConfig, setBillDataConfig] = useState<any>();
+  const [ setBillDataConfig] = useState<any>();
 
   //prettier-ignore
   const getBillConfigData = useCallback((billConfigData: PurchaseBillConfigInitialState) => {
@@ -60,7 +43,6 @@ const UpdatePurchaseBillModalContent: React.FC<{
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, billDataConfig, action: BillRequestAction.UPDATE_BILL}));
     dispatch(updatePurchaseBill(billData));
 
     // UPDATE BILL TO DATABASE

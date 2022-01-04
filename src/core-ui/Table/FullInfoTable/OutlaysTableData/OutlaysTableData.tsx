@@ -1,12 +1,8 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import { formatFullDate } from "../../../../helpers/functions";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { OutlaysDoc } from "../../../../interfaces";
-import {
-  deleteOutlayAction,
-  updateOutlayAction,
-} from "../../../../store/outlays/outlays-slice";
+import { deleteOutlayAction } from "../../../../store/outlays/outlays-slice";
 
 const OutlaysTableData: React.FC<{
   dataItem: OutlaysDoc;

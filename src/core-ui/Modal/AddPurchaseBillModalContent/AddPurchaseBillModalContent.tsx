@@ -1,20 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { FaPlus } from "react-icons/fa";
-import { PurchasesDoc, SendRequestData } from "../../../interfaces";
-import { BillRequestAction, COLLECTIONS } from "../../../constants";
+import { PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
-import useHttp from "../../../hooks/use-http";
-import { sendData } from "../../../services/api";
 import useProduct from "../../../hooks/use-product";
 import AddNewProductToPurchaseBill from "./AddNewProductToPurchaseBill/AddNewProductToPurchaseBill";
 import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { insertPurchaseBill } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
-import {
-  addPurchaseBill,
-  transformDataFromNormalBillToStock,
-} from "../../../store/stock/stock-slice";
+import { addPurchaseBill } from "../../../store/stock/stock-slice";
 
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
@@ -31,8 +25,6 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     removeProductFormData: removeNewBillProduct,
   } = useProduct();
 
-  const { sendHttpRequest: insertBill } = useHttp(sendData);
-
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // BILL DATA
@@ -46,9 +38,8 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
-    // dispatch(transformDataFromNormalBillToStock({ billData, action: BillRequestAction.ADD_BILL}));
-
     dispatch(addPurchaseBill(billData));
+
     // INSERT BILL TO DATABASE
     dispatch(insertPurchaseBill(billData)).then((_) => {
       props.hideAddBillModal();
