@@ -13,7 +13,7 @@
   }
   &__income {
     padding: 1rem;
-    width: 15rem;
+    // width: 15rem;
     text-align: center;
     color: $color-white;
     font-size: 3rem;
@@ -23,5 +23,6 @@
     background-color: $color-primary;
     border-radius: 2rem;
     align-self: start;
+    flex-direction: column;
   }
 }

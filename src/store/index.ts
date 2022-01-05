@@ -3,6 +3,7 @@ import billReducer from "./bills/bill-slice";
 import missingProductsReducer from "./missing-products/missing-products-slice";
 import purchasesReducer from "./purchases/purchases-slice";
 import StockReducer from "./stock/stock-slice";
+import ReportReducer from "./reports/reports-slice";
 
 import {
   persistStore,
@@ -32,13 +33,13 @@ const store = configureStore({
     purchases: purchasesReducer,
     bills: billReducer,
     outlays: outlaysReducer,
+    reports: ReportReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-      // serializableCheck: false,
     }),
 });
 

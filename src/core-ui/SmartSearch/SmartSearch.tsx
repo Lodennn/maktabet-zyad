@@ -53,6 +53,7 @@ const SmartSearch: React.FC<{
         onChange={search}
         value={searchValue}
         onFocus={() => setShowSmartSearch(true)}
+        required
       />
       {showSmartSearch && (
         <ul className={classes["smart-search__result"]}>

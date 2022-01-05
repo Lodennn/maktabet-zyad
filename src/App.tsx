@@ -6,6 +6,7 @@ import BillsPage from "./pages/BillsPage/BillsPage";
 import HomePage from "./pages/HomePage/HomePage";
 import MissingProductsPage from "./pages/MissingProductsPage/MissingProductsPage";
 import PurchasesPage from "./pages/PurchasesPage/PurchasesPage";
+import ReportsPage from "./pages/ReportsPage/ReportsPage";
 import ReturnedBillsPage from "./pages/ReturnedBills/ReturnedBills";
 import StockPage from "./pages/StockPage/StockPage";
 import StorePage from "./pages/StorePage/StorePage";
@@ -13,6 +14,7 @@ import { addBillsData } from "./store/bills/bill-slice";
 import { addMissingProductsDataToStore } from "./store/missing-products/missing-products-slice";
 import { addOutlays } from "./store/outlays/outlays-slice";
 import { addPurchasesDataToStore } from "./store/purchases/purchases-slice";
+import { addReports } from "./store/reports/reports-slice";
 import { addStockDataToStore } from "./store/stock/stock-slice";
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
     dispatch(addMissingProductsDataToStore());
     dispatch(addPurchasesDataToStore());
     dispatch(addOutlays());
+    dispatch(addReports());
   }, [dispatch]);
 
   return (
@@ -35,6 +38,7 @@ function App() {
       <Route path="/bills" element={<BillsPage />} />
       <Route path="/returned-bills" element={<ReturnedBillsPage />} />
       <Route path="/missing-products" element={<MissingProductsPage />} />
+      <Route path="/report" element={<ReportsPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<h1>404 Page</h1>} />
     </Routes>

@@ -4,6 +4,7 @@ export enum COLLECTIONS {
   PURCHASES = "purchases",
   BILLS = "bills",
   OUTLAYS = "outlays",
+  REPORTS = "reports",
 }
 
 export enum DBTables {

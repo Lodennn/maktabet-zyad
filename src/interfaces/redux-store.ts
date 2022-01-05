@@ -1,6 +1,7 @@
 import {
   BillsDoc,
   HttpInitialState,
+  MissingProductsDoc,
   OutlaysDoc,
   PurchasesDoc,
   StockDoc,
@@ -21,8 +22,15 @@ export interface BillsInitialState extends HttpInitialState<BillsDoc> {
 export interface PurchasesInitialState extends HttpInitialState<PurchasesDoc> {
   billSelectedProducts: StockDoc[];
   total: number;
+  dailyPurchases: PurchasesDoc[];
 }
 
 export interface OutlaysInitialState extends HttpInitialState<OutlaysDoc> {
-  dailtyOutlaysTotal: number;
+  dailyOutlays: OutlaysDoc[];
+  dailyOutlaysTotal: number;
+}
+
+//prettier-ignore
+export interface MissingProductsInitialState extends HttpInitialState<MissingProductsDoc> {
+  dailyMissingProducts: MissingProductsDoc[];
 }

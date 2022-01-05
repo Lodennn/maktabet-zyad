@@ -11,6 +11,7 @@ import {
   UpdateRequestData,
   DeleteRequestData,
 } from "../../interfaces";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const initialState: PurchasesInitialState = {
   isLoading: false,
@@ -18,6 +19,7 @@ const initialState: PurchasesInitialState = {
   data: [],
   billSelectedProducts: [],
   total: 0,
+  dailyPurchases: [],
 };
 
 const purchasesSlice = createSlice({
@@ -35,6 +37,9 @@ const purchasesSlice = createSlice({
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     updateBillProducts(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(
@@ -77,6 +82,9 @@ const purchasesSlice = createSlice({
       state.total = updatedBillProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     addProductToBill(state, action) {
       const searchedProductIndex = state.billSelectedProducts.findIndex(
@@ -104,6 +112,9 @@ const purchasesSlice = createSlice({
       state.total = updatedBillProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     removeProductFromBill(state, action) {
       state.billSelectedProducts = state.billSelectedProducts.filter(
@@ -114,20 +125,32 @@ const purchasesSlice = createSlice({
       state.total = state.billSelectedProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     addPurchaseBill(state, action) {
       state.data = state.data.concat(action.payload.data);
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     deletePurchaseBill(state, action) {
       state.data = state.data.filter((bill: PurchasesDoc) => {
         return bill.id !== action.payload.data.id;
       });
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
     updatePurchaseBill(state, action) {
       const updatedBillIndex = state.data.findIndex(
         (bill: PurchasesDoc) => bill.id === action.payload.data.id
       );
       state.data[updatedBillIndex] = action.payload.data;
+      state.dailyPurchases = state.data.filter(
+        (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(new Date())
+      );
     },
   },
 });

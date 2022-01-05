@@ -28,21 +28,26 @@ import {
 } from "../../helpers/functions";
 import moment from "moment";
 import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
+import { useAppDispatch } from "../../hooks/use-app-dispatch";
+import { insertReport } from "../../store/reports/reports-slice";
+import { ReportsDoc } from "../../interfaces";
 
 const HomePage = () => {
-  const { productsInStore, isLoading, filteredStockData } = useAppSelector(
-    (state) => state.stock
-  );
   //prettier-ignore
-  const { data: billsData, dailyBillsTotal } = useAppSelector((state) => state.bills);
+  const { productsInStore, isLoading, filteredStockData } = useAppSelector((state) => state.stock);
   //prettier-ignore
-  const { data: outlaysData, isLoading: outlaysIsLoading, dailtyOutlaysTotal } = useAppSelector((state) => state.outlays);
-
-  const { data: missingProductsData, isLoading: missingProductsDataLoading } =
-    useAppSelector((state) => state.missingProducts);
+  const { data: billsData, dailyBills, dailyBillsTotal } = useAppSelector((state) => state.bills);
+  //prettier-ignore
+  const { data: purchasesData, dailyPurchases } = useAppSelector((state) => state.purchases);
+  //prettier-ignore
+  const { data: outlaysData, isLoading: outlaysIsLoading, dailyOutlays, dailyOutlaysTotal } = useAppSelector((state) => state.outlays);
+  //prettier-ignore
+  const { data: missingProductsData, isLoading: missingProductsDataLoading, dailyMissingProducts } = useAppSelector((state) => state.missingProducts);
 
   //prettier-ignore
   const [displayContent, setDisplayContent] = useState<DBTables>(DBTables.STOCK_TABLE);
+
+  const dispatch = useAppDispatch();
 
   const getDisplayContentValue = (content: DBTables) => {
     setDisplayContent(content);
@@ -57,9 +62,24 @@ const HomePage = () => {
 
   const { dateValue, onChangeDateHandler } = useDate();
 
+  console.log("purchasesData: ", purchasesData);
+
   const filteredByDateBillsData = billsData.filter(
     (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(dateValue)
   );
+
+  const addReport = (event: React.MouseEvent<HTMLElement>) => {
+    const reportData: ReportsDoc = {
+      income: dailyBillsTotal,
+      expenses: dailyOutlaysTotal,
+      bills: dailyBills,
+      outlays: dailyOutlays,
+      missingProducts: dailyMissingProducts,
+      purchases: dailyPurchases,
+      createdAt: new Date().toString(),
+    };
+    dispatch(insertReport(reportData));
+  };
 
   return (
     <div className={classes["home-page"]}>
@@ -91,7 +111,13 @@ const HomePage = () => {
               />
             </div>
             <div className={classes["home-page__income"]}>
-              {formatNumber(dailyBillsTotal - dailtyOutlaysTotal)}
+              <div>{formatNumber(dailyBillsTotal - dailyOutlaysTotal)}</div>
+              <Button
+                className={"btn btn--primary btn--add mt-sm"}
+                icon={<FaPlus />}
+                text={"إنشاء تقرير"}
+                onClick={addReport}
+              />
             </div>
           </div>
           <hr className="separator separator--soft" />

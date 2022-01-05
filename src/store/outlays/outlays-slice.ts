@@ -14,11 +14,12 @@ const initialState: OutlaysInitialState = {
   isLoading: false,
   error: null,
   data: [],
-  dailtyOutlaysTotal: 0,
+  dailyOutlays: [],
+  dailyOutlaysTotal: 0,
 };
 
 const outlaysSlice = createSlice({
-  name: "missing-products",
+  name: "outlays",
   initialState,
   reducers: {
     fetchingOutlaysData(state, action) {
@@ -32,44 +33,52 @@ const outlaysSlice = createSlice({
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
-      state.dailtyOutlaysTotal = state.data
-        .filter(
-          (outlay) =>
-            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+      state.dailyOutlays = state.data.filter(
+        (outlay) =>
+          resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+      );
+      state.dailyOutlaysTotal = state.dailyOutlays.reduce(
+        (acc, cur) => acc + cur.amount,
+        0
+      );
     },
     addOutlay(state, action) {
       state.data = state.data.concat(action.payload.data);
-      state.dailtyOutlaysTotal = state.data
-        .filter(
-          (outlay) =>
-            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+      state.dailyOutlays = state.data.filter(
+        (outlay) =>
+          resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+      );
+      state.dailyOutlaysTotal = state.dailyOutlays.reduce(
+        (acc, cur) => acc + cur.amount,
+        0
+      );
     },
     deleteOutlay(state, action) {
       state.data = state.data.filter(
         (outlay: OutlaysDoc) => outlay.id !== action.payload.data.id
       );
-      state.dailtyOutlaysTotal = state.data
-        .filter(
-          (outlay) =>
-            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+      state.dailyOutlays = state.data.filter(
+        (outlay) =>
+          resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+      );
+      state.dailyOutlaysTotal = state.dailyOutlays.reduce(
+        (acc, cur) => acc + cur.amount,
+        0
+      );
     },
     updateOutlay(state, action) {
       const outlayIndex = state.data.findIndex((outlay: OutlaysDoc) => {
         return outlay.id === action.payload.data.id;
       });
       state.data[outlayIndex] = action.payload.data;
-      state.dailtyOutlaysTotal = state.data
-        .filter(
-          (outlay) =>
-            resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+      state.dailyOutlays = state.data.filter(
+        (outlay) =>
+          resetDate(dateMe(outlay.createdAt)) === resetDate(new Date())
+      );
+      state.dailyOutlaysTotal = state.dailyOutlays.reduce(
+        (acc, cur) => acc + cur.amount,
+        0
+      );
     },
   },
 });

@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { COLLECTIONS } from "../../constants";
-import { HttpInitialState } from "../../interfaces/index";
 import { readData, sendData, deleteData } from "../../services/api";
 import { AppDispatch } from "../index";
 import { MissingProductsDoc } from "../../interfaces/database";
+import { MissingProductsInitialState } from "../../interfaces/redux-store";
+import { dateMe, resetDate } from "../../helpers/functions";
 
-const initialState: HttpInitialState<MissingProductsDoc> = {
+const initialState: MissingProductsInitialState = {
   isLoading: false,
   error: null,
   data: [],
+  dailyMissingProducts: [],
 };
 
 const missingProductsSlice = createSlice({
@@ -26,13 +28,25 @@ const missingProductsSlice = createSlice({
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
+      state.dailyMissingProducts = state.data.filter(
+        (product) =>
+          resetDate(dateMe(product.createdAt)) === resetDate(new Date())
+      );
     },
     addMissingProduct(state, action) {
       state.data = state.data.concat(action.payload.data);
+      state.dailyMissingProducts = state.data.filter(
+        (product) =>
+          resetDate(dateMe(product.createdAt)) === resetDate(new Date())
+      );
     },
     deleteMissingProduct(state, action) {
       state.data = state.data.filter(
         (product: MissingProductsDoc) => product.id === action.payload.data.id
+      );
+      state.dailyMissingProducts = state.data.filter(
+        (product) =>
+          resetDate(dateMe(product.createdAt)) === resetDate(new Date())
       );
     },
   },

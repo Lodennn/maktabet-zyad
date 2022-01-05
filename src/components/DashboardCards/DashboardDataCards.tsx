@@ -3,8 +3,14 @@ import { MdLocalGroceryStore } from "react-icons/md";
 import { BsCashCoin, BsCartXFill } from "react-icons/bs";
 import { RiBillFill } from "react-icons/ri";
 import classes from "./DashboardDataCards.module.scss";
+import { useAppSelector } from "../../hooks/use-app-selector";
+import { formatNumber } from "../../helpers/functions";
 
 const DashboardDataCard: React.FC = () => {
+  const { data: billsData } = useAppSelector((state) => state.bills);
+  const { data: missingProductsData } = useAppSelector(
+    (state) => state.missingProducts
+  );
   return (
     <Fragment>
       {/** CARD #1 */}
@@ -19,7 +25,9 @@ const DashboardDataCard: React.FC = () => {
           </span>
           <span className={classes["dashboard-data-card__text"]}>البضاعه</span>
         </h4>
-        <span className={classes["dashboard-data-card__value"]}>10.000</span>
+        <span className={classes["dashboard-data-card__value"]}>
+          {formatNumber(1000.0)}
+        </span>
       </div>
       {/** CARD #2 */}
       <div
@@ -33,7 +41,9 @@ const DashboardDataCard: React.FC = () => {
           </span>
           <span className={classes["dashboard-data-card__text"]}>الارباح</span>
         </h4>
-        <span className={classes["dashboard-data-card__value"]}>16.000</span>
+        <span className={classes["dashboard-data-card__value"]}>
+          {formatNumber(16000.0)}
+        </span>
       </div>
       {/** CARD #3 */}
       <div
@@ -47,7 +57,9 @@ const DashboardDataCard: React.FC = () => {
           </span>
           <span className={classes["dashboard-data-card__text"]}>الفواتير</span>
         </h4>
-        <span className={classes["dashboard-data-card__value"]}>1037</span>
+        <span className={classes["dashboard-data-card__value"]}>
+          {billsData.length}
+        </span>
       </div>
       {/** CARD #4 */}
       <div
@@ -63,7 +75,9 @@ const DashboardDataCard: React.FC = () => {
             المنقوصات
           </span>
         </h4>
-        <span className={classes["dashboard-data-card__value"]}>5</span>
+        <span className={classes["dashboard-data-card__value"]}>
+          {missingProductsData.length}
+        </span>
       </div>
     </Fragment>
   );

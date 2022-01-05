@@ -41,6 +41,17 @@ export interface OutlaysDoc {
   updatedAt?: string;
 }
 
+export interface ReportsDoc {
+  id?: string;
+  income: number;
+  expenses: number;
+  bills: BillsDoc[];
+  outlays: OutlaysDoc[];
+  missingProducts: MissingProductsDoc[];
+  purchases: PurchasesDoc[];
+  createdAt: string;
+}
+
 export interface PurchasesDoc {
   id?: string;
   merchantName?: string;
