@@ -1,6 +1,6 @@
 import { DBTables } from "../../../constants";
 import { billsTableHeadData, purchasesTableHeadData } from "../../../helpers";
-import { formatFullDate } from "../../../helpers/functions";
+import { formatFullDate, formatNumber } from "../../../helpers/functions";
 import { BillsDoc, PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
 import FullInfoTable from "../../Table/FullInfoTable/FullInfoTable";
@@ -69,7 +69,7 @@ const BillModalContent: React.FC<{
         <h4 className={classes["bill-modal__total"]}>
           <span className={classes["bill-modal__total--label"]}>المجموع</span>
           <span className={classes["bill-modal__total--value"]}>
-            {props.data.total} L.E
+            {formatNumber(props.data.total)}
           </span>
         </h4>
       </div>

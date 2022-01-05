@@ -41,9 +41,9 @@ const ReportsPage: React.FC = () => {
         <Wrapper>
           <header className={classes["report__header"]}>
             <h1 className={classes["report__header--main"]}>
-              تقرير عن يوم {formatDateByDay(new Date())}{" "}
-              {moment(new Date()).format("L")}
+              تقرير عن يوم - {moment(new Date()).format("LLLL")}
             </h1>
+            {/* {moment(new Date()).format("LTS")} */}
             <div className={classes["report__header--wrapper"]}>
               <h3 className={`${classes["report__header--income"]} mt-sm`}>
                 <span className="label">مجموع الفواتير</span>
@@ -64,7 +64,7 @@ const ReportsPage: React.FC = () => {
           <hr className="separator separator--soft" />
           <div className={classes["report__section"]}>
             <header className={`${classes["report__header"]} mb-sm`}>
-              <h3 className={`${classes["report__header--main"]} mt-sm`}>
+              <h3 className={`${classes["report__header--main"]}`}>
                 <span className="label">الفواتير: </span>
                 <span className="value">{report.bills.length}</span>
               </h3>

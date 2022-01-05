@@ -11,8 +11,10 @@
   &:not(:last-of-type) {
     border-bottom: 1px solid $color-gray-light;
   }
-
-  &__merchant-name {
+  &__bill-date {
+    @media print {
+      display: none;
+    }
   }
   &__bill-type {
     padding: 0.5rem;
@@ -66,11 +68,12 @@
     font-size: 1.5rem;
     font-weight: bold;
   }
-  &__bill-date {
-  }
 
   &__controls {
     font-weight: 600;
+    @media print {
+      display: none;
+    }
     &-list {
       display: flex;
       align-items: center;

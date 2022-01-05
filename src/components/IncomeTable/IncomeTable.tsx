@@ -4,25 +4,33 @@ import FilterByDate from "../../core-ui/FilterByDate/FilterByDate";
 import classes from "./IncomeTable.module.scss";
 import { ReportsDoc } from "../../interfaces";
 import { Link } from "react-router-dom";
+import useDate from "../../hooks/use-date";
+import { useAppSelector } from "../../hooks/use-app-selector";
+import { dateMe, resetDate } from "../../helpers/functions";
 
 const IncomeTable: React.FC<{ data: ReportsDoc[] }> = (props) => {
+  const { dateValue, onChangeDateHandler } = useDate();
+  const filteredReports = props.data.filter(
+    (bill) => resetDate(dateMe(bill.createdAt)) === resetDate(dateValue)
+  );
   return (
     <div className={classes["income-table"]}>
       <div className={classes["income-table__intro"]}>
-        <div className={classes["income-table__title"]}>الإيراد</div>
+        <div className={classes["income-table__title"]}>التقارير</div>
 
-        <FilterByDate />
+        <FilterByDate
+          dateValue={dateValue}
+          onChangeDateHandler={onChangeDateHandler}
+        />
       </div>
       <div className={classes["income-table__wrapper"]}>
-        {props.data.map((report: ReportsDoc) => {
+        {filteredReports.map((report: ReportsDoc) => {
           return (
-            <Link
-              className={classes["income-table__link"]}
-              to={`/report/${report.id}`}
-              key={report.id}
-            >
-              <IncomeTableItem income={report.income} date={report.createdAt} />
-            </Link>
+            <IncomeTableItem
+              id={report.id!}
+              income={report.income}
+              date={report.createdAt}
+            />
           );
         })}
       </div>

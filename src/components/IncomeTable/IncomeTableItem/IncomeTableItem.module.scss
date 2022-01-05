@@ -5,6 +5,7 @@
   justify-content: space-between;
   margin-bottom: 3rem;
   position: relative;
+  color: $color-white;
 
   &:not(:last-of-type)::after {
     content: "";
