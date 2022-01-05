@@ -24,15 +24,19 @@ const IncomeTable: React.FC<{ data: ReportsDoc[] }> = (props) => {
         />
       </div>
       <div className={classes["income-table__wrapper"]}>
-        {filteredReports.map((report: ReportsDoc) => {
-          return (
-            <IncomeTableItem
-              id={report.id!}
-              income={report.income}
-              date={report.createdAt}
-            />
-          );
-        })}
+        {filteredReports.length > 0 ? (
+          filteredReports.map((report: ReportsDoc) => {
+            return (
+              <IncomeTableItem
+                id={report.id!}
+                income={report.income}
+                date={report.createdAt}
+              />
+            );
+          })
+        ) : (
+          <h2 className="not-founded">لا يوجد تقارير لليوم</h2>
+        )}
       </div>
     </div>
   );

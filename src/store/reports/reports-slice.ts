@@ -22,10 +22,13 @@ const reportsSlice = createSlice({
       state.error = action.payload.error;
       state.isLoading = false;
     },
-    addReportsData(state, action) {
+    fetchReportsData(state, action) {
       state.data = action.payload.data;
       state.isLoading = false;
       state.error = null;
+    },
+    addReport(state, action) {
+      state.data = state.data.concat(action.payload.data);
     },
   },
 });
@@ -37,7 +40,7 @@ export const addReports = () => async (dispatch: AppDispatch) => {
   try {
     const reportsData = await readData(COLLECTIONS.REPORTS);
     dispatch(
-      reportsActions.addReportsData({
+      reportsActions.fetchReportsData({
         data: reportsData,
       })
     );
@@ -53,7 +56,9 @@ export const insertReport =
         collectionName: COLLECTIONS.REPORTS,
         data: insertData,
       };
-      await sendData(data);
+      await sendData(data).then((data) =>
+        dispatch(reportsActions.addReport({ data: data }))
+      );
     } catch (err) {
       console.error(err);
     }
