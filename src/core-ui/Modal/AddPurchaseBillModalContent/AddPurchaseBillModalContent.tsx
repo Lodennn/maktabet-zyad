@@ -70,6 +70,7 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
                 className={classes["add-bill-form__input"]}
                 placeholder="أسم التاجر"
                 ref={purchaseBillMerchantNameRef}
+                required
               />
             </div>
           </div>

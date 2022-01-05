@@ -1,5 +1,5 @@
 import React from "react";
-import { formatFullDate } from "../../../../helpers/functions";
+import { formatFullDate, formatNumber } from "../../../../helpers/functions";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { OutlaysDoc } from "../../../../interfaces";
 import { deleteOutlayAction } from "../../../../store/outlays/outlays-slice";
@@ -30,7 +30,7 @@ const OutlaysTableData: React.FC<{
   return (
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.title}</td>
-      <td>{props.dataItem.amount}</td>
+      <td>{formatNumber(props.dataItem.amount)}</td>
       <td>{formatFullDate(props.dataItem.createdAt)}</td>
       {props.admin && (
         <td className="table__actions">

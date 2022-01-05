@@ -16,6 +16,7 @@ const AddNewProductToBill: React.FC<{
   const { filteredStockData, data: stockData } = useAppSelector(
     (state) => state.stock
   );
+
   const {
     billProductsConfig,
     getSearchValue,
@@ -62,6 +63,7 @@ const AddNewProductToBill: React.FC<{
           </label>
           {billProductsConfig.searchedProduct.id && (
             <input
+              required
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
               className={classes["add-bill-product__info--input"]}

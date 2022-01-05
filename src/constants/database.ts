@@ -28,7 +28,7 @@ export enum TableFields {
   TOTAL_PROFIT = "الربح الكلي",
   DATE = "التاريخ",
   OUTLAY_TITLE = "العنوان",
-  OUTLAY_AMOUNT = "الكميه",
+  OUTLAY_AMOUNT = "القيمه",
 }
 
 export enum CRUDRequest {

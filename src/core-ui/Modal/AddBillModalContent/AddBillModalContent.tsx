@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Switch from "../../Switch/Switch";
 import { FaPlus } from "react-icons/fa";
-import classes from "./AddBillModalContent.module.scss";
 import AddNewProductToBill from "./AddNewProductToBill/AddNewProductToBill";
 import { BillsDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
@@ -13,6 +12,7 @@ import {
   addNormalBill,
   addReturnedBill,
 } from "../../../store/stock/stock-slice";
+import classes from "./AddBillModalContent.module.scss";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props

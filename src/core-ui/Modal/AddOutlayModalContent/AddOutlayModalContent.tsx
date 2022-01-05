@@ -67,6 +67,7 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
                     className={outlayClasses["add-bill-product__info--input"]}
                     value={outlayTitle}
                     onChange={onChangeOutlayTitle}
+                    required
                   />
                 </div>
 
@@ -77,8 +78,10 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
                     type="number"
                     className={outlayClasses["add-bill-product__info--input"]}
                     min={1}
+                    step={"0.1"}
                     value={outlayAmount}
                     onChange={onChangeOutlayAmount}
+                    required
                   />
                 </div>
               </div>

@@ -54,6 +54,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
             <select
+              required
               defaultValue={""}
               onChange={onChangeProductCategoryHandler.bind(
                 null,
@@ -73,6 +74,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
             <input
+              required
               type="number"
               value={billProductsConfig.searchedProductAmount}
               onChange={onChangeProductAmountHandler.bind(
@@ -88,7 +90,9 @@ const AddNewProductToPurchaseBill: React.FC<{
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
             <input
+              required
               type="number"
+              step={"0.1"}
               id={`bill-product-amount-${props.productIndex}`}
               min={1}
               onChange={onChangePiecePriceHandler.bind(
@@ -104,6 +108,7 @@ const AddNewProductToPurchaseBill: React.FC<{
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
             <input
+              required
               type="number"
               id={`bill-product-amount-${props.productIndex}`}
               onChange={onChangeNumberOfUnitsHandler.bind(
@@ -121,6 +126,7 @@ const AddNewProductToPurchaseBill: React.FC<{
             !!billProductsConfig.searchedProductName) && (
             <input
               type="number"
+              step={"0.1"}
               id={`bill-product-amount-${props.productIndex}`}
               min={1}
               onChange={onChangePriceOfUnit.bind(
