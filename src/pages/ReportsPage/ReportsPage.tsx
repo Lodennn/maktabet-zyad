@@ -1,5 +1,8 @@
 import moment from "moment";
-import { DBTables } from "../../constants";
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { COLLECTIONS, DBTables } from "../../constants";
+import LoadingSpinner from "../../core-ui/LoadingSpinner/LoadingSpinner";
 import FullInfoTable from "../../core-ui/Table/FullInfoTable/FullInfoTable";
 import InfoTable from "../../core-ui/Table/InfoTable/InfoTable";
 import Wrapper from "../../core-ui/Wrapper/Wrapper";
@@ -8,122 +11,139 @@ import {
   outlaysTableHeadData,
 } from "../../helpers";
 import { formatDateByDay, formatNumber } from "../../helpers/functions";
-import { useAppSelector } from "../../hooks/use-app-selector";
+import useHttp from "../../hooks/use-http";
+import { getDocByID } from "../../services/api";
+import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import classes from "./ReportsPage.module.scss";
 
 const ReportsPage: React.FC = () => {
-  //prettier-ignore
-  const { data: billsData, dailyBillsTotal } = useAppSelector((state) => state.bills);
-  //prettier-ignore
-  const { data: outlaysData, isLoading: outlaysIsLoading } = useAppSelector((state) => state.outlays);
-  //prettier-ignore
-  const { data: missingProductsData, isLoading: missingProductsIsLoading } = useAppSelector((state) => state.missingProducts);
-  //prettier-ignore
-  const { data: purchaseData } = useAppSelector((state) => state.purchases);
+  const { id: reportId } = useParams();
+  const {
+    data: report,
+    isLoading,
+    error,
+    sendHttpRequest,
+  } = useHttp(getDocByID);
 
+  console.log("report: ", report);
+
+  useEffect(() => {
+    sendHttpRequest({ collectionName: COLLECTIONS.REPORTS, docId: reportId! });
+  }, [sendHttpRequest, reportId]);
   return (
     <div className={classes.report}>
-      <Wrapper>
-        <header className={classes["report__header"]}>
-          <h1 className={classes["report__header--main"]}>
-            تقرير عن يوم {formatDateByDay(new Date())}{" "}
-            {moment(new Date()).format("L")}
-          </h1>
-          <h3 className={`${classes["report__header--income"]} mt-sm`}>
-            <span className="label">الإيراد</span>
-            <span className="value">{formatNumber(dailyBillsTotal)}</span>
-          </h3>
-        </header>
-        <hr className="separator separator--soft" />
-        <div className={classes["report__section"]}>
-          <header className={`${classes["report__header"]} mb-sm`}>
-            <h3 className={`${classes["report__header--main"]} mt-sm`}>
-              <span className="label">الفواتير</span>
-              <span className="value">
-                {formatNumber(billsData.length, "d")}
-              </span>
-            </h3>
+      <div className={classes["report__link"]}>
+        <Link to="/stock">
+          عودة الي المتجر {<BsFillArrowLeftCircleFill className="fix-icon" />}
+        </Link>
+      </div>
+      {report.id ? (
+        <Wrapper>
+          <header className={classes["report__header"]}>
+            <h1 className={classes["report__header--main"]}>
+              تقرير عن يوم {formatDateByDay(new Date())}{" "}
+              {moment(new Date()).format("L")}
+            </h1>
+            <div className={classes["report__header--wrapper"]}>
+              <h3 className={`${classes["report__header--income"]} mt-sm`}>
+                <span className="label">مجموع الفواتير</span>
+                <span className="value">{formatNumber(report.income)}</span>
+              </h3>
+              <h3 className={`${classes["report__header--income"]} mt-sm`}>
+                <span className="label">الخوارج</span>
+                <span className="value">{formatNumber(report.expenses)}</span>
+              </h3>
+              <h3 className={`${classes["report__header--income"]} mt-sm`}>
+                <span className="label">الإيراد</span>
+                <span className="value">
+                  {formatNumber(report.income - report.expenses)}
+                </span>
+              </h3>
+            </div>
           </header>
-          {/** BILLS TABLE */}
-          {billsData.length > 0 ? (
-            <InfoTable
-              tableId={DBTables.BILLS_TABLE}
-              title="الفواتير"
-              data={billsData}
-            />
-          ) : (
-            <h2 className="not-founded">لا يوجد فواتير</h2>
-          )}
-        </div>
-        <hr className="separator separator--soft" />
-        <div className={classes["report__section"]}>
-          <header className={`${classes["report__header"]} mb-sm`}>
-            <h3 className={`${classes["report__header--main"]} mt-sm`}>
-              <span className="label">الخوارج</span>
-              <span className="value">
-                {formatNumber(outlaysData.length, "d")}
-              </span>
-            </h3>
-          </header>
-          {/** PURCHASE BILLS TABLE */}
-          {outlaysData.length > 0 ? (
-            <FullInfoTable
-              tableId={DBTables.OUTLAYS_TABLE}
-              headData={outlaysTableHeadData}
-              data={outlaysData}
-              isLoading={outlaysIsLoading}
-              className="mt-md"
-            />
-          ) : (
-            <h2 className="not-founded">لا يوجد فواتير شراء</h2>
-          )}
-        </div>
-        <hr className="separator separator--soft" />
-        <div className={classes["report__section"]}>
-          <header className={`${classes["report__header"]} mb-sm`}>
-            <h3 className={`${classes["report__header--main"]} mt-sm`}>
-              <span className="label">فواتير الشراء</span>
-              <span className="value">
-                {formatNumber(purchaseData.length, "d")}
-              </span>
-            </h3>
-          </header>
-          {/** PURCHASE BILLS TABLE */}
-          {purchaseData.length > 0 ? (
-            <InfoTable
-              tableId={DBTables.PURCHASES_TABLE}
-              title="فواتير الشراء"
-              data={purchaseData}
-            />
-          ) : (
-            <h2 className="not-founded">لا يوجد فواتير شراء</h2>
-          )}
-        </div>
-        <hr className="separator separator--soft" />
-        <div className={classes["report__section"]}>
-          <header className={`${classes["report__header"]} mb-sm`}>
-            <h3 className={`${classes["report__header--main"]} mt-sm`}>
-              <span className="label">المنقوصات</span>
-              <span className="value">
-                {formatNumber(missingProductsData.length, "d")}
-              </span>
-            </h3>
-          </header>
-          {/** PURCHASE BILLS TABLE */}
-          {missingProductsData.length > 0 ? (
-            <FullInfoTable
-              tableId={DBTables.MISSING_PRODUCTS_TABLE}
-              headData={missingProductsTableHeadData}
-              data={missingProductsData}
-              isLoading={missingProductsIsLoading}
-              className="mt-md"
-            />
-          ) : (
-            <h2 className="not-founded">لا يوجد منقوصات</h2>
-          )}
-        </div>
-        <hr className="separator separator--soft" />
-      </Wrapper>
+          <hr className="separator separator--soft" />
+          <div className={classes["report__section"]}>
+            <header className={`${classes["report__header"]} mb-sm`}>
+              <h3 className={`${classes["report__header--main"]} mt-sm`}>
+                <span className="label">الفواتير: </span>
+                <span className="value">{report.bills.length}</span>
+              </h3>
+            </header>
+            {/** BILLS TABLE */}
+            {report.bills.length > 0 ? (
+              <InfoTable
+                tableId={DBTables.BILLS_TABLE}
+                title="الفواتير"
+                data={report.bills}
+              />
+            ) : (
+              <h2 className="not-founded">لا يوجد فواتير</h2>
+            )}
+          </div>
+          <hr className="separator separator--soft" />
+          <div className={classes["report__section"]}>
+            <header className={`${classes["report__header"]} mb-sm`}>
+              <h3 className={`${classes["report__header--main"]} mt-sm`}>
+                <span className="label">الخوارج: </span>
+                <span className="value">{report.outlays.length}</span>
+              </h3>
+            </header>
+            {/** PURCHASE BILLS TABLE */}
+            {report.outlays.length > 0 ? (
+              <FullInfoTable
+                tableId={DBTables.OUTLAYS_TABLE}
+                headData={outlaysTableHeadData}
+                data={report.outlays}
+                className="mt-md"
+              />
+            ) : (
+              <h2 className="not-founded">لا يوجد فواتير شراء</h2>
+            )}
+          </div>
+          <hr className="separator separator--soft" />
+          <div className={classes["report__section"]}>
+            <header className={`${classes["report__header"]} mb-sm`}>
+              <h3 className={`${classes["report__header--main"]} mt-sm`}>
+                <span className="label">فواتير الشراء: </span>
+                <span className="value">{report.purchases.length}</span>
+              </h3>
+            </header>
+            {/** PURCHASE BILLS TABLE */}
+            {report.purchases.length > 0 ? (
+              <InfoTable
+                tableId={DBTables.PURCHASES_TABLE}
+                title="فواتير الشراء"
+                data={report.purchases}
+              />
+            ) : (
+              <h2 className="not-founded">لا يوجد فواتير شراء</h2>
+            )}
+          </div>
+          <hr className="separator separator--soft" />
+          <div className={classes["report__section"]}>
+            <header className={`${classes["report__header"]} mb-sm`}>
+              <h3 className={`${classes["report__header--main"]} mt-sm`}>
+                <span className="label">المنقوصات: </span>
+                <span className="value">{report.missingProducts.length}</span>
+              </h3>
+            </header>
+            {/** PURCHASE BILLS TABLE */}
+            {report.missingProducts.length > 0 ? (
+              <FullInfoTable
+                tableId={DBTables.MISSING_PRODUCTS_TABLE}
+                headData={missingProductsTableHeadData}
+                data={report.missingProducts}
+                className="mt-md"
+              />
+            ) : (
+              <h2 className="not-founded">لا يوجد منقوصات</h2>
+            )}
+          </div>
+          <hr className="separator separator--soft" />
+        </Wrapper>
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 };

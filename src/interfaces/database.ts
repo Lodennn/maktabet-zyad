@@ -92,3 +92,8 @@ export interface DeleteRequestData {
   collectionName: COLLECTIONS;
   docId: string;
 }
+
+export interface GetDocRequestData {
+  collectionName: COLLECTIONS;
+  docId: string;
+}

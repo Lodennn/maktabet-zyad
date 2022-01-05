@@ -10,7 +10,7 @@ import {
 interface InitialState {
   isLoading: boolean;
   error: null | string;
-  data: any[];
+  data: any;
 }
 
 const initialState: InitialState = {

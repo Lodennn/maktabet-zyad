@@ -38,7 +38,7 @@ function App() {
       <Route path="/bills" element={<BillsPage />} />
       <Route path="/returned-bills" element={<ReturnedBillsPage />} />
       <Route path="/missing-products" element={<MissingProductsPage />} />
-      <Route path="/report" element={<ReportsPage />} />
+      <Route path="/report/:id" element={<ReportsPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<h1>404 Page</h1>} />
     </Routes>

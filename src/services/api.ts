@@ -7,9 +7,12 @@ import {
   doc,
   QueryDocumentSnapshot,
   deleteDoc,
+  where,
+  query,
+  getDoc,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
-import { DatabaseCollectionsType } from "../interfaces";
+import { DatabaseCollectionsType, GetDocRequestData } from "../interfaces";
 import {
   SendRequestData,
   UpdateRequestData,
@@ -58,4 +61,19 @@ export const deleteData = async (requestData: DeleteRequestData) => {
   const { collectionName, docId } = requestData;
   await deleteDoc(doc(db, collectionName, docId));
   return docId;
+};
+
+// GET DOC
+export const getDocByID = async (requestData: GetDocRequestData) => {
+  const { collectionName, docId } = requestData;
+
+  // Create a query against the collection.
+  const docRef = doc(db, collectionName, docId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  } else {
+    throw new Error("Document is not found");
+  }
 };

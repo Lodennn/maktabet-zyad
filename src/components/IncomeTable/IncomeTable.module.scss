@@ -23,6 +23,10 @@
     font-size: 1.5rem;
   }
 
+  &__link {
+    color: $color-white;
+  }
+
   &__wrapper {
     height: 35rem;
     overflow-y: scroll;

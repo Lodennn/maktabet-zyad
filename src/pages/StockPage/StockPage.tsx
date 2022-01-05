@@ -19,6 +19,7 @@ const StockPage = () => {
     useAppSelector((state) => state.missingProducts);
   const { data: purchasesData } = useAppSelector((state) => state.purchases);
   const { data: billsData } = useAppSelector((state) => state.bills);
+  const { data: reportsData } = useAppSelector((state) => state.reports);
 
   const { dateValue, onChangeDateHandler } = useDate();
   const {
@@ -109,7 +110,7 @@ const StockPage = () => {
             dateValue={purchaseBillsDateValue}
             onChangeDateHandler={purchaseBillssChangeDateHandler}
           />
-          <IncomeTable />
+          <IncomeTable data={reportsData} />
         </div>
       </div>
     </div>
