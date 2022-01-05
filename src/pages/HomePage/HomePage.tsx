@@ -30,7 +30,9 @@ import moment from "moment";
 import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
 
 const HomePage = () => {
-  const { productsInStore, isLoading } = useAppSelector((state) => state.stock);
+  const { productsInStore, isLoading, filteredStockData } = useAppSelector(
+    (state) => state.stock
+  );
   //prettier-ignore
   const { data: billsData, dailyBillsTotal } = useAppSelector((state) => state.bills);
   //prettier-ignore
@@ -101,7 +103,7 @@ const HomePage = () => {
               <FullInfoTable
                 tableId={DBTables.STOCK_TABLE}
                 headData={stockTableHeadData}
-                data={productsInStore}
+                data={filteredStockData}
                 isLoading={isLoading}
                 className="mt-md"
               />
