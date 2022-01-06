@@ -4,6 +4,7 @@ import missingProductsReducer from "./missing-products/missing-products-slice";
 import purchasesReducer from "./purchases/purchases-slice";
 import StockReducer from "./stock/stock-slice";
 import ReportReducer from "./reports/reports-slice";
+import SnackbarReducer from "./snackbar/snackbar-slice";
 
 import {
   persistStore,
@@ -34,6 +35,7 @@ const store = configureStore({
     bills: billReducer,
     outlays: outlaysReducer,
     reports: ReportReducer,
+    snackbar: SnackbarReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

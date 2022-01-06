@@ -306,19 +306,19 @@ export const addNormalBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
 
@@ -347,19 +347,19 @@ export const updateNormalBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       if (!!billProduct.oldProductAmount) {
         //prettier-ignore
@@ -400,19 +400,19 @@ export const deleteNormalBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
       dispatch(deleteMissingProduct(missingProduct));
@@ -437,19 +437,19 @@ export const addReturnedBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
       dispatch(deleteMissingProduct(missingProduct));
@@ -474,19 +474,19 @@ export const updateReturnedBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       if (!!billProduct.oldProductAmount) {
         //prettier-ignore
@@ -527,19 +527,19 @@ export const deleteReturnedBill =
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
-      const missingProduct: MissingProductsDoc = {
-        productName: updatedProduct.productName,
-        createdAt: new Date().toString(),
-        category: updatedProduct.category,
-        priceOfPiece: updatedProduct.priceOfPiece,
-      };
-
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
 
       updatedProduct = { ...stockData[stockProductInBillIndex] };
+
+      const missingProduct: MissingProductsDoc = {
+        productName: updatedProduct.productName,
+        createdAt: new Date().toString(),
+        category: updatedProduct.category,
+        priceOfPiece: updatedProduct.priceOfPiece,
+      };
 
       updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
       if (updatedProduct.totalNumberOfUnits <= 0) {

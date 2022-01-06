@@ -75,6 +75,7 @@ export const insertMissingProduct =
       collectionName: COLLECTIONS.MISSING_PRODUCTS,
       data: insertData,
     };
+
     await sendData(data).then((data) =>
       dispatch(missingProductsActions.addMissingProduct({ data }))
     );
