@@ -7,9 +7,9 @@ const UpdateNewProductToPurchaseBill: React.FC<{
   dispatchPurchaseBillActions: Function;
   billData: PurchasesDoc;
   billFallbackData: any;
-  getBillConfigData: (billConfigData: any) => void;
+  // getBillConfigData: (billConfigData: any) => void;
 }> = (props) => {
-  const { dispatchPurchaseBillActions, getBillConfigData } = props;
+  const { dispatchPurchaseBillActions } = props;
 
   const {
     billProductsConfig,
@@ -20,9 +20,9 @@ const UpdateNewProductToPurchaseBill: React.FC<{
     onChangePriceOfUnit,
   } = useUpdatePurchaseBill(dispatchPurchaseBillActions);
 
-  useEffect(() => {
-    getBillConfigData(billProductsConfig);
-  }, [getBillConfigData, billProductsConfig]);
+  // useEffect(() => {
+  //   getBillConfigData(billProductsConfig);
+  // }, [getBillConfigData, billProductsConfig]);
 
   return (
     <Fragment>

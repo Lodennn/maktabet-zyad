@@ -20,13 +20,13 @@ const UpdatePurchaseBillModalContent: React.FC<{
 
   const { productFormArray: billProducts } = useProduct();
 
-  //prettier-ignore
-  const [ setBillDataConfig] = useState<any>();
+  // //prettier-ignore
+  // const [ _, setBillDataConfig] = useState<any>();
 
-  //prettier-ignore
-  const getBillConfigData = useCallback((billConfigData: PurchaseBillConfigInitialState) => {
-    setBillDataConfig(billConfigData)
-  }, [])
+  // //prettier-ignore
+  // const getBillConfigData = useCallback((billConfigData: PurchaseBillConfigInitialState) => {
+  //   setBillDataConfig(billConfigData)
+  // }, [])
 
   const submitBillFormHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -86,7 +86,7 @@ const UpdatePurchaseBillModalContent: React.FC<{
                     }
                     billData={props.data}
                     billFallbackData={props.updatedPurchaseBillData}
-                    getBillConfigData={getBillConfigData}
+                    // getBillConfigData={getBillConfigData}
                   />
                 );
               })}
