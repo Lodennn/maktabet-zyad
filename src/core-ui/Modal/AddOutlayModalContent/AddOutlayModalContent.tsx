@@ -5,6 +5,12 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import classes from "../AddBillModalContent/AddBillModalContent.module.scss";
 import outlayClasses from "./AddNewOutlay.module.scss";
 import { insertOutlay } from "../../../store/outlays/outlays-slice";
+import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
   props
@@ -33,9 +39,26 @@ const AddOutlayModalContent: React.FC<{ hideAddOutlayModal: Function }> = (
     };
 
     // INSERT OUTLAY TO DATABASE
-    dispatch(insertOutlay(outlayData)).then((_) => {
-      props.hideAddOutlayModal();
-    });
+    dispatch(insertOutlay(outlayData))
+      .then((_) => {
+        props.hideAddOutlayModal();
+      })
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.ADD_OUTLAY,
+          })
+        )
+      )
+      .catch((err) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.ADD_OUTLAY,
+          })
+        )
+      );
   };
 
   return (

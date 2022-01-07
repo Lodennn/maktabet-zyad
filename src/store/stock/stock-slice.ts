@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { COLLECTIONS } from "../../constants";
+import {
+  COLLECTIONS,
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+  SnackbarWarning,
+} from "../../constants";
 import {
   BillsDoc,
   DeleteRequestData,
@@ -13,14 +19,7 @@ import {
   deleteMissingProduct,
   insertMissingProduct,
 } from "../missing-products/missing-products-slice";
-
-const initialState: StockInitialState = {
-  isLoading: false,
-  error: null,
-  data: [],
-  productsInStore: [],
-  filteredStockData: [],
-};
+import { snackbarActions } from "../snackbar/snackbar-slice";
 
 const calculateProfits = (stockProduct: StockDoc) => {
   let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
@@ -41,6 +40,16 @@ const calculateProfits = (stockProduct: StockDoc) => {
   return stockProduct;
 };
 
+const initialState: StockInitialState = {
+  isLoading: false,
+  error: null,
+  data: [],
+  productsInStore: [],
+  filteredStockData: [],
+  totalProductsBudget: 0,
+  totalProductsProfit: 0,
+};
+
 const stockSlice = createSlice({
   name: "stock",
   initialState,
@@ -53,6 +62,8 @@ const stockSlice = createSlice({
       state.isLoading = false;
     },
     addStockData(state, action) {
+      state.isLoading = false;
+      state.error = null;
       state.data = action.payload.data;
       state.filteredStockData = action.payload.data.filter(
         (product: StockDoc) => product.totalNumberOfUnits > 0
@@ -60,8 +71,14 @@ const stockSlice = createSlice({
       state.productsInStore = action.payload.data.filter(
         (product: StockDoc) => product.totalNumberOfUnits > 0
       );
-      state.isLoading = false;
-      state.error = null;
+      state.totalProductsBudget = state.data.reduce((acc, cur) => {
+        return (
+          acc + (cur.totalNumberOfUnits / cur.numberOfUnits) * cur.priceOfPiece
+        );
+      }, 0);
+      state.totalProductsProfit = state.data.reduce((acc, cur) => {
+        return acc + cur.totalNumberOfUnits * cur.priceOfUnit;
+      }, 0);
     },
     filterStockData(state, action) {
       let tempStockData = [...state.data];
@@ -80,17 +97,41 @@ const stockSlice = createSlice({
           state.data[stockProductIndex] = billProduct;
         }
       });
+      state.totalProductsBudget = state.data.reduce((acc, cur) => {
+        return (
+          acc + (cur.totalNumberOfUnits / cur.numberOfUnits) * cur.priceOfPiece
+        );
+      }, 0);
+      state.totalProductsProfit = state.data.reduce((acc, cur) => {
+        return acc + cur.totalNumberOfUnits * cur.priceOfUnit;
+      }, 0);
     },
     updateStockProduct(state, action) {
       const updatedProductIndex = state.data.findIndex(
         (stockProduct: StockDoc) => stockProduct.id === action.payload.data.id
       );
       state.data[updatedProductIndex] = action.payload.data;
+      state.totalProductsBudget = state.data.reduce((acc, cur) => {
+        return (
+          acc + (cur.totalNumberOfUnits / cur.numberOfUnits) * cur.priceOfPiece
+        );
+      }, 0);
+      state.totalProductsProfit = state.data.reduce((acc, cur) => {
+        return acc + cur.totalNumberOfUnits * cur.priceOfUnit;
+      }, 0);
     },
     deleteStockProduct(state, action) {
       state.data = state.data.filter(
         (stockProduct: StockDoc) => stockProduct.id !== action.payload.data.id
       );
+      state.totalProductsBudget = state.data.reduce((acc, cur) => {
+        return (
+          acc + (cur.totalNumberOfUnits / cur.numberOfUnits) * cur.priceOfPiece
+        );
+      }, 0);
+      state.totalProductsProfit = state.data.reduce((acc, cur) => {
+        return acc + cur.totalNumberOfUnits * cur.priceOfUnit;
+      }, 0);
     },
   },
 });
@@ -100,7 +141,7 @@ export const stockActions = stockSlice.actions;
 const isProductInStock = (productIndex: number) => productIndex >= 0;
 
 export const addPurchaseBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -118,7 +159,7 @@ export const addPurchaseBill =
   };
 export const addPurchaseBillOfExistingProduct =
   (updatedProduct: StockDoc, billProductInStock: StockDoc) =>
-  (dispatch: AppDispatch) => {
+  async (dispatch: AppDispatch) => {
     const missingProduct: MissingProductsDoc = {
       productName: updatedProduct.productName,
       createdAt: new Date().toString(),
@@ -131,7 +172,23 @@ export const addPurchaseBillOfExistingProduct =
     updatedProduct.priceOfUnit = billProductInStock.priceOfUnit;
     //prettier-ignore
     updatedProduct.totalNumberOfUnits += billProductInStock.totalProductAmount! * billProductInStock.numberOfUnits;
-    dispatch(deleteMissingProduct(missingProduct));
+    dispatch(deleteMissingProduct(missingProduct))
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.WARNING,
+            message: SnackbarWarning.DELETE_MISSING,
+          })
+        )
+      )
+      .catch((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.DELETE_MISSING,
+          })
+        )
+      );
     // UPDATE STOCK WHEN THE PRODUCT IS FOUND
     //prettier-ignore
     updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -162,7 +219,7 @@ export const addPurchaseBillOfExistingProduct =
   };
 
 export const addPurchaseBillOfNotExistingProduct =
-  (billData: BillsDoc, billProduct: any) => (dispatch: AppDispatch) => {
+  (billData: BillsDoc, billProduct: any) => async (dispatch: AppDispatch) => {
     // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
 
     const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
@@ -190,7 +247,7 @@ export const addPurchaseBillOfNotExistingProduct =
   };
 
 export const updatePurchaseBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -267,7 +324,7 @@ export const updatePurchaseBill =
   };
 
 export const deletePurchaseBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -309,7 +366,7 @@ export const deletePurchaseBill =
   };
 
 export const addNormalBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -331,8 +388,23 @@ export const addNormalBill =
       updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
 
       if (updatedProduct.totalNumberOfUnits <= 0) {
-        //prettier-ignore
-        dispatch(insertMissingProduct(missingProduct));
+        dispatch(insertMissingProduct(missingProduct))
+          .then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.ADD_MISSING,
+              })
+            )
+          )
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.ADD_MISSING,
+              })
+            )
+          );
       }
 
       //prettier-ignore
@@ -352,7 +424,7 @@ export const addNormalBill =
   };
 
 export const updateNormalBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -378,14 +450,44 @@ export const updateNormalBill =
           updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
           if (updatedProduct.totalNumberOfUnits <= 0) {
             //prettier-ignore
-            dispatch(insertMissingProduct(missingProduct));
+            dispatch(insertMissingProduct(missingProduct)).then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.ADD_MISSING,
+              })
+            )
+          )
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.ADD_MISSING,
+              })
+            )
+          );;
           }
         } else {
           //prettier-ignore
           updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;      
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
             //prettier-ignore
-            dispatch(deleteMissingProduct(missingProduct));
+            dispatch(deleteMissingProduct(missingProduct)).then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.DELETE_MISSING,
+              })
+            )
+          )
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.DELETE_MISSING,
+              })
+            )
+          );
           }
         }
       }
@@ -407,7 +509,7 @@ export const updateNormalBill =
   };
 
 export const deleteNormalBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -427,7 +529,23 @@ export const deleteNormalBill =
       };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-      dispatch(deleteMissingProduct(missingProduct));
+      dispatch(deleteMissingProduct(missingProduct))
+        .then((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.WARNING,
+              message: SnackbarWarning.DELETE_MISSING,
+            })
+          )
+        )
+        .catch((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.ERROR,
+              message: SnackbarFailed.DELETE_MISSING,
+            })
+          )
+        );
 
       //prettier-ignore
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -445,7 +563,7 @@ export const deleteNormalBill =
   };
 
 export const addReturnedBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -465,7 +583,23 @@ export const addReturnedBill =
       };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-      dispatch(deleteMissingProduct(missingProduct));
+      dispatch(deleteMissingProduct(missingProduct))
+        .then((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.WARNING,
+              message: SnackbarWarning.DELETE_MISSING,
+            })
+          )
+        )
+        .catch((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.ERROR,
+              message: SnackbarFailed.DELETE_MISSING,
+            })
+          )
+        );
 
       //prettier-ignore
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -483,7 +617,7 @@ export const addReturnedBill =
   };
 
 export const updateReturnedBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
@@ -509,7 +643,22 @@ export const updateReturnedBill =
           updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
             //prettier-ignore
-            dispatch(deleteMissingProduct(missingProduct));
+            dispatch(deleteMissingProduct(missingProduct)).then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.DELETE_MISSING,
+              })
+            )
+          )
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.DELETE_MISSING,
+              })
+            )
+          );
           }
         } else {
           //prettier-ignore    
@@ -537,7 +686,7 @@ export const updateReturnedBill =
   };
 
 export const deleteReturnedBill =
-  (billData: BillsDoc) => (dispatch: AppDispatch, getState: any) => {
+  (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;

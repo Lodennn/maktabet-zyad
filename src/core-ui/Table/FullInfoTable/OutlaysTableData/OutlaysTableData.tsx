@@ -1,8 +1,10 @@
 import React from "react";
+import { SnackbarSuccess, SnackbarType } from "../../../../constants";
 import { formatFullDate, formatNumber } from "../../../../helpers/functions";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { OutlaysDoc } from "../../../../interfaces";
 import { deleteOutlayAction } from "../../../../store/outlays/outlays-slice";
+import { snackbarActions } from "../../../../store/snackbar/snackbar-slice";
 
 const OutlaysTableData: React.FC<{
   dataItem: OutlaysDoc;
@@ -25,7 +27,23 @@ const OutlaysTableData: React.FC<{
     outlay: OutlaysDoc,
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    dispatch(deleteOutlayAction(outlay));
+    dispatch(deleteOutlayAction(outlay))
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.DELETE_OUTLAY,
+          })
+        )
+      )
+      .catch((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarSuccess.DELETE_OUTLAY,
+          })
+        )
+      );
   };
   return (
     <tr key={props.dataItem.id}>

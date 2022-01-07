@@ -1,7 +1,9 @@
 import moment from "moment";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import SnackBar from "./components/Snackbar/Snackbar";
 import { useAppDispatch } from "./hooks/use-app-dispatch";
+import { useAppSelector } from "./hooks/use-app-selector";
 import BillsPage from "./pages/BillsPage/BillsPage";
 import HomePage from "./pages/HomePage/HomePage";
 import MissingProductsPage from "./pages/MissingProductsPage/MissingProductsPage";
@@ -21,6 +23,8 @@ function App() {
   moment.locale("ar");
   const dispatch = useAppDispatch();
 
+  const { type, message } = useAppSelector((state) => state.snackbar);
+
   useEffect(() => {
     dispatch(addBillsData());
     dispatch(addStockDataToStore());
@@ -31,17 +35,20 @@ function App() {
   }, [dispatch]);
 
   return (
-    <Routes>
-      <Route path="/stock" element={<StockPage />} />
-      <Route path="/store" element={<StorePage />} />
-      <Route path="/purchases" element={<PurchasesPage />} />
-      <Route path="/bills" element={<BillsPage />} />
-      <Route path="/returned-bills" element={<ReturnedBillsPage />} />
-      <Route path="/missing-products" element={<MissingProductsPage />} />
-      <Route path="/report/:id" element={<ReportsPage />} />
-      <Route path="/" element={<HomePage />} />
-      <Route path="*" element={<h1>404 Page</h1>} />
-    </Routes>
+    <Fragment>
+      <SnackBar type={type} message={message} />
+      <Routes>
+        <Route path="/stock" element={<StockPage />} />
+        <Route path="/store" element={<StorePage />} />
+        <Route path="/purchases" element={<PurchasesPage />} />
+        <Route path="/bills" element={<BillsPage />} />
+        <Route path="/returned-bills" element={<ReturnedBillsPage />} />
+        <Route path="/missing-products" element={<MissingProductsPage />} />
+        <Route path="/report/:id" element={<ReportsPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<h1>404 Page</h1>} />
+      </Routes>
+    </Fragment>
   );
 }
 

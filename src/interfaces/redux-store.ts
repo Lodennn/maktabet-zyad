@@ -10,6 +10,8 @@ import {
 export interface StockInitialState extends HttpInitialState<StockDoc> {
   filteredStockData: StockDoc[];
   productsInStore: StockDoc[];
+  totalProductsBudget: number;
+  totalProductsProfit: number;
 }
 
 export interface BillsInitialState extends HttpInitialState<BillsDoc> {

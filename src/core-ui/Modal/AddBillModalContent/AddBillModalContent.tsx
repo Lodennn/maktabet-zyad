@@ -14,6 +14,11 @@ import {
 } from "../../../store/stock/stock-slice";
 import classes from "./AddBillModalContent.module.scss";
 import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
@@ -46,9 +51,37 @@ const AddBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
     if(billData.type === BillType.NORMAL_BILL) {
-      dispatch(addNormalBill(billData))
+      dispatch(addNormalBill(billData)).then((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.SUCCESS,
+          message: SnackbarSuccess.ADD_NORMAL_BILL,
+        })
+      )
+    ).catch((err) =>
+    dispatch(
+      snackbarActions.showSnackBar({
+        type: SnackbarType.ERROR,
+        message: SnackbarFailed.ADD_NORMAL_BILL,
+      })
+    )
+  );
     } else if(billData.type === BillType.RETURNED_BILL) {
-      dispatch(addReturnedBill(billData))
+      dispatch(addReturnedBill(billData)).then((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.SUCCESS,
+          message: SnackbarSuccess.ADD_RETURNED_BILL,
+        })
+      )
+    ).catch((err) =>
+    dispatch(
+      snackbarActions.showSnackBar({
+        type: SnackbarType.ERROR,
+        message: SnackbarFailed.ADD_RETURNED_BILL,
+      })
+    )
+  );
     }
 
     // INSERT BILL TO DATABASE

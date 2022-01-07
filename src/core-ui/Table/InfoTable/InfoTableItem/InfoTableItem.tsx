@@ -1,6 +1,6 @@
 import React, { Fragment, MouseEvent } from "react";
 
-import { DBTables } from "../../../../constants";
+import { DBTables, SnackbarSuccess, SnackbarType } from "../../../../constants";
 import { BillsDoc, PurchasesDoc } from "../../../../interfaces";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { deleteBill } from "../../../../store/bills/bill-slice";
@@ -13,6 +13,7 @@ import { BillType } from "../../../../types/bills";
 import classes from "./InfoTableItem.module.scss";
 import { formatDateByHours, formatNumber } from "../../../../helpers/functions";
 import { deletePurchaseBillFromStore } from "../../../../store/purchases/purchases-slice";
+import { snackbarActions } from "../../../../store/snackbar/snackbar-slice";
 
 const InfoTableItem: React.FC<{
   tableId?: string;
@@ -33,9 +34,39 @@ const InfoTableItem: React.FC<{
     //prettier-ignore
 
     if(bill.type === BillType.NORMAL_BILL) {
-      dispatch(deleteNormalBill(bill));
+      dispatch(deleteNormalBill(bill)).then((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.SUCCESS,
+          message: SnackbarSuccess.DELETE_NORMAL_BILL,
+        })
+      )
+    )
+    .catch((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.ERROR,
+          message: SnackbarSuccess.DELETE_NORMAL_BILL,
+        })
+      )
+    );;
     } else {
-      dispatch(deleteReturnedBill(bill));
+      dispatch(deleteReturnedBill(bill)).then((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.SUCCESS,
+          message: SnackbarSuccess.DELETE_RETURNED_BILL,
+        })
+      )
+    )
+    .catch((_) =>
+      dispatch(
+        snackbarActions.showSnackBar({
+          type: SnackbarType.ERROR,
+          message: SnackbarSuccess.DELETE_RETURNED_BILL,
+        })
+      )
+    );;
     }
 
     dispatch(deleteBill(bill));
@@ -48,7 +79,23 @@ const InfoTableItem: React.FC<{
     //prettier-ignore
     dispatch(deletePurchaseBill(bill));
 
-    dispatch(deletePurchaseBillFromStore(bill));
+    dispatch(deletePurchaseBillFromStore(bill))
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.DELETE_PURCHASE_BILL,
+          })
+        )
+      )
+      .catch((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarSuccess.DELETE_PURCHASE_BILL,
+          })
+        )
+      );
   };
 
   const onDeleteBill =

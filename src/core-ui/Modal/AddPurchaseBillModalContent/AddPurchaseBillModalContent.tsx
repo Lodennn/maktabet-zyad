@@ -9,6 +9,12 @@ import { insertPurchaseBill } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
 import { addPurchaseBill } from "../../../store/stock/stock-slice";
+import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
   props
@@ -41,9 +47,26 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
     dispatch(addPurchaseBill(billData));
 
     // INSERT BILL TO DATABASE
-    dispatch(insertPurchaseBill(billData)).then((_) => {
-      props.hideAddBillModal();
-    });
+    dispatch(insertPurchaseBill(billData))
+      .then((_) => {
+        props.hideAddBillModal();
+      })
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.ADD_PURCHASE_BILL,
+          })
+        )
+      )
+      .catch((err) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.ADD_PURCHASE_BILL,
+          })
+        )
+      );
   };
 
   return (

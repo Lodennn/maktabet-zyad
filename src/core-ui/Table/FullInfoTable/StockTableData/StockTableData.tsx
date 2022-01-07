@@ -1,7 +1,9 @@
 import React from "react";
+import { SnackbarSuccess, SnackbarType } from "../../../../constants";
 import { formatNumber } from "../../../../helpers/functions";
 import { useAppDispatch } from "../../../../hooks/use-app-dispatch";
 import { StockDoc } from "../../../../interfaces";
+import { snackbarActions } from "../../../../store/snackbar/snackbar-slice";
 import { deleteStockDataFromStore } from "../../../../store/stock/stock-slice";
 
 const StockTableData: React.FC<{
@@ -25,7 +27,23 @@ const StockTableData: React.FC<{
     stockProduct: StockDoc,
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    dispatch(deleteStockDataFromStore(stockProduct));
+    dispatch(deleteStockDataFromStore(stockProduct))
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.DELETE_PRODUCT,
+          })
+        )
+      )
+      .catch((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarSuccess.DELETE_PRODUCT,
+          })
+        )
+      );
   };
   return (
     <tr key={props.dataItem.id}>

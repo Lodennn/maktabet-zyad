@@ -9,6 +9,12 @@ import { updatePurchaseBill } from "../../../store/stock/stock-slice";
 import UpdateNewProductToPurchaseBill from "./UpdateNewProductToPurchaseBill/UpdateNewProductToPurchaseBill";
 import classes from "./UpdatePurchaseBillModalContent.module.scss";
 import { PurchaseBillConfigInitialState } from "../../../hooks/use-update-bill";
+import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const UpdatePurchaseBillModalContent: React.FC<{
   data: any;
@@ -46,9 +52,26 @@ const UpdatePurchaseBillModalContent: React.FC<{
     dispatch(updatePurchaseBill(billData));
 
     // UPDATE BILL TO DATABASE
-    dispatch(updatePurchaseBillToStore(billData)).then((_) => {
-      props.hideUpdatePurchaseModal();
-    });
+    dispatch(updatePurchaseBillToStore(billData))
+      .then((_) => {
+        props.hideUpdatePurchaseModal();
+      })
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.UPDATE_PURCHASE_BILL,
+          })
+        )
+      )
+      .catch((err) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.UPDATE_PURCHASE_BILL,
+          })
+        )
+      );
   };
 
   return (

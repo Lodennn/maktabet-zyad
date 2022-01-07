@@ -4,6 +4,12 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { updateStockDataToStore } from "../../../store/stock/stock-slice";
 import classes from "./UpdateStockModalContent.module.scss";
 import stockProductClasses from "./UpdatedStockProduct/UpdatedStockProduct.module.scss";
+import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const UpdateStockModalContent: React.FC<{
   data: any;
@@ -45,9 +51,24 @@ const UpdateStockModalContent: React.FC<{
       priceOfUnit: productUnitPrice,
     };
 
-    dispatch(updateStockDataToStore(newStockProduct)).then((_) =>
-      props.hideModal()
-    );
+    dispatch(updateStockDataToStore(newStockProduct))
+      .then((_) => props.hideModal())
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.UPDATE_PRODUCT,
+          })
+        )
+      )
+      .catch((err) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.UPDATE_PRODUCT,
+          })
+        )
+      );
   };
 
   return (

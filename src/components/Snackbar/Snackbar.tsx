@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { FaBan, FaCheck, FaExclamation } from "react-icons/fa";
 import { useAppSelector } from "../../hooks/use-app-selector";
-import classes from "./SnackBar.module.scss";
+import classes from "./Snackbar.module.scss";
 
 const SnackBar: React.FC<{ type: string; message: string }> = React.memo(
   (props) => {

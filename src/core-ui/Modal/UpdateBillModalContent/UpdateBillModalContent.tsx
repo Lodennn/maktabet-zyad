@@ -13,6 +13,12 @@ import {
   updateReturnedBill,
 } from "../../../store/stock/stock-slice";
 import { formatFullDate } from "../../../helpers/functions";
+import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
+import {
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../../constants";
 
 const UpdateBillModalContent: React.FC<{
   data: BillsDoc;
@@ -47,9 +53,41 @@ const UpdateBillModalContent: React.FC<{
     // UPDATE STOCK IN DATABASE
 
     if (billData.type === BillType.NORMAL_BILL) {
-      dispatch(updateNormalBill(billData));
+      dispatch(updateNormalBill(billData))
+        .then((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.SUCCESS,
+              message: SnackbarSuccess.UPDATE_NORMAL_BILL,
+            })
+          )
+        )
+        .catch((err) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.ERROR,
+              message: SnackbarFailed.UPDATE_NORMAL_BILL,
+            })
+          )
+        );
     } else if (billData.type === BillType.RETURNED_BILL) {
-      dispatch(updateReturnedBill(billData));
+      dispatch(updateReturnedBill(billData))
+        .then((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.SUCCESS,
+              message: SnackbarSuccess.UPDATE_RETURNED_BILL,
+            })
+          )
+        )
+        .catch((err) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.ERROR,
+              message: SnackbarFailed.UPDATE_RETURNED_BILL,
+            })
+          )
+        );
     }
 
     // UPDATE BILL IN DATABASE

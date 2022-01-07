@@ -12,6 +12,7 @@
   border-radius: 0.4rem;
   color: $color-white;
   animation: snackbarMove 5s ease forwards;
+  gap: 2rem;
   z-index: $zIndex-5;
   &--success {
     background-color: $color-success-dark;
