@@ -22,6 +22,25 @@ const initialState: StockInitialState = {
   filteredStockData: [],
 };
 
+const calculateProfits = (stockProduct: StockDoc) => {
+  let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
+  //prettier-ignore
+  const { numberOfUnits, priceOfPiece, priceOfUnit, totalNumberOfUnits } = stockProduct;
+  //prettier-ignore
+  const profit = (numberOfUnits * priceOfUnit) - priceOfPiece;
+  profitOfUnitEquation = profit / numberOfUnits;
+  //prettier-ignore
+  totalProfitEquation = (profit / priceOfPiece) * ((totalNumberOfUnits / numberOfUnits) * priceOfPiece);
+  //prettier-ignore
+  profitPercentEquation = (profit / priceOfPiece) * 100;
+
+  stockProduct.profitOfPiece = profit;
+  stockProduct.profitOfUnit = +profitOfUnitEquation.toFixed(2);
+  stockProduct.totalProfit = totalProfitEquation;
+  stockProduct.profitPercent = profitPercentEquation;
+  return stockProduct;
+};
+
 const stockSlice = createSlice({
   name: "stock",
   initialState,
@@ -118,6 +137,23 @@ export const addPurchaseBillOfExistingProduct =
     updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
     //prettier-ignore
     updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+    let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
+    //prettier-ignore
+    const {numberOfUnits, priceOfUnit, priceOfPiece, totalNumberOfUnits} = updatedProduct;
+    //prettier-ignore
+    const profit = (numberOfUnits * priceOfUnit) - priceOfPiece;
+    profitOfUnitEquation = profit / numberOfUnits;
+    //prettier-ignore
+    totalProfitEquation = (profit / priceOfPiece) * ((totalNumberOfUnits / numberOfUnits) * priceOfPiece);
+    //prettier-ignore
+    profitPercentEquation = (profit / priceOfPiece) * 100;
+
+    updatedProduct.profitOfPiece = profit;
+    updatedProduct.profitOfUnit = +profitOfUnitEquation.toFixed(2);
+    updatedProduct.totalProfit = totalProfitEquation;
+    updatedProduct.profitPercent = profitPercentEquation;
+
     updateData({
       collectionName: COLLECTIONS.STOCK,
       docId: updatedProduct.id,
@@ -133,9 +169,7 @@ export const addPurchaseBillOfNotExistingProduct =
       billProduct;
     //
 
-    let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
-
-    const newProduct: StockDoc = {
+    let newProduct: StockDoc = {
       ...billProduct,
       numberOfPieces: totalProductAmount,
       purchasingCosts: billData.total,
@@ -144,18 +178,10 @@ export const addPurchaseBillOfNotExistingProduct =
       totalNumberOfUnits: totalProductAmount * numberOfUnits,
       totalProductAmount: 1,
     };
-    //prettier-ignore
-    const profit = (numberOfUnits * priceOfUnit) - priceOfPiece;
-    profitOfUnitEquation = profit / numberOfUnits;
-    //prettier-ignore
-    totalProfitEquation = (profit / priceOfPiece) * ((newProduct.totalNumberOfUnits / newProduct.numberOfUnits) * priceOfPiece);
-    //prettier-ignore
-    profitPercentEquation = (profit / priceOfPiece) * 100;
 
-    newProduct.profitOfPiece = profit;
-    newProduct.profitOfUnit = +profitOfUnitEquation.toFixed(2);
-    newProduct.totalProfit = totalProfitEquation;
-    newProduct.profitPercent = profitPercentEquation;
+    newProduct = calculateProfits(newProduct);
+    console.log("newProduct: ", newProduct);
+
     // ADD TO STOCK
     sendData({
       collectionName: COLLECTIONS.STOCK,
@@ -270,6 +296,8 @@ export const deletePurchaseBill =
         //prettier-ignore
         updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+        updatedProduct = calculateProfits(updatedProduct);
+
         // UPDATE STOCK WHEN THE PRODUCT IS FOUND
         updateData({
           collectionName: COLLECTIONS.STOCK,
@@ -311,6 +339,8 @@ export const addNormalBill =
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      updatedProduct = calculateProfits(updatedProduct);
 
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({
@@ -365,6 +395,8 @@ export const updateNormalBill =
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+      updatedProduct = calculateProfits(updatedProduct);
+
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({
         collectionName: COLLECTIONS.STOCK,
@@ -402,6 +434,7 @@ export const deleteNormalBill =
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+      updatedProduct = calculateProfits(updatedProduct);
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({
         collectionName: COLLECTIONS.STOCK,
@@ -439,6 +472,7 @@ export const addReturnedBill =
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+      updatedProduct = calculateProfits(updatedProduct);
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({
         collectionName: COLLECTIONS.STOCK,
@@ -492,6 +526,7 @@ export const updateReturnedBill =
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
 
+      updatedProduct = calculateProfits(updatedProduct);
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({
         collectionName: COLLECTIONS.STOCK,
@@ -531,6 +566,8 @@ export const deleteReturnedBill =
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
       //prettier-ignore
       updatedProduct.remainingAmountOfUnits = updatedProduct.totalNumberOfUnits % updatedProduct.numberOfUnits;
+
+      updatedProduct = calculateProfits(updatedProduct);
 
       // UPDATE STOCK WHEN THE PRODUCT IS FOUND
       updateData({

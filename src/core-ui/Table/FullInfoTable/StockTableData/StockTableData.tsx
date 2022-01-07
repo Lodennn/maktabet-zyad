@@ -36,9 +36,9 @@ const StockTableData: React.FC<{
       <td>{formatNumber(props.dataItem.profitOfPiece)}</td>
       <td>{formatNumber(props.dataItem.numberOfUnits, "d")}</td>
       <td>{formatNumber(props.dataItem.priceOfUnit)}</td>
-      <td>{formatNumber(props.dataItem.profitOfUnit, "d")}</td>
+      <td>{formatNumber(props.dataItem.profitOfUnit)}</td>
       <td>{formatNumber(props.dataItem.profitPercent, "p")}</td>
-      <td>{formatNumber(props.dataItem.totalProfit, "d")}</td>
+      <td>{formatNumber(props.dataItem.totalProfit)}</td>
       {props.admin && (
         <td className="table__actions">
           <button
