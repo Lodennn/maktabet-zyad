@@ -24,6 +24,7 @@ export enum TableFields {
   PROFIT_OF_PIECE = "الربح من القطعه",
   NUMBER_OF_UNITS_IN_PIECE = "عدد الوحده في القطعه",
   PRICE_OF_UNIT = "سعر الوحده",
+  PROFIT_OF_UNIT = "الربح من الوحده",
   PURCHASING_COSTS = "ثمن الشراء",
   PERCENTAGE_OF_PROFIT = "نسبة الربح",
   TOTAL_PROFIT = "الربح الكلي",

@@ -8,7 +8,7 @@ export type StockTableHeadData = [
   TableFields.PROFIT_OF_PIECE,
   TableFields.NUMBER_OF_UNITS_IN_PIECE,
   TableFields.PRICE_OF_UNIT,
-  TableFields.PURCHASING_COSTS,
+  TableFields.PROFIT_OF_UNIT,
   TableFields.PERCENTAGE_OF_PROFIT,
   TableFields.TOTAL_PROFIT
 ];

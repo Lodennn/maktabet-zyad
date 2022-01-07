@@ -132,36 +132,30 @@ export const addPurchaseBillOfNotExistingProduct =
     const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
       billProduct;
     //
-    const profitOfPieceEquation =
-      (100 * (priceOfUnit * numberOfUnits - priceOfPiece)) / priceOfPiece;
-    //
-    const profitOfUnitEquation =
-      (100 * (priceOfUnit - priceOfPiece / numberOfUnits)) /
-      (priceOfPiece / numberOfUnits);
-    //
-    const totalProfitEquation =
-      (priceOfUnit * numberOfUnits - priceOfPiece) * totalProductAmount;
-    //
-    const profitPercentEquation =
-      ((totalProfitEquation - billData.total) / billData.total) * 100;
+
+    let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
 
     const newProduct: StockDoc = {
       ...billProduct,
-      // MAYBE DELETE
       numberOfPieces: totalProductAmount,
-      profitOfPiece: profitOfPieceEquation,
-      profitOfUnit: profitOfUnitEquation,
-      // MAYBE DELETE
-      profitPercent: profitPercentEquation,
-      // MAYBE DELETE
       purchasingCosts: billData.total,
       remainingAmountOfPieces: totalProductAmount,
       remainingAmountOfUnits: 0,
       totalNumberOfUnits: totalProductAmount * numberOfUnits,
       totalProductAmount: 1,
-      totalProfit: totalProfitEquation,
     };
+    //prettier-ignore
+    const profit = (numberOfUnits * priceOfUnit) - priceOfPiece;
+    profitOfUnitEquation = profit / numberOfUnits;
+    //prettier-ignore
+    totalProfitEquation = (profit / priceOfPiece) * ((newProduct.totalNumberOfUnits / newProduct.numberOfUnits) * priceOfPiece);
+    //prettier-ignore
+    profitPercentEquation = (profit / priceOfPiece) * 100;
 
+    newProduct.profitOfPiece = profit;
+    newProduct.profitOfUnit = +profitOfUnitEquation.toFixed(2);
+    newProduct.totalProfit = totalProfitEquation;
+    newProduct.profitPercent = profitPercentEquation;
     // ADD TO STOCK
     sendData({
       collectionName: COLLECTIONS.STOCK,
@@ -180,13 +174,9 @@ export const updatePurchaseBill =
       );
       updatedProduct = { ...stockData[stockProductInBillIndex] };
       if (!!billProduct.oldProductAmount) {
-        const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
-          billProduct;
+        const { priceOfPiece, priceOfUnit, numberOfUnits } = billProduct;
 
-        let profitOfPieceEquation,
-          profitOfUnitEquation,
-          totalProfitEquation,
-          profitPercentEquation;
+        let profitOfUnitEquation, totalProfitEquation, profitPercentEquation;
         //
         const newProduct: StockDoc = {
           ...updatedProduct,
@@ -222,33 +212,23 @@ export const updatePurchaseBill =
         if(billProduct.priceOfUnit !== updatedProduct.priceOfUnit) {
             newProduct.priceOfUnit = billProduct.priceOfUnit;
           }
-        //
-        profitOfPieceEquation =
-          ((priceOfUnit * numberOfUnits - priceOfPiece) / priceOfPiece) * 100;
-        //
-        profitOfUnitEquation =
-          ((priceOfUnit * numberOfUnits) / numberOfUnits -
-            priceOfPiece / numberOfUnits) *
-          100;
-
-        //
-        totalProfitEquation =
-          priceOfUnit * numberOfUnits * totalProductAmount -
-          priceOfPiece * totalProductAmount;
-        //
-        profitPercentEquation =
-          ((priceOfPiece * totalProductAmount) / priceOfUnit) *
-          numberOfUnits *
-          totalProductAmount *
-          100;
-        newProduct.profitOfPiece = profitOfPieceEquation;
-        newProduct.profitOfUnit = profitOfUnitEquation;
-        newProduct.totalProfit = totalProfitEquation;
-        newProduct.profitPercent = profitPercentEquation;
         //prettier-ignore
         newProduct.remainingAmountOfPieces = Math.abs(newProduct.totalNumberOfUnits / newProduct.numberOfUnits);
         //prettier-ignore
         newProduct.remainingAmountOfUnits = Math.abs(newProduct.totalNumberOfUnits % newProduct.numberOfUnits);
+
+        //prettier-ignore
+        const profit = (numberOfUnits * priceOfUnit) - priceOfPiece;
+        profitOfUnitEquation = profit / numberOfUnits;
+        //prettier-ignore
+        totalProfitEquation = (profit / priceOfPiece) * ((newProduct.totalNumberOfUnits / newProduct.numberOfUnits) * priceOfPiece);
+        //prettier-ignore
+        profitPercentEquation = (profit / priceOfPiece) * 100;
+
+        newProduct.profitOfPiece = profit;
+        newProduct.profitOfUnit = +profitOfUnitEquation.toFixed(2);
+        newProduct.totalProfit = totalProfitEquation;
+        newProduct.profitPercent = profitPercentEquation;
 
         updatedProduct = newProduct;
       }
