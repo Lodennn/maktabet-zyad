@@ -53,19 +53,27 @@ const AddNewProductToPurchaseBill: React.FC<{
           <label className="form-label">نوع المنتج</label>
           {(billProductsConfig.searchedProduct.id ||
             !!billProductsConfig.searchedProductName) && (
-            <select
+            // <select
+            //   required
+            //   defaultValue={""}
+            //   onChange={onChangeProductCategoryHandler.bind(
+            //     null,
+            //     billProductsConfig.searchedProduct
+            //   )}
+            // >
+            //   <option></option>
+            //   <option>كراس</option>
+            //   <option>قلم</option>
+            //   <option>برايه</option>
+            // </select>
+            <input
+              type="text"
               required
-              defaultValue={""}
               onChange={onChangeProductCategoryHandler.bind(
                 null,
                 billProductsConfig.searchedProduct
               )}
-            >
-              <option></option>
-              <option>كراس</option>
-              <option>قلم</option>
-              <option>برايه</option>
-            </select>
+            />
           )}
         </div>
         {/** PRODUCT PIECES AMOUNT */}

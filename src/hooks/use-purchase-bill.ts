@@ -146,9 +146,9 @@ const usePurchaseBill = (
 
   const onChangeProductCategoryHandler = (
     searchedProduct: StockDoc,
-    event: React.FormEvent<HTMLSelectElement>
+    event: React.FormEvent<HTMLInputElement>
   ): void => {
-    const target = event.target as HTMLSelectElement;
+    const target = event.target as HTMLInputElement;
     const targetValue = target.value;
 
     dispatchBillConfigActions({
