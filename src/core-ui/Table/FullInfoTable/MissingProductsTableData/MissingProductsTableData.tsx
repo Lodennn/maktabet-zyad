@@ -1,5 +1,5 @@
 import React from "react";
-import { formatFullDate } from "../../../../helpers/functions";
+import { formatFullDate, formatNumber } from "../../../../helpers/functions";
 import { MissingProductsDoc } from "../../../../interfaces";
 
 const MissingProductsTableData: React.FC<{
@@ -10,7 +10,7 @@ const MissingProductsTableData: React.FC<{
     <tr key={props.dataItem.id}>
       <td>{props.dataItem.productName}</td>
       <td>{props.dataItem.category}</td>
-      <td>{props.dataItem.priceOfPiece}</td>
+      <td>{formatNumber(props.dataItem.priceOfPiece)}</td>
       <td>{formatFullDate(props.dataItem.createdAt)}</td>
       {props.admin && (
         <td className="table__actions">

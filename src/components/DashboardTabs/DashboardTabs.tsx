@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { DBTables } from "../../constants";
 import { useAppSelector } from "../../hooks/use-app-selector";
 import classes from "./DashboardTabs.module.scss";
+
 const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
   const tabsTracerRef = useRef<HTMLDivElement>(null);
 

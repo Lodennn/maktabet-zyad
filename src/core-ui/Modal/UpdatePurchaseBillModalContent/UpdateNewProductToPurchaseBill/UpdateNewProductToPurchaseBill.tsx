@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import classes from "./UpdateNewProductToPurchaseBill.module.scss";
 import useUpdatePurchaseBill from "../../../../hooks/use-update-purchase-bill";
 import { PurchasesDoc } from "../../../../interfaces";
@@ -12,17 +12,12 @@ const UpdateNewProductToPurchaseBill: React.FC<{
   const { dispatchPurchaseBillActions } = props;
 
   const {
-    billProductsConfig,
     onChangeProductCategoryHandler,
     onChangeProductAmountHandler,
     onChangePiecePriceHandler,
     onChangeNumberOfUnitsHandler,
     onChangePriceOfUnit,
   } = useUpdatePurchaseBill(dispatchPurchaseBillActions);
-
-  // useEffect(() => {
-  //   getBillConfigData(billProductsConfig);
-  // }, [getBillConfigData, billProductsConfig]);
 
   return (
     <Fragment>

@@ -10,7 +10,7 @@ import {
   missingProductsTableHeadData,
   outlaysTableHeadData,
 } from "../../helpers";
-import { formatDateByDay, formatNumber } from "../../helpers/functions";
+import { formatNumber } from "../../helpers/functions";
 import useHttp from "../../hooks/use-http";
 import { getDocByID } from "../../services/api";
 import { BsFillArrowLeftCircleFill } from "react-icons/bs";
@@ -18,14 +18,7 @@ import classes from "./ReportsPage.module.scss";
 
 const ReportsPage: React.FC = () => {
   const { id: reportId } = useParams();
-  const {
-    data: report,
-    isLoading,
-    error,
-    sendHttpRequest,
-  } = useHttp(getDocByID);
-
-  console.log("report: ", report);
+  const { data: report, sendHttpRequest } = useHttp(getDocByID);
 
   useEffect(() => {
     sendHttpRequest({ collectionName: COLLECTIONS.REPORTS, docId: reportId! });

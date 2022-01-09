@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { DBTables } from "../../../constants";
 import { billsTableHeadData, purchasesTableHeadData } from "../../../helpers";
 import { formatFullDate, formatNumber } from "../../../helpers/functions";
@@ -35,31 +36,32 @@ const BillModalContent: React.FC<{
       </div>
       <div className={classes["bill-modal__body"]}>
         <h3 className={classes["bill-modal__body--title"]}>محتوي الفاتوره</h3>
-        {props.billId === DBTables.PURCHASES_TABLE && (
-          <h5>{props.data.merchantName}</h5>
-        )}
-        {props.billId === DBTables.BILLS_TABLE && (
-          <h5 className={`${billTypeClasses}`}>
-            <span className="label">نوع الفاتوره: </span>
-            <span className="value">{props.data.type}</span>
-          </h5>
-        )}
+
         <div className="responsive-y-table">
           {props.billId === DBTables.PURCHASES_TABLE && (
-            <FullInfoTable
-              tableId={props.billId}
-              headData={purchasesTableHeadData}
-              data={props.data.products}
-              className="mt-md"
-            />
+            <Fragment>
+              <h5>{props.data.merchantName}</h5>
+              <FullInfoTable
+                tableId={props.billId}
+                headData={purchasesTableHeadData}
+                data={props.data.products}
+                className="mt-md"
+              />
+            </Fragment>
           )}
           {props.billId === DBTables.BILLS_TABLE && (
-            <FullInfoTable
-              tableId={props.billId}
-              headData={billsTableHeadData}
-              data={props.data.products}
-              className="mt-md"
-            />
+            <Fragment>
+              <h5 className={`${billTypeClasses}`}>
+                <span className="label">نوع الفاتوره: </span>
+                <span className="value">{props.data.type}</span>
+              </h5>
+              <FullInfoTable
+                tableId={props.billId}
+                headData={billsTableHeadData}
+                data={props.data.products}
+                className="mt-md"
+              />
+            </Fragment>
           )}
         </div>
       </div>

@@ -19,7 +19,7 @@ export enum TableFields {
   MERCHANT_NAME = "اسم التاجر",
   PRODUCT_NAME = "اسم الصنف",
   PRODUCT_CATEGORY = "نوع الصنف",
-  PRODUCT_AMOUNT = "عدد القطع",
+  PRODUCT_AMOUNT = "الكميه",
   PRICE_PIECE = "ثمن القطعه (جمله)",
   PROFIT_OF_PIECE = "الربح من القطعه",
   NUMBER_OF_UNITS_IN_PIECE = "عدد الوحده في القطعه",

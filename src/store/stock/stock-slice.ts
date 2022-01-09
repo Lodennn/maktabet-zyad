@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   COLLECTIONS,
   SnackbarFailed,
-  SnackbarSuccess,
   SnackbarType,
   SnackbarWarning,
 } from "../../constants";
@@ -222,8 +221,7 @@ export const addPurchaseBillOfNotExistingProduct =
   (billData: BillsDoc, billProduct: any) => async (dispatch: AppDispatch) => {
     // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
 
-    const { priceOfPiece, priceOfUnit, numberOfUnits, totalProductAmount } =
-      billProduct;
+    const { numberOfUnits, totalProductAmount } = billProduct;
     //
 
     let newProduct: StockDoc = {
@@ -237,7 +235,6 @@ export const addPurchaseBillOfNotExistingProduct =
     };
 
     newProduct = calculateProfits(newProduct);
-    console.log("newProduct: ", newProduct);
 
     // ADD TO STOCK
     sendData({

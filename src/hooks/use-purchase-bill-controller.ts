@@ -48,8 +48,6 @@ const usePurchaseBillController = (crudID?: CRUDRequest) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
 
-      console.log("updatedBillProducts: ", updatedBillProducts);
-
       return {
         billSelectedProducts: updatedBillProducts,
         billTotal: updatedBillTotal,
@@ -66,8 +64,6 @@ const usePurchaseBillController = (crudID?: CRUDRequest) => {
       updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
-
-      console.log("updatedBillProducts: ", updatedBillProducts);
 
       return {
         billSelectedProducts: updatedBillProducts,

@@ -3,9 +3,7 @@ import IncomeTableItem from "./IncomeTableItem/IncomeTableItem";
 import FilterByDate from "../../core-ui/FilterByDate/FilterByDate";
 import classes from "./IncomeTable.module.scss";
 import { ReportsDoc } from "../../interfaces";
-import { Link } from "react-router-dom";
 import useDate from "../../hooks/use-date";
-import { useAppSelector } from "../../hooks/use-app-selector";
 import { dateMe, resetDate } from "../../helpers/functions";
 
 const IncomeTable: React.FC<{ data: ReportsDoc[] }> = (props) => {

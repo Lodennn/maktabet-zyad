@@ -58,17 +58,21 @@ const SmartSearch: React.FC<{
       />
       {showSmartSearch && (
         <ul className={classes["smart-search__result"]}>
-          {props.filteredStockData.map((product: StockDoc) => {
-            return (
-              <li
-                key={product.id}
-                className={classes["smart-search__result-item"]}
-                onClick={selectSearchResult.bind(null, product)}
-              >
-                {product.productName}
-              </li>
-            );
-          })}
+          {props.filteredStockData.length > 0 ? (
+            props.filteredStockData.map((product: StockDoc) => {
+              return (
+                <li
+                  key={product.id}
+                  className={classes["smart-search__result-item"]}
+                  onClick={selectSearchResult.bind(null, product)}
+                >
+                  {product.productName}
+                </li>
+              );
+            })
+          ) : (
+            <h6 className="not-founded">لا يوجد منتجات في المتجر</h6>
+          )}
         </ul>
       )}
     </div>

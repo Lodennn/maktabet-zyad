@@ -7,8 +7,6 @@ import {
   doc,
   QueryDocumentSnapshot,
   deleteDoc,
-  where,
-  query,
   getDoc,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { PurchasesDoc } from "../../../interfaces";
 import { BillType } from "../../../types/bills";
@@ -8,7 +8,6 @@ import { updatePurchaseBillToStore } from "../../../store/purchases/purchases-sl
 import { updatePurchaseBill } from "../../../store/stock/stock-slice";
 import UpdateNewProductToPurchaseBill from "./UpdateNewProductToPurchaseBill/UpdateNewProductToPurchaseBill";
 import classes from "./UpdatePurchaseBillModalContent.module.scss";
-import { PurchaseBillConfigInitialState } from "../../../hooks/use-update-bill";
 import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
 import {
   SnackbarFailed,
