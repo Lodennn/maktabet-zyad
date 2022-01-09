@@ -53,6 +53,7 @@ const SmartSearch: React.FC<{
         onChange={search}
         value={searchValue}
         onFocus={() => setShowSmartSearch(true)}
+        onBlur={() => setTimeout(() => setShowSmartSearch(false), 100)}
         required
       />
       {showSmartSearch && (

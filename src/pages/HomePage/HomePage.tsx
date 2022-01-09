@@ -27,18 +27,21 @@ import {
   resetDate,
 } from "../../helpers/functions";
 import moment from "moment";
-import AddOutlayModalContent from "../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { insertReport } from "../../store/reports/reports-slice";
 import { ReportsDoc } from "../../interfaces";
 
+// LAZY LOADING
+//prettier-ignore
+const AddOutlayModalContent = React.lazy(() => import("../../core-ui/Modal/AddOutlayModalContent/AddOutlayModalContent"));
+
 const HomePage = () => {
   //prettier-ignore
-  const { productsInStore, isLoading, filteredStockData } = useAppSelector((state) => state.stock);
+  const {  isLoading, filteredStockData } = useAppSelector((state) => state.stock);
   //prettier-ignore
   const { data: billsData, dailyBills, dailyBillsTotal } = useAppSelector((state) => state.bills);
   //prettier-ignore
-  const { data: purchasesData, dailyPurchases } = useAppSelector((state) => state.purchases);
+  const {  dailyPurchases } = useAppSelector((state) => state.purchases);
   //prettier-ignore
   const { data: outlaysData, isLoading: outlaysIsLoading, dailyOutlays, dailyOutlaysTotal } = useAppSelector((state) => state.outlays);
   //prettier-ignore

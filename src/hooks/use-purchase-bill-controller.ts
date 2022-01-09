@@ -58,13 +58,16 @@ const usePurchaseBillController = (crudID?: CRUDRequest) => {
     if (action.type === "REMOVE_PRODUCT") {
       let updatedBillProducts = [...state.billSelectedProducts];
       updatedBillProducts = state.billSelectedProducts.filter(
-        (billProduct) => billProduct.id !== action.payload.data.id
+        (billProduct) =>
+          billProduct.productName !== action.payload.data.productName
       );
 
       let updatedBillTotal;
       updatedBillTotal = updatedBillProducts.reduce((acc, cur) => {
         return acc + cur.priceOfPiece * cur.totalProductAmount!;
       }, 0);
+
+      console.log("updatedBillProducts: ", updatedBillProducts);
 
       return {
         billSelectedProducts: updatedBillProducts,
