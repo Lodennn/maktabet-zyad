@@ -1,13 +1,9 @@
 import React from "react";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { useAppSelector } from "../../../hooks/use-app-selector";
+import { StockDoc } from "../../../interfaces";
 import classes from "./PieChart.module.scss";
 
-const data = [
-  { name: "Group A", value: 800 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const RADIAN = Math.PI / 180;
@@ -38,6 +34,13 @@ const renderCustomizedLabel = ({
 };
 
 const PieChartComponent: React.FC = () => {
+  const { data: stockData } = useAppSelector((state) => state.stock);
+
+  const data = stockData.slice(0, 5).map((product: StockDoc) => ({
+    name: product.category,
+    value: product.totalNumberOfUnits,
+  }));
+
   return (
     <div className={classes.piechart}>
       <h3 className={classes["piechart__title"]}>نسبة البضاعه</h3>
@@ -58,54 +61,22 @@ const PieChartComponent: React.FC = () => {
         </Pie>
       </PieChart>
       <ul className={classes["piechart__options"]}>
-        <li className={classes["piechart__option"]}>
-          <span
-            className={classes["piechart__option--bullet"]}
-            style={{ backgroundColor: COLORS[0] }}
-          ></span>
-          <span
-            className={classes["piechart__option--value"]}
-            style={{ color: COLORS[0] }}
-          >
-            قلم
-          </span>
-        </li>
-        <li className={classes["piechart__option"]}>
-          <span
-            className={classes["piechart__option--bullet"]}
-            style={{ backgroundColor: COLORS[1] }}
-          ></span>
-          <span
-            className={classes["piechart__option--value"]}
-            style={{ color: COLORS[1] }}
-          >
-            كشكول
-          </span>
-        </li>
-        <li className={classes["piechart__option"]}>
-          <span
-            className={classes["piechart__option--bullet"]}
-            style={{ backgroundColor: COLORS[2] }}
-          ></span>
-          <span
-            className={classes["piechart__option--value"]}
-            style={{ color: COLORS[2] }}
-          >
-            كراس
-          </span>
-        </li>
-        <li className={classes["piechart__option"]}>
-          <span
-            className={classes["piechart__option--bullet"]}
-            style={{ backgroundColor: COLORS[3] }}
-          ></span>
-          <span
-            className={classes["piechart__option--value"]}
-            style={{ color: COLORS[3] }}
-          >
-            زينه
-          </span>
-        </li>
+        {data.map((option, index) => {
+          return (
+            <li className={classes["piechart__option"]} key={index}>
+              <span
+                className={classes["piechart__option--bullet"]}
+                style={{ backgroundColor: COLORS[index] }}
+              ></span>
+              <span
+                className={classes["piechart__option--value"]}
+                style={{ color: COLORS[index] }}
+              >
+                {option.name}
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
