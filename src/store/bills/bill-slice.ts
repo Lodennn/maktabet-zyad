@@ -12,7 +12,7 @@ import {
 } from "../../interfaces";
 import { dateMe, resetDate } from "../../helpers/functions";
 import { BillType } from "../../types/bills";
-import { addStockDataToStore } from "../stock/stock-slice";
+// import { addStockDataToStore } from "../stock/stock-slice";
 import { missingProductsActions } from "../missing-products/missing-products-slice";
 
 const initialState: BillsInitialState = {
@@ -50,38 +50,6 @@ const billsSlice = createSlice({
         } else {
           return acc - cur.total;
         }
-      }, 0);
-    },
-    addProductToBill(state, action) {
-      const searchedProductIndex = state.billSelectedProducts.findIndex(
-        (searchedProduct) =>
-          searchedProduct.id === action.payload.selectedProduct.id
-      );
-
-      let updatedBillProducts: StockDoc[] = [];
-
-      if (searchedProductIndex >= 0) {
-        updatedBillProducts = [...state.billSelectedProducts];
-        state.billSelectedProducts[searchedProductIndex].totalProductAmount =
-          action.payload.selectedProduct.totalProductAmount;
-      } else {
-        state.billSelectedProducts = state.billSelectedProducts.concat(
-          action.payload.selectedProduct
-        );
-        updatedBillProducts = [...state.billSelectedProducts];
-      }
-
-      state.total = updatedBillProducts.reduce((acc, cur) => {
-        return acc + cur.priceOfUnit * cur.totalProductAmount!;
-      }, 0);
-    },
-    removeProductFromBill(state, action) {
-      state.billSelectedProducts = state.billSelectedProducts.filter(
-        (billProduct) => billProduct.id !== action.payload.selectedProduct.id
-      );
-
-      state.total = state.billSelectedProducts.reduce((acc, cur) => {
-        return acc + cur.priceOfUnit * cur.totalProductAmount!;
       }, 0);
     },
     addBill(state, action) {
@@ -154,7 +122,7 @@ export const insertBill =
         collectionName: COLLECTIONS.BILLS,
         data: billData,
       } as SendRequestData).then((billData) => {
-        dispatch(addStockDataToStore());
+        // dispatch(addStockDataToStore());
         dispatch(billsActions.addBill({ data: billData }));
       });
     } catch (err) {
@@ -171,7 +139,7 @@ export const updateBill =
         docId: billData.id,
         newData: billData,
       } as UpdateRequestData).then((_) => {
-        dispatch(addStockDataToStore());
+        // dispatch(addStockDataToStore());
         dispatch(billsActions.updateBill({ data: billData }));
       });
     } catch (err) {
@@ -187,7 +155,7 @@ export const deleteBill =
         collectionName: COLLECTIONS.BILLS,
         docId: billData.id,
       } as DeleteRequestData).then((billId) => {
-        dispatch(addStockDataToStore());
+        // dispatch(addStockDataToStore());
         dispatch(billsActions.deleteBill({ data: billData }));
         dispatch(
           missingProductsActions.deleteMissingProduct({

@@ -156,9 +156,12 @@ export const addPurchaseBill =
       }
     });
   };
+
 export const addPurchaseBillOfExistingProduct =
   (updatedProduct: StockDoc, billProductInStock: StockDoc) =>
-  async (dispatch: AppDispatch) => {
+  async (dispatch: AppDispatch, getState: any) => {
+    const missingProductsData = [...getState().missingProducts.data];
+
     const missingProduct: MissingProductsDoc = {
       productName: updatedProduct.productName,
       createdAt: new Date().toString(),
@@ -171,23 +174,31 @@ export const addPurchaseBillOfExistingProduct =
     updatedProduct.priceOfUnit = billProductInStock.priceOfUnit;
     //prettier-ignore
     updatedProduct.totalNumberOfUnits += billProductInStock.totalProductAmount! * billProductInStock.numberOfUnits;
-    dispatch(deleteMissingProduct(missingProduct))
-      .then((_) =>
-        dispatch(
-          snackbarActions.showSnackBar({
-            type: SnackbarType.WARNING,
-            message: SnackbarWarning.DELETE_MISSING,
-          })
+
+    const isMissingProductFound = missingProductsData.findIndex(
+      (product: MissingProductsDoc) =>
+        product.productName === missingProduct.productName
+    );
+
+    if (isMissingProductFound >= 0) {
+      dispatch(deleteMissingProduct(missingProduct))
+        .then((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.WARNING,
+              message: SnackbarWarning.DELETE_MISSING,
+            })
+          )
         )
-      )
-      .catch((_) =>
-        dispatch(
-          snackbarActions.showSnackBar({
-            type: SnackbarType.ERROR,
-            message: SnackbarFailed.DELETE_MISSING,
-          })
-        )
-      );
+        .catch((_) =>
+          dispatch(
+            snackbarActions.showSnackBar({
+              type: SnackbarType.ERROR,
+              message: SnackbarFailed.DELETE_MISSING,
+            })
+          )
+        );
+    }
     // UPDATE STOCK WHEN THE PRODUCT IS FOUND
     //prettier-ignore
     updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -508,6 +519,8 @@ export const updateNormalBill =
 export const deleteNormalBill =
   (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
+    const missingProductsData = [...getState().missingProducts.data];
+
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
@@ -526,23 +539,31 @@ export const deleteNormalBill =
       };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-      dispatch(deleteMissingProduct(missingProduct))
-        .then((_) =>
-          dispatch(
-            snackbarActions.showSnackBar({
-              type: SnackbarType.WARNING,
-              message: SnackbarWarning.DELETE_MISSING,
-            })
+
+      const isMissingProductFound = missingProductsData.findIndex(
+        (product: MissingProductsDoc) =>
+          product.productName === missingProduct.productName
+      );
+
+      if (isMissingProductFound >= 0) {
+        dispatch(deleteMissingProduct(missingProduct))
+          .then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.DELETE_MISSING,
+              })
+            )
           )
-        )
-        .catch((_) =>
-          dispatch(
-            snackbarActions.showSnackBar({
-              type: SnackbarType.ERROR,
-              message: SnackbarFailed.DELETE_MISSING,
-            })
-          )
-        );
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.DELETE_MISSING,
+              })
+            )
+          );
+      }
 
       //prettier-ignore
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
@@ -562,6 +583,8 @@ export const deleteNormalBill =
 export const addReturnedBill =
   (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
+
+    const missingProductsData = [...getState().missingProducts.data];
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
@@ -580,23 +603,31 @@ export const addReturnedBill =
       };
 
       updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
-      dispatch(deleteMissingProduct(missingProduct))
-        .then((_) =>
-          dispatch(
-            snackbarActions.showSnackBar({
-              type: SnackbarType.WARNING,
-              message: SnackbarWarning.DELETE_MISSING,
-            })
+
+      const isMissingProductFound = missingProductsData.findIndex(
+        (product: MissingProductsDoc) =>
+          product.productName === missingProduct.productName
+      );
+
+      if (isMissingProductFound >= 0) {
+        dispatch(deleteMissingProduct(missingProduct))
+          .then((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.WARNING,
+                message: SnackbarWarning.DELETE_MISSING,
+              })
+            )
           )
-        )
-        .catch((_) =>
-          dispatch(
-            snackbarActions.showSnackBar({
-              type: SnackbarType.ERROR,
-              message: SnackbarFailed.DELETE_MISSING,
-            })
-          )
-        );
+          .catch((_) =>
+            dispatch(
+              snackbarActions.showSnackBar({
+                type: SnackbarType.ERROR,
+                message: SnackbarFailed.DELETE_MISSING,
+              })
+            )
+          );
+      }
 
       //prettier-ignore
       updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
