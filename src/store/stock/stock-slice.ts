@@ -348,6 +348,8 @@ export const deletePurchaseBill =
         billProduct.totalProductAmount * billProduct.numberOfUnits ===
         updatedProduct.totalNumberOfUnits;
 
+      console.log("updatedProduct: ", updatedProduct);
+
       if (isProductFreshInStock) {
         deleteData({
           collectionName: COLLECTIONS.STOCK,
