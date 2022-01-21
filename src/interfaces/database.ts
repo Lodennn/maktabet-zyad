@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { BillType } from "../types/bills";
 

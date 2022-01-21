@@ -9,7 +9,7 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
   const tabsActiveItemRef = useRef<HTMLLIElement>(null);
 
   const { dailyBills } = useAppSelector((state) => state.bills);
-  const { data: outlaysData } = useAppSelector((state) => state.outlays);
+  const { dailyOutlays } = useAppSelector((state) => state.outlays);
   //prettier-ignore
   const { data: missingProducts } = useAppSelector((state) => state.missingProducts);
 
@@ -86,7 +86,7 @@ const Tabs: React.FC<{ getDisplayContentValue: Function }> = (props) => {
       >
         <span>الخوارج</span>
         <span className={classes["tabs__item--count"]}>
-          {outlaysData.length}
+          {dailyOutlays.length}
         </span>
       </li>
       <div className={classes["tabs__tracer"]} ref={tabsTracerRef}></div>

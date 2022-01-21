@@ -3,7 +3,12 @@ import Navigation from "../../components/Layouts/Navigation/Navigation";
 import DashboardTabs from "../../components/DashboardTabs/DashboardTabs";
 import classes from "./HomePage.module.scss";
 import FullInfoTable from "../../core-ui/Table/FullInfoTable/FullInfoTable";
-import { DBTables } from "../../constants";
+import {
+  DBTables,
+  SnackbarFailed,
+  SnackbarSuccess,
+  SnackbarType,
+} from "../../constants";
 import {
   stockTableHeadData,
   missingProductsTableHeadData,
@@ -30,6 +35,7 @@ import moment from "moment";
 import { useAppDispatch } from "../../hooks/use-app-dispatch";
 import { insertReport } from "../../store/reports/reports-slice";
 import { ReportsDoc } from "../../interfaces";
+import { snackbarActions } from "../../store/snackbar/snackbar-slice";
 
 // LAZY LOADING
 //prettier-ignore
@@ -43,7 +49,8 @@ const HomePage = () => {
   //prettier-ignore
   const {  dailyPurchases } = useAppSelector((state) => state.purchases);
   //prettier-ignore
-  const { data: outlaysData, isLoading: outlaysIsLoading, dailyOutlays, dailyOutlaysTotal } = useAppSelector((state) => state.outlays);
+  const { isLoading: outlaysIsLoading, dailyOutlays, dailyOutlaysTotal } = useAppSelector((state) => state.outlays);
+
   //prettier-ignore
   const { data: missingProductsData, isLoading: missingProductsDataLoading, dailyMissingProducts } = useAppSelector((state) => state.missingProducts);
 
@@ -79,7 +86,23 @@ const HomePage = () => {
       purchases: dailyPurchases,
       createdAt: new Date().toString(),
     };
-    dispatch(insertReport(reportData));
+    dispatch(insertReport(reportData))
+      .then((_) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.SUCCESS,
+            message: SnackbarSuccess.ADD_REPORT,
+          })
+        )
+      )
+      .catch((err) =>
+        dispatch(
+          snackbarActions.showSnackBar({
+            type: SnackbarType.ERROR,
+            message: SnackbarFailed.ADD_REPORT,
+          })
+        )
+      );
   };
 
   return (
@@ -176,7 +199,7 @@ const HomePage = () => {
               <FullInfoTable
                 tableId={DBTables.OUTLAYS_TABLE}
                 headData={outlaysTableHeadData}
-                data={outlaysData}
+                data={dailyOutlays}
                 isLoading={outlaysIsLoading}
                 className="mt-md"
                 admin={true}

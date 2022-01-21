@@ -33,13 +33,29 @@ const renderCustomizedLabel = ({
   );
 };
 
+interface PieData {
+  name: string;
+  value: number;
+}
+
 const PieChartComponent: React.FC = () => {
   const { data: stockData } = useAppSelector((state) => state.stock);
 
-  const data = stockData.slice(0, 5).map((product: StockDoc) => ({
-    name: product.category,
-    value: product.totalNumberOfUnits,
-  }));
+  // const data = stockData.slice(0, 5).map((product: StockDoc) => ({
+  //   name: product.category,
+  //   value: product.totalNumberOfUnits,
+  // }));
+  const data = stockData.slice(0, 5).reduce((acc, cur) => {
+    const duplicate = acc.findIndex(
+      (item) => item.name === cur.category && cur.totalNumberOfUnits > 0
+    );
+    if (duplicate < 0) {
+      const newItem = { name: cur.category, value: cur.totalNumberOfUnits };
+      return acc.concat(newItem);
+    } else {
+      return acc;
+    }
+  }, [] as PieData[]);
 
   return (
     <div className={classes.piechart}>

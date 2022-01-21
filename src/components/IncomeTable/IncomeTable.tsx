@@ -26,6 +26,7 @@ const IncomeTable: React.FC<{ data: ReportsDoc[] }> = (props) => {
           filteredReports.map((report: ReportsDoc) => {
             return (
               <IncomeTableItem
+                key={report.id!}
                 id={report.id!}
                 income={report.income}
                 date={report.createdAt}
