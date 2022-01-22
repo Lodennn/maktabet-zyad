@@ -79,6 +79,9 @@ const stockSlice = createSlice({
         return acc + cur.totalNumberOfUnits * cur.priceOfUnit;
       }, 0);
     },
+    addProductToStock(state, action) {
+      state.data = [...state.data, action.payload.data];
+    },
     filterStockData(state, action) {
       let tempStockData = [...state.data];
       tempStockData = tempStockData.filter(
@@ -121,7 +124,8 @@ const stockSlice = createSlice({
     },
     deleteStockProduct(state, action) {
       state.data = state.data.filter(
-        (stockProduct: StockDoc) => stockProduct.id !== action.payload.data.id
+        (stockProduct: StockDoc) =>
+          stockProduct.productName !== action.payload.data.productName
       );
       state.totalProductsBudget = state.data.reduce((acc, cur) => {
         return (
@@ -142,12 +146,14 @@ const isProductInStock = (productIndex: number) => productIndex >= 0;
 export const addPurchaseBill =
   (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
+
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
       const stockProductInBillIndex = stockData.findIndex(
         (stockProduct: StockDoc) =>
           stockProduct.productName === billProduct.productName
       );
+
       if (isProductInStock(stockProductInBillIndex)) {
         updatedProduct = { ...stockData[stockProductInBillIndex] };
         dispatch(addPurchaseBillOfExistingProduct(updatedProduct, billProduct));
@@ -173,7 +179,7 @@ export const addPurchaseBillOfExistingProduct =
     updatedProduct.priceOfPiece = billProductInStock.priceOfPiece;
     updatedProduct.priceOfUnit = billProductInStock.priceOfUnit;
     //prettier-ignore
-    updatedProduct.totalNumberOfUnits += billProductInStock.totalProductAmount! * billProductInStock.numberOfUnits;
+    updatedProduct.totalNumberOfUnits += Math.abs(billProductInStock.totalProductAmount! * billProductInStock.numberOfUnits);
 
     const isMissingProductFound = missingProductsData.findIndex(
       (product: MissingProductsDoc) =>
@@ -230,8 +236,6 @@ export const addPurchaseBillOfExistingProduct =
 
 export const addPurchaseBillOfNotExistingProduct =
   (billData: BillsDoc, billProduct: any) => async (dispatch: AppDispatch) => {
-    // ADD NEW ITEM TO STOCK WHEN THE PRODUCT IS NOT FOUND
-
     const { numberOfUnits, totalProductAmount } = billProduct;
     //
 
@@ -246,17 +250,21 @@ export const addPurchaseBillOfNotExistingProduct =
     };
 
     newProduct = calculateProfits(newProduct);
-
     // ADD TO STOCK
     sendData({
       collectionName: COLLECTIONS.STOCK,
       data: newProduct,
-    });
+    }).then((data) =>
+      dispatch(
+        stockActions.addProductToStock({ data: { id: data.id, ...newProduct } })
+      )
+    );
   };
 
 export const updatePurchaseBill =
   (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
+
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
       const stockProductInBillIndex = stockData.findIndex(
@@ -277,14 +285,14 @@ export const updatePurchaseBill =
         if((billProduct.totalProductAmount*billProduct.numberOfUnits) > billProduct.oldProductAmount) {
           newProduct.numberOfPieces += billProduct.totalProductAmount;
           //prettier-ignore
-          newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+          newProduct.totalNumberOfUnits = Math.abs((updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits));
         }
 
         //prettier-ignore
         if((billProduct.totalProductAmount*billProduct.numberOfUnits) < billProduct.oldProductAmount) {
           newProduct.numberOfPieces -= billProduct.totalProductAmount;
           //prettier-ignore
-          newProduct.totalNumberOfUnits = (updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits)
+          newProduct.totalNumberOfUnits = Math.abs((updatedProduct.totalNumberOfUnits - billProduct.oldProductAmount) + (billProduct.totalProductAmount * billProduct.numberOfUnits));
         }
 
         if (billProduct.category !== updatedProduct.category) {
@@ -323,6 +331,7 @@ export const updatePurchaseBill =
 
         updatedProduct = newProduct;
       }
+
       updateData({
         collectionName: COLLECTIONS.STOCK,
         docId: updatedProduct.id,
@@ -334,6 +343,7 @@ export const updatePurchaseBill =
 export const deletePurchaseBill =
   (billData: BillsDoc) => async (dispatch: AppDispatch, getState: any) => {
     const stockData = [...getState().stock.data];
+
     billData.products.forEach((billProduct: any) => {
       let updatedProduct: StockDoc = {} as StockDoc;
 
@@ -348,16 +358,18 @@ export const deletePurchaseBill =
         billProduct.totalProductAmount * billProduct.numberOfUnits ===
         updatedProduct.totalNumberOfUnits;
 
-      console.log("updatedProduct: ", updatedProduct);
-
       if (isProductFreshInStock) {
+        dispatch(
+          stockActions.deleteStockProduct({ data: updatedProduct.productName })
+        );
         deleteData({
           collectionName: COLLECTIONS.STOCK,
           docId: updatedProduct.id!,
         });
       } else {
-        updatedProduct.totalNumberOfUnits -=
-          billProduct.totalProductAmount * billProduct.numberOfUnits;
+        updatedProduct.totalNumberOfUnits -= Math.abs(
+          billProduct.totalProductAmount * billProduct.numberOfUnits
+        );
         //prettier-ignore
         updatedProduct.remainingAmountOfPieces = Math.trunc(updatedProduct.totalNumberOfUnits / updatedProduct.numberOfUnits);
         //prettier-ignore
@@ -395,7 +407,9 @@ export const addNormalBill =
         priceOfPiece: updatedProduct.priceOfPiece,
       };
 
-      updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+      updatedProduct.totalNumberOfUnits -= Math.abs(
+        billProduct.totalProductAmount
+      );
 
       if (updatedProduct.totalNumberOfUnits <= 0) {
         dispatch(insertMissingProduct(missingProduct))
@@ -457,7 +471,7 @@ export const updateNormalBill =
         //prettier-ignore
         if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
           //prettier-ignore
-          updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;
+          updatedProduct.totalNumberOfUnits -= Math.abs(billProduct.initialProductAmount);
           if (updatedProduct.totalNumberOfUnits <= 0) {
             //prettier-ignore
             dispatch(insertMissingProduct(missingProduct)).then((_) =>
@@ -479,7 +493,7 @@ export const updateNormalBill =
           }
         } else {
           //prettier-ignore
-          updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;      
+          updatedProduct.totalNumberOfUnits += Math.abs(billProduct.initialProductAmount);      
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
             //prettier-ignore
             dispatch(deleteMissingProduct(missingProduct)).then((_) =>
@@ -540,7 +554,9 @@ export const deleteNormalBill =
         priceOfPiece: updatedProduct.priceOfPiece,
       };
 
-      updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+      updatedProduct.totalNumberOfUnits += Math.abs(
+        billProduct.totalProductAmount
+      );
 
       const isMissingProductFound = missingProductsData.findIndex(
         (product: MissingProductsDoc) =>
@@ -604,7 +620,9 @@ export const addReturnedBill =
         priceOfPiece: updatedProduct.priceOfPiece,
       };
 
-      updatedProduct.totalNumberOfUnits += billProduct.totalProductAmount;
+      updatedProduct.totalNumberOfUnits += Math.abs(
+        billProduct.totalProductAmount
+      );
 
       const isMissingProductFound = missingProductsData.findIndex(
         (product: MissingProductsDoc) =>
@@ -670,7 +688,7 @@ export const updateReturnedBill =
         //prettier-ignore
         if (billProduct.totalProductAmount > billProduct.oldProductAmount) {
           //prettier-ignore
-          updatedProduct.totalNumberOfUnits += billProduct.initialProductAmount;
+          updatedProduct.totalNumberOfUnits += Math.abs(billProduct.initialProductAmount);
           if (billProduct.totalProductAmount < billProduct.totalNumberOfUnits) {
             //prettier-ignore
             dispatch(deleteMissingProduct(missingProduct)).then((_) =>
@@ -692,7 +710,7 @@ export const updateReturnedBill =
           }
         } else {
           //prettier-ignore    
-          updatedProduct.totalNumberOfUnits -= billProduct.initialProductAmount;      
+          updatedProduct.totalNumberOfUnits -= Math.abs(billProduct.initialProductAmount);      
           if (updatedProduct.totalNumberOfUnits <= 0) { 
             //prettier-ignore
             dispatch(insertMissingProduct(missingProduct));
@@ -735,7 +753,9 @@ export const deleteReturnedBill =
         priceOfPiece: updatedProduct.priceOfPiece,
       };
 
-      updatedProduct.totalNumberOfUnits -= billProduct.totalProductAmount;
+      updatedProduct.totalNumberOfUnits -= Math.abs(
+        billProduct.totalProductAmount
+      );
       if (updatedProduct.totalNumberOfUnits <= 0) {
         //prettier-ignore
         dispatch(insertMissingProduct(missingProduct));

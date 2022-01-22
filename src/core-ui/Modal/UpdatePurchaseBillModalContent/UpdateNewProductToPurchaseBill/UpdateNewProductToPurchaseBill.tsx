@@ -23,7 +23,7 @@ const UpdateNewProductToPurchaseBill: React.FC<{
     <Fragment>
       {props.billFallbackData.billSelectedProducts.map((product: any) => {
         //prettier-ignore
-        const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.id === product.id)!;
+        const oldProduct = props.billData.products.find((oldProduct: any) => oldProduct.productName === product.productName)!;
 
         return (
           <div

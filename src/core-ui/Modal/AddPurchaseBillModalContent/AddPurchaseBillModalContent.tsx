@@ -8,7 +8,10 @@ import { useAppDispatch } from "../../../hooks/use-app-dispatch";
 import { insertPurchaseBill } from "../../../store/purchases/purchases-slice";
 import usePurchaseBillController from "../../../hooks/use-purchase-bill-controller";
 import classes from "./AddPurchaseBillModalContent.module.scss";
-import { addPurchaseBill } from "../../../store/stock/stock-slice";
+import {
+  addPurchaseBill,
+  stockActions,
+} from "../../../store/stock/stock-slice";
 import { snackbarActions } from "../../../store/snackbar/snackbar-slice";
 import {
   SnackbarFailed,
@@ -44,6 +47,8 @@ const AddPurchaseBillModalContent: React.FC<{ hideAddBillModal: Function }> = (
 
     // UPDATE STOCK IN DATABASE
     //prettier-ignore
+
+    // dispatch(stockActions.addProductToStock({ data: billData.products }));
     dispatch(addPurchaseBill(billData));
 
     // INSERT BILL TO DATABASE
